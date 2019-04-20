@@ -13242,7 +13242,8 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="CMake-issues-when-depending-on-Kokkos">CMake issues<br /> when depending on Kokkos<a class="anchor-link" href="#CMake-issues-when-depending-on-Kokkos">&#182;</a></h1><p>Damien Lebrun-Grandié and Daniel Arndt</p>
+<h1 id="CMake-issues-when-depending-on-Kokkos">CMake issues<br /> when depending on Kokkos<a class="anchor-link" href="#CMake-issues-when-depending-on-Kokkos">&#182;</a></h1><p>Damien Lebrun-Grandié and Daniel Arndt<br>
+Oak Ridge National Laboratory</p>
 
 </div>
 </div>
@@ -13266,7 +13267,7 @@ a.anchor-link {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>&lt;target&gt;</code> has been created by <code>add_library()</code> or <code>add_executable()</code></p>
 <p>How to use say Boost.Serialization</p>
-<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">Boost</span> <span class="s">REQUIRED</span> <span class="s">serialization</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">Boost</span> <span class="s">COMPONENTS</span> <span class="s">serialization</span><span class="p">)</span>
 <span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">&lt;target&gt;</span> <span class="s">Boost::serialization</span><span class="p">)</span>
 </pre></div>
 
@@ -13335,12 +13336,45 @@ once found configuration file read and processed by CMake</p>
 <ul>
 <li>generated makefile</li>
 <li>CMake</li>
-<li>TriBITS as part of Trilinos</li>
+<li>TriBITS as part of Trilinos (not considered in this talk)</li>
 </ul>
 
 </div>
 </div>
 </div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span>&lt;kokkos_path&gt;/generate_makefile.bash <span class="se">\</span>
+  --prefix<span class="o">=</span>&lt;prefix&gt;
+  --arch<span class="o">=</span>Volta70,SNB <span class="se">\</span>
+  --with-serial <span class="se">\</span>
+  --with-openmp <span class="se">\</span>
+  --with-cuda <span class="se">\</span>
+  --with-cuda-options<span class="o">=</span>enable_lambda
+</pre></div>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span>cmake <span class="se">\</span>
+  -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>&lt;prefix&gt; <span class="se">\</span>
+  -D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span>Release <span class="se">\</span>
+  -D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span>&lt;kokkos_path&gt;/bin/nvcc_wrapper <span class="se">\</span>
+  -D <span class="nv">KOKKOS_ARCH</span><span class="o">=</span><span class="s2">&quot;Volta70;SNB&quot;</span> <span class="se">\</span>
+  -D <span class="nv">KOKKOS_ENABLE_SERIAL</span><span class="o">=</span>ON <span class="se">\</span>
+  -D <span class="nv">KOKKOS_ENABLE_OPENMP</span><span class="o">=</span>ON <span class="se">\</span>
+  -D <span class="nv">KOKKOS_ENABLE_CUDA</span><span class="o">=</span>ON <span class="se">\</span>
+  -D <span class="nv">KOKKOS_ENABLE_CUDA_LAMBDA</span><span class="o">=</span>ON <span class="se">\</span>
+  &lt;kokkos_path&gt;
+</pre></div>
+
+</div>
+</div>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13534,180 +13568,349 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 
 </div>
 </div>
-</div>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Status-quo">Status quo<a class="anchor-link" href="#Status-quo">&#182;</a></h1>
+<h1 id="Differences-in-content-of-install-directories?">Differences in content of install directories?<a class="anchor-link" href="#Differences-in-content-of-install-directories?">&#182;</a></h1>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="current-master-5d6e7f7-(tagged-as-2.8.00)">current master <a href="https://github.com/kokkos/kokkos/tree/5d6e7fb38e96aec88d2c514e1f9be1cf2b549b57">5d6e7f7</a> (tagged as 2.8.00)<a class="anchor-link" href="#current-master-5d6e7f7-(tagged-as-2.8.00)">&#182;</a></h1><div class="highlight"><pre><span></span><span class="gh">diff --git a/install_tree_gmake b/install_tree_cmake</span>
+<span class="gh">index b9dae0a4..e7e934de 100644</span>
+<span class="gd">--- a/install_tree_gmake</span>
+<span class="gi">+++ b/install_tree_cmake</span>
+<span class="gu">@@ -1,7 +1,4 @@</span>
+ /opt/kokkos
+<span class="gd">-|-- Makefile.kokkos</span>
+<span class="gd">-|-- bin</span>
+<span class="gd">-|   `-- nvcc_wrapper</span>
+ |-- include
+ |   |-- Cuda
+ |   |   |-- KokkosExp_Cuda_IterateTile.hpp
+<span class="gu">@@ -87,6 +84,52 @@</span>
+ |   |   |-- Kokkos_OpenMP_ViewCopyETIAvail.hpp
+ |   |   |-- Kokkos_OpenMP_ViewCopyETIDecl.hpp
+ |   |   `-- Kokkos_OpenMP_WorkGraphPolicy.hpp
+<span class="gi">+|   |-- OpenMPTarget</span>
+<span class="gi">+|   |   |-- Kokkos_OpenMPTarget_Exec.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_OpenMPTarget_Parallel.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_OpenMPTarget_Task.hpp</span>
+<span class="gi">+|   |-- Qthreads</span>
+<span class="gi">+|   |   |-- Kokkos_QthreadsExec.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Qthreads_Parallel.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Qthreads_Task.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Qthreads_TaskQueue.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_Qthreads_TaskQueue_impl.hpp</span>
+<span class="gi">+|   |-- ROCm</span>
+<span class="gi">+|   |   |-- KokkosExp_ROCm_IterateTile_Refactor.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Atomic.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Config.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Exec.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Invoke.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Join.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Parallel.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Reduce.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_ReduceScan.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Scan.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Task.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Tile.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Vectorization.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_ViewCopyETIAvail.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_ViewCopyETIDecl.hpp</span>
+<span class="gi">+|   |   `-- hc_math_std.hpp</span>
+<span class="gi">+|   |-- Serial</span>
+<span class="gi">+|   |   |-- Kokkos_Serial_ViewCopyETIAvail.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_Serial_ViewCopyETIDecl.hpp</span>
+<span class="gi">+|   |-- Threads</span>
+<span class="gi">+|   |   |-- Kokkos_ThreadsExec.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ThreadsTeam.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Threads_Parallel.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Threads_ViewCopyETIAvail.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Threads_ViewCopyETIDecl.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_Threads_WorkGraphPolicy.hpp</span>
+<span class="gi">+|   |-- eti</span>
+<span class="gi">+|   |   |-- Cuda</span>
+<span class="gi">+|   |   |-- OpenMP</span>
+<span class="gi">+|   |   |-- ROCm</span>
+<span class="gi">+|   |   |-- Serial</span>
+<span class="gi">+|   |   |-- Threads</span>
+<span class="gi">+|   |   `-- common</span>
+<span class="gi">+|   |       |-- Kokkos_ViewFillCopyETIAvail_Macros.hpp</span>
+<span class="gi">+|   |       `-- Kokkos_ViewFillCopyETIDecl_Macros.hpp</span>
+ |   `-- impl
+ |       |-- KokkosExp_Host_IterateTile.hpp
+ |       |-- KokkosExp_ViewMapping.hpp
+<span class="gu">@@ -143,8 +186,16 @@</span>
+ |       `-- Kokkos_Volatile_Load.hpp
+ |-- kokkos_generated_settings.cmake
+ `-- lib
+<span class="gi">+    |-- CMake</span>
+<span class="gi">+    |   `-- Kokkos</span>
+<span class="gi">+    |       |-- KokkosConfig.cmake</span>
+<span class="gi">+    |       |-- KokkosTargets-noconfig.cmake</span>
+<span class="gi">+    |       `-- KokkosTargets.cmake</span>
+<span class="gi">+    |-- cmake</span>
+<span class="gi">+    |   `-- Kokkos</span>
+<span class="gi">+    |       `-- kokkos_generated_settings.cmake</span>
+     |-- libkokkos.a
+     `-- pkgconfig
+         `-- kokkos.pc
+
+<span class="gd">-7 directories, 140 files</span>
+<span class="gi">+22 directories, 176 files</span>
+</pre></div>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="develop-e45bbef">develop <a href="https://github.com/kokkos/kokkos/tree/e45bbefa878b5eb004f3110d52dd85ae3b9b0d48">e45bbef</a><a class="anchor-link" href="#develop-e45bbef">&#182;</a></h1><div class="highlight"><pre><span></span><span class="gh">diff --git a/install_tree_gmake b/install_tree_cmake</span>
+<span class="gh">index e9537c27..fc4c20e3 100644</span>
+<span class="gd">--- a/install_tree_gmake</span>
+<span class="gi">+++ b/install_tree_cmake</span>
+<span class="gu">@@ -1,7 +1,4 @@</span>
+ /opt/kokkos
+<span class="gd">-|-- Makefile.kokkos</span>
+<span class="gd">-|-- bin</span>
+<span class="gd">-|   `-- nvcc_wrapper</span>
+ |-- include
+ |   |-- Cuda
+ |   |   |-- KokkosExp_Cuda_IterateTile.hpp
+<span class="gu">@@ -24,6 +21,11 @@</span>
+ |   |   |-- Kokkos_Cuda_ViewCopyETIDecl.hpp
+ |   |   |-- Kokkos_Cuda_WorkGraphPolicy.hpp
+ |   |   `-- Kokkos_Cuda_abort.hpp
+<span class="gi">+|   |-- HPX</span>
+<span class="gi">+|   |   |-- Kokkos_HPX_Task.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_HPX_ViewCopyETIAvail.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_HPX_ViewCopyETIDecl.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_HPX_WorkGraphPolicy.hpp</span>
+ |   |-- KokkosCore_config.h
+ |   |-- KokkosExp_MDRangePolicy.hpp
+ |   |-- Kokkos_AnonymousSpace.hpp
+<span class="gu">@@ -93,6 +95,53 @@</span>
+ |   |   |-- Kokkos_OpenMP_ViewCopyETIAvail.hpp
+ |   |   |-- Kokkos_OpenMP_ViewCopyETIDecl.hpp
+ |   |   `-- Kokkos_OpenMP_WorkGraphPolicy.hpp
+<span class="gi">+|   |-- OpenMPTarget</span>
+<span class="gi">+|   |   |-- Kokkos_OpenMPTarget_Exec.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_OpenMPTarget_Parallel.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_OpenMPTarget_Task.hpp</span>
+<span class="gi">+|   |-- Qthreads</span>
+<span class="gi">+|   |   |-- Kokkos_QthreadsExec.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Qthreads_Parallel.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Qthreads_Task.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Qthreads_TaskQueue.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_Qthreads_TaskQueue_impl.hpp</span>
+<span class="gi">+|   |-- ROCm</span>
+<span class="gi">+|   |   |-- KokkosExp_ROCm_IterateTile_Refactor.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Atomic.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Config.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Exec.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Invoke.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Join.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Parallel.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Reduce.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_ReduceScan.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Scan.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Task.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Tile.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_Vectorization.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_ViewCopyETIAvail.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ROCm_ViewCopyETIDecl.hpp</span>
+<span class="gi">+|   |   `-- hc_math_std.hpp</span>
+<span class="gi">+|   |-- Serial</span>
+<span class="gi">+|   |   |-- Kokkos_Serial_ViewCopyETIAvail.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_Serial_ViewCopyETIDecl.hpp</span>
+<span class="gi">+|   |-- Threads</span>
+<span class="gi">+|   |   |-- Kokkos_ThreadsExec.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_ThreadsTeam.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Threads_Parallel.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Threads_ViewCopyETIAvail.hpp</span>
+<span class="gi">+|   |   |-- Kokkos_Threads_ViewCopyETIDecl.hpp</span>
+<span class="gi">+|   |   `-- Kokkos_Threads_WorkGraphPolicy.hpp</span>
+<span class="gi">+|   |-- eti</span>
+<span class="gi">+|   |   |-- Cuda</span>
+<span class="gi">+|   |   |-- HPX</span>
+<span class="gi">+|   |   |-- OpenMP</span>
+<span class="gi">+|   |   |-- ROCm</span>
+<span class="gi">+|   |   |-- Serial</span>
+<span class="gi">+|   |   |-- Threads</span>
+<span class="gi">+|   |   `-- common</span>
+<span class="gi">+|   |       |-- Kokkos_ViewFillCopyETIAvail_Macros.hpp</span>
+<span class="gi">+|   |       `-- Kokkos_ViewFillCopyETIDecl_Macros.hpp</span>
+ |   `-- impl
+ |       |-- KokkosExp_Host_IterateTile.hpp
+ |       |-- KokkosExp_ViewMapping.hpp
+<span class="gu">@@ -170,8 +219,16 @@</span>
+ |       `-- Kokkos_Volatile_Load.hpp
+ |-- kokkos_generated_settings.cmake
+ `-- lib
+<span class="gi">+    |-- CMake</span>
+<span class="gi">+    |   `-- Kokkos</span>
+<span class="gi">+    |       |-- KokkosConfig.cmake</span>
+<span class="gi">+    |       |-- KokkosTargets-noconfig.cmake</span>
+<span class="gi">+    |       `-- KokkosTargets.cmake</span>
+<span class="gi">+    |-- cmake</span>
+<span class="gi">+    |   `-- Kokkos</span>
+<span class="gi">+    |       `-- kokkos_generated_settings.cmake</span>
+     |-- libkokkos.a
+     `-- pkgconfig
+         `-- kokkos.pc
+
+<span class="gd">-7 directories, 167 files</span>
+<span class="gi">+24 directories, 207 files</span>
+</pre></div>
+
 </div>
 </div>
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span></span>&lt;prefix&gt;
-├── Makefile.kokkos
-├── bin
-│   └── nvcc_wrapper
-├── include
-│   ├── KokkosCore_config.h
-│   ├── KokkosExp_MDRangePolicy.hpp
-│   ├── Kokkos_AnonymousSpace.hpp
-│   ├── Kokkos_Array.hpp
-│   ├── Kokkos_Atomic.hpp
-│   ├── Kokkos_Bitset.hpp
-│   ├── Kokkos_Complex.hpp
-│   ├── Kokkos_Concepts.hpp
-│   ├── Kokkos_CopyViews.hpp
-│   ├── Kokkos_Core.hpp
-│   ├── Kokkos_Core_fwd.hpp
-│   ├── Kokkos_Crs.hpp
-│   ├── Kokkos_Cuda.hpp
-│   ├── Kokkos_CudaSpace.hpp
-│   ├── Kokkos_DualView.hpp
-│   ├── Kokkos_DynRankView.hpp
-│   ├── Kokkos_DynamicView.hpp
-│   ├── Kokkos_ErrorReporter.hpp
-│   ├── Kokkos_ExecPolicy.hpp
-│   ├── Kokkos_Extents.hpp
-│   ├── Kokkos_Functional.hpp
-│   ├── Kokkos_Future.hpp
-│   ├── Kokkos_HBWSpace.hpp
-│   ├── Kokkos_HostSpace.hpp
-│   ├── Kokkos_Layout.hpp
-│   ├── Kokkos_Macros.hpp
-│   ├── Kokkos_MasterLock.hpp
-│   ├── Kokkos_MemoryPool.hpp
-│   ├── Kokkos_MemoryTraits.hpp
-│   ├── Kokkos_NumericTraits.hpp
-│   ├── Kokkos_OffsetView.hpp
-│   ├── Kokkos_OpenMP.hpp
-│   ├── Kokkos_OpenMPTarget.hpp
-│   ├── Kokkos_OpenMPTargetSpace.hpp
-│   ├── Kokkos_Pair.hpp
-│   ├── Kokkos_Parallel.hpp
-│   ├── Kokkos_Parallel_Reduce.hpp
-│   ├── Kokkos_PointerOwnership.hpp
-│   ├── Kokkos_Profiling_ProfileSection.hpp
-│   ├── Kokkos_Qthreads.hpp
-│   ├── Kokkos_ROCm.hpp
-│   ├── Kokkos_ROCmSpace.hpp
-│   ├── Kokkos_Random.hpp
-│   ├── Kokkos_ScatterView.hpp
-│   ├── Kokkos_ScratchSpace.hpp
-│   ├── Kokkos_Serial.hpp
-│   ├── Kokkos_Sort.hpp
-│   ├── Kokkos_StaticCrsGraph.hpp
-│   ├── Kokkos_TaskPolicy.hpp
-│   ├── Kokkos_TaskScheduler.hpp
-│   ├── Kokkos_TaskScheduler_fwd.hpp
-│   ├── Kokkos_Threads.hpp
-│   ├── Kokkos_Timer.hpp
-│   ├── Kokkos_UniqueToken.hpp
-│   ├── Kokkos_UnorderedMap.hpp
-│   ├── Kokkos_Vector.hpp
-│   ├── Kokkos_Vectorization.hpp
-│   ├── Kokkos_View.hpp
-│   ├── Kokkos_WorkGraphPolicy.hpp
-│   ├── Kokkos_hwloc.hpp
-│   ├── OpenMP
-│   │   ├── Kokkos_OpenMP_Exec.hpp
-│   │   ├── Kokkos_OpenMP_Parallel.hpp
-│   │   ├── Kokkos_OpenMP_Task.hpp
-│   │   ├── Kokkos_OpenMP_Team.hpp
-│   │   ├── Kokkos_OpenMP_ViewCopyETIAvail.hpp
-│   │   ├── Kokkos_OpenMP_ViewCopyETIDecl.hpp
-│   │   └── Kokkos_OpenMP_WorkGraphPolicy.hpp
-│   └── impl
-│       ├── KokkosExp_Host_IterateTile.hpp
-│       ├── KokkosExp_ViewMapping.hpp
-│       ├── Kokkos_AnalyzePolicy.hpp
-│       ├── Kokkos_Atomic_Assembly.hpp
-│       ├── Kokkos_Atomic_Compare_Exchange_Strong.hpp
-│       ├── Kokkos_Atomic_Compare_Exchange_Weak.hpp
-│       ├── Kokkos_Atomic_Decrement.hpp
-│       ├── Kokkos_Atomic_Exchange.hpp
-│       ├── Kokkos_Atomic_Fetch_Add.hpp
-│       ├── Kokkos_Atomic_Fetch_And.hpp
-│       ├── Kokkos_Atomic_Fetch_Or.hpp
-│       ├── Kokkos_Atomic_Fetch_Sub.hpp
-│       ├── Kokkos_Atomic_Generic.hpp
-│       ├── Kokkos_Atomic_Increment.hpp
-│       ├── Kokkos_Atomic_View.hpp
-│       ├── Kokkos_Atomic_Windows.hpp
-│       ├── Kokkos_BitOps.hpp
-│       ├── Kokkos_Bitset_impl.hpp
-│       ├── Kokkos_CPUDiscovery.hpp
-│       ├── Kokkos_ChaseLev.hpp
-│       ├── Kokkos_ClockTic.hpp
-│       ├── Kokkos_ConcurrentBitset.hpp
-│       ├── Kokkos_EBO.hpp
-│       ├── Kokkos_Error.hpp
-│       ├── Kokkos_Functional_impl.hpp
-│       ├── Kokkos_FunctorAdapter.hpp
-│       ├── Kokkos_FunctorAnalysis.hpp
-│       ├── Kokkos_HostBarrier.hpp
-│       ├── Kokkos_HostSpace_deepcopy.hpp
-│       ├── Kokkos_HostThreadTeam.hpp
-│       ├── Kokkos_LIFO.hpp
-│       ├── Kokkos_LinkedListNode.hpp
-│       ├── Kokkos_MemoryPoolAllocator.hpp
-│       ├── Kokkos_Memory_Fence.hpp
-│       ├── Kokkos_MultipleTaskQueue.hpp
-│       ├── Kokkos_OldMacros.hpp
-│       ├── Kokkos_OptionalRef.hpp
-│       ├── Kokkos_PhysicalLayout.hpp
-│       ├── Kokkos_Profiling_DeviceInfo.hpp
-│       ├── Kokkos_Profiling_Interface.hpp
-│       ├── Kokkos_Serial_Task.hpp
-│       ├── Kokkos_Serial_WorkGraphPolicy.hpp
-│       ├── Kokkos_SharedAlloc.hpp
-│       ├── Kokkos_SimpleTaskScheduler.hpp
-│       ├── Kokkos_SingleTaskQueue.hpp
-│       ├── Kokkos_Spinwait.hpp
-│       ├── Kokkos_StaticAssert.hpp
-│       ├── Kokkos_StaticCrsGraph_factory.hpp
-│       ├── Kokkos_Tags.hpp
-│       ├── Kokkos_TaskBase.hpp
-│       ├── Kokkos_TaskNode.hpp
-│       ├── Kokkos_TaskPolicyData.hpp
-│       ├── Kokkos_TaskQueue.hpp
-│       ├── Kokkos_TaskQueueCommon.hpp
-│       ├── Kokkos_TaskQueueMemoryManager.hpp
-│       ├── Kokkos_TaskQueueMultiple.hpp
-│       ├── Kokkos_TaskQueueMultiple_impl.hpp
-│       ├── Kokkos_TaskQueue_impl.hpp
-│       ├── Kokkos_TaskResult.hpp
-│       ├── Kokkos_TaskTeamMember.hpp
-│       ├── Kokkos_Timer.hpp
-│       ├── Kokkos_Traits.hpp
-│       ├── Kokkos_UnorderedMap_impl.hpp
-│       ├── Kokkos_Utilities.hpp
-│       ├── Kokkos_VLAEmulation.hpp
-│       ├── Kokkos_ViewArray.hpp
-│       ├── Kokkos_ViewCtor.hpp
-│       ├── Kokkos_ViewFillCopyETIAvail.hpp
-│       ├── Kokkos_ViewFillCopyETIDecl.hpp
-│       ├── Kokkos_ViewLayoutTiled.hpp
-│       ├── Kokkos_ViewMapping.hpp
-│       ├── Kokkos_ViewTile.hpp
-│       ├── Kokkos_ViewUniformType.hpp
-│       └── Kokkos_Volatile_Load.hpp
-├── kokkos_generated_settings.cmake
-└── lib
-    ├── cmake
-    │   └── kokkos
-    │       └── kokkos-config.cmake
-    ├── libkokkos.a
-    └── pkgconfig
-        └── kokkos.pc
+<h1 id="Differences-in-kokkos_generated_settings.cmake?">Differences in <code>kokkos_generated_settings.cmake</code>?<a class="anchor-link" href="#Differences-in-kokkos_generated_settings.cmake?">&#182;</a></h1>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>KOKKOS_PATH</code>
+<code>KOKKOS_GMAKE_DEVICES</code>
+<code>KOKKOS_GMAKE_ARCH</code>
+<code>KOKKOS_DEBUG_CMAKE</code>
+<code>KOKKOS_GMAKE_USE_TPLS</code>
+<code>KOKKOS_CXX_STANDARD</code>
+<code>KOKKOS_GMAKE_OPTIONS</code>
+<code>KOKKOS_GMAKE_CUDA_OPTION</code>
+<code>KOKKOS_GMAKE_TPL_INCLUDE_DIRS</code>
+<code>KOKKOS_GMAKE_TPL_LIBRARY_DIRS</code>
+<code>KOKKOS_GMAKE_TPL_LIBRARY_NAMES</code>
+<code>KOKKOS_HEADERS</code>
+<code>KOKKOS_HEADERS_IMPL</code>
+<code>KOKKOS_HEADERS_CUDA</code>
+<code>KOKKOS_HEADERS_OPENMP</code>
+<code>KOKKOS_HEADERS_HPX</code>
+<code>KOKKOS_HEADERS_ROCM</code>
+<code>KOKKOS_HEADERS_THREADS</code>
+<code>KOKKOS_HEADERS_QTHREADS</code>
+<code>KOKKOS_OS</code>
+<code>KOKKOS_CPP_DEPENDS</code>
+<code>KOKKOS_LINK_DEPENDS</code>
+<code>KOKKOS_CXXFLAGS</code>
+<code>KOKKOS_CPPFLAG</code>
+<code>KOKKOS_LDFLAGS</code>
+<code>KOKKOS_CXXLDFLAGS</code>
+<code>KOKKOS_LIBS</code>
+<code>KOKKOS_EXTRA_LIBS</code>
+<code>KOKKOS_LINK_FLAGS</code>
+<code>KOKKOS_SRC</code>
+<code>KOKKOS_CXX_FLAGS</code>
+<code>KOKKOS_CPP_FLAGS</code>
+<code>KOKKOS_LD_FLAGS</code>
+<code>KOKKOS_LIBS_LIST</code>
+<code>KOKKOS_EXTRA_LIBS_LIST</code>
+<code>KOKKOS_LINK_FLAGS</code></p>
 
-8 directories, 147 files
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="current-master-5d6e7f7-(tagged-as-2.8.00)">current master <a href="https://github.com/kokkos/kokkos/tree/5d6e7fb38e96aec88d2c514e1f9be1cf2b549b57">5d6e7f7</a> (tagged as 2.8.00)<a class="anchor-link" href="#current-master-5d6e7f7-(tagged-as-2.8.00)">&#182;</a></h1><div class="highlight"><pre><span></span><span class="gh">diff --git a/generated_settings_gmake b/generated_settings_cmake</span>
+<span class="gh">index 8ed290c9..d64a5337 100644</span>
+<span class="gd">--- a/generated_settings_gmake</span>
+<span class="gi">+++ b/generated_settings_cmake</span>
+<span class="gu">@@ -1,15 +1,15 @@</span>
+ #Global Settings used to generate this library
+<span class="gd">-set(KOKKOS_PATH CACHE FILEPATH &quot;Kokkos installation path&quot; FORCE)</span>
+<span class="gd">-set(KOKKOS_GMAKE_DEVICES &quot;Serial,OpenMP,Cuda&quot; CACHE STRING &quot;Kokkos devices list&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_PATH /opt/kokkos CACHE FILEPATH &quot;Kokkos installation path&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_GMAKE_DEVICES &quot;Cuda,OpenMP,Serial&quot; CACHE STRING &quot;Kokkos devices list&quot; FORCE)</span>
+ set(KOKKOS_GMAKE_ARCH &quot;Volta70,SNB&quot; CACHE STRING &quot;Kokkos architecture flags&quot; FORCE)
+<span class="gd">-set(KOKKOS_DEBUG_CMAKE OFF CACHE BOOL &quot;Kokkos debug enabled ?&quot; FORCE)</span>
+<span class="gd">-set(KOKKOS_GMAKE_USE_TPLS &quot;&quot; CACHE STRING &quot;Kokkos templates list&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_DEBUG_CMAKE ON CACHE BOOL &quot;Kokkos debug enabled ?&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_GMAKE_USE_TPLS &quot;librt&quot; CACHE STRING &quot;Kokkos templates list&quot; FORCE)</span>
+ set(KOKKOS_CXX_STANDARD c++11 CACHE STRING &quot;Kokkos C++ standard&quot; FORCE)
+<span class="gd">-set(KOKKOS_GMAKE_OPTIONS &quot;&quot; CACHE STRING &quot;Kokkos options&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_GMAKE_OPTIONS &quot;disable_dualview_modify_check&quot; CACHE STRING &quot;Kokkos options&quot; FORCE)</span>
+ set(KOKKOS_GMAKE_CUDA_OPTIONS &quot;enable_lambda&quot; CACHE STRING &quot;Kokkos Cuda options&quot; FORCE)
+ set(KOKKOS_GMAKE_TPL_INCLUDE_DIRS &quot; /usr/local/cuda/include&quot; CACHE STRING &quot;Kokkos TPL include directories&quot; FORCE)
+ set(KOKKOS_GMAKE_TPL_LIBRARY_DIRS &quot; /usr/local/cuda/lib64&quot; CACHE STRING &quot;Kokkos TPL library directories&quot; FORCE)
+<span class="gd">-set(KOKKOS_GMAKE_TPL_LIBRARY_NAMES &quot; dl cudart cuda&quot; CACHE STRING &quot;Kokkos TPL library names&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_GMAKE_TPL_LIBRARY_NAMES &quot; dl rt cudart cuda&quot; CACHE STRING &quot;Kokkos TPL library names&quot; FORCE)</span>
+ if(NOT DEFINED ENV{NVCC_WRAPPER})
+ set(NVCC_WRAPPER /scratch/kokkos/bin/nvcc_wrapper CACHE FILEPATH &quot;Path to command nvcc_wrapper&quot; FORCE)
+ else()
+<span class="gu">@@ -17,10 +17,10 @@ else()</span>
+ endif()
+
+ #Source and Header files of Kokkos relative to KOKKOS_PATH
+<span class="gd">-set(KOKKOS_HEADERS /opt/kokkos/include/Kokkos_UniqueToken.hpp /opt/kokkos/include/Kokkos_NumericTraits.hpp /opt/kokkos/include/Kokkos_Timer.hpp /opt/kokkos/include/Kokkos_Pair.hpp /opt/kokkos/include/Kokkos_ExecPolicy.hpp /opt/kokkos/include/Kokkos_Macros.hpp /opt/kokkos/include/Kokkos_ScratchSpace.hpp /opt/kokkos/include/Kokkos_HBWSpace.hpp /opt/kokkos/include/Kokkos_ROCmSpace.hpp /opt/kokkos/include/Kokkos_ROCm.hpp /opt/kokkos/include/KokkosExp_MDRangePolicy.hpp /opt/kokkos/include/Kokkos_Atomic.hpp /opt/kokkos/include/Kokkos_MemoryPool.hpp /opt/kokkos/include/Kokkos_Threads.hpp /opt/kokkos/include/Kokkos_Layout.hpp /opt/kokkos/include/Kokkos_Serial.hpp /opt/kokkos/include/Kokkos_Qthreads.hpp /opt/kokkos/include/Kokkos_Crs.hpp /opt/kokkos/include/Kokkos_Parallel_Reduce.hpp /opt/kokkos/include/Kokkos_Parallel.hpp /opt/kokkos/include/Kokkos_Cuda.hpp /opt/kokkos/include/Kokkos_View.hpp /opt/kokkos/include/Kokkos_TaskPolicy.hpp /opt/kokkos/include/Kokkos_CudaSpace.hpp /opt/kokkos/include/Kokkos_Core.hpp /opt/kokkos/include/Kokkos_WorkGraphPolicy.hpp /opt/kokkos/include/Kokkos_Vectorization.hpp /opt/kokkos/include/Kokkos_OpenMP.hpp /opt/kokkos/include/Kokkos_hwloc.hpp /opt/kokkos/include/Kokkos_Array.hpp /opt/kokkos/include/Kokkos_MasterLock.hpp /opt/kokkos/include/Kokkos_OpenMPTargetSpace.hpp /opt/kokkos/include/Kokkos_Profiling_ProfileSection.hpp /opt/kokkos/include/Kokkos_CopyViews.hpp /opt/kokkos/include/Kokkos_OpenMPTarget.hpp /opt/kokkos/include/Kokkos_Core_fwd.hpp /opt/kokkos/include/Kokkos_Complex.hpp /opt/kokkos/include/Kokkos_HostSpace.hpp /opt/kokkos/include/Kokkos_Concepts.hpp /opt/kokkos/include/Kokkos_TaskScheduler.hpp /opt/kokkos/include/Kokkos_AnonymousSpace.hpp /opt/kokkos/include/Kokkos_MemoryTraits.hpp /opt/kokkos/include/impl/Kokkos_Timer.hpp /opt/kokkos/include/impl/Kokkos_Error.hpp /opt/kokkos/include/impl/Kokkos_ViewFillCopyETIDecl.hpp /opt/kokkos/include/impl/Kokkos_Traits.hpp /opt/kokkos/include/impl/Kokkos_ViewMapping.hpp /opt/kokkos/include/impl/Kokkos_Spinwait.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Compare_Exchange_Strong.hpp /opt/kokkos/include/impl/Kokkos_AnalyzePolicy.hpp /opt/kokkos/include/impl/Kokkos_FunctorAdapter.hpp /opt/kokkos/include/impl/Kokkos_Volatile_Load.hpp /opt/kokkos/include/impl/Kokkos_FunctorAnalysis.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Add.hpp /opt/kokkos/include/impl/Kokkos_ViewFillCopyETIAvail.hpp /opt/kokkos/include/impl/Kokkos_Profiling_Interface.hpp /opt/kokkos/include/impl/Kokkos_ViewArray.hpp /opt/kokkos/include/impl/Kokkos_HostBarrier.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Windows.hpp /opt/kokkos/include/impl/Kokkos_CPUDiscovery.hpp /opt/kokkos/include/impl/KokkosExp_Host_IterateTile.hpp /opt/kokkos/include/impl/Kokkos_Profiling_DeviceInfo.hpp /opt/kokkos/include/impl/Kokkos_SharedAlloc.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Generic.hpp /opt/kokkos/include/impl/Kokkos_HostThreadTeam.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Assembly.hpp /opt/kokkos/include/impl/Kokkos_ClockTic.hpp /opt/kokkos/include/impl/Kokkos_ViewTile.hpp /opt/kokkos/include/impl/Kokkos_Tags.hpp /opt/kokkos/include/impl/Kokkos_ConcurrentBitset.hpp /opt/kokkos/include/impl/Kokkos_Utilities.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Increment.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Decrement.hpp /opt/kokkos/include/impl/Kokkos_StaticAssert.hpp /opt/kokkos/include/impl/Kokkos_BitOps.hpp /opt/kokkos/include/impl/Kokkos_Memory_Fence.hpp /opt/kokkos/include/impl/KokkosExp_ViewMapping.hpp /opt/kokkos/include/impl/Kokkos_ViewUniformType.hpp /opt/kokkos/include/impl/Kokkos_OldMacros.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Or.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_And.hpp /opt/kokkos/include/impl/Kokkos_TaskQueue_impl.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Sub.hpp /opt/kokkos/include/impl/Kokkos_Serial_WorkGraphPolicy.hpp /opt/kokkos/include/impl/Kokkos_TaskQueue.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Exchange.hpp /opt/kokkos/include/impl/Kokkos_ViewLayoutTiled.hpp /opt/kokkos/include/impl/Kokkos_PhysicalLayout.hpp /opt/kokkos/include/impl/Kokkos_ViewCtor.hpp /opt/kokkos/include/impl/Kokkos_Atomic_View.hpp /opt/kokkos/include/impl/Kokkos_Serial_Task.hpp /opt/kokkos/include/Kokkos_Functional.hpp /opt/kokkos/include/Kokkos_StaticCrsGraph.hpp /opt/kokkos/include/Kokkos_ErrorReporter.hpp /opt/kokkos/include/Kokkos_OffsetView.hpp /opt/kokkos/include/Kokkos_DualView.hpp /opt/kokkos/include/Kokkos_Vector.hpp /opt/kokkos/include/Kokkos_ScatterView.hpp /opt/kokkos/include/Kokkos_Bitset.hpp /opt/kokkos/include/Kokkos_UnorderedMap.hpp /opt/kokkos/include/Kokkos_DynamicView.hpp /opt/kokkos/include/Kokkos_DynRankView.hpp /opt/kokkos/include/impl/Kokkos_StaticCrsGraph_factory.hpp /opt/kokkos/include/impl/Kokkos_Functional_impl.hpp /opt/kokkos/include/impl/Kokkos_Bitset_impl.hpp /opt/kokkos/include/impl/Kokkos_UnorderedMap_impl.hpp /opt/kokkos/include/Kokkos_Random.hpp /opt/kokkos/include/Kokkos_Sort.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Task.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_View.hpp /opt/kokkos/include/Cuda/Kokkos_CudaExec.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Team.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIDecl.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Version_9_8_Compatibility.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_UniqueToken.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_abort.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Parallel.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Locks.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_WorkGraphPolicy.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIAvail.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Error.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Vectorization.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile_Refactor.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Alloc.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ReduceScan.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Internal.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Task.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Team.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIDecl.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Parallel.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_WorkGraphPolicy.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIAvail.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Exec.hpp CACHE STRING &quot;Kokkos headers list&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_HEADERS /opt/kokkos/include/Kokkos_Serial.hpp /opt/kokkos/include/Kokkos_ExecPolicy.hpp /opt/kokkos/include/Kokkos_OpenMPTargetSpace.hpp /opt/kokkos/include/Kokkos_OpenMPTarget.hpp /opt/kokkos/include/Kokkos_Macros.hpp /opt/kokkos/include/Kokkos_Qthreads.hpp /opt/kokkos/include/Kokkos_Core_fwd.hpp /opt/kokkos/include/Kokkos_Pair.hpp /opt/kokkos/include/Kokkos_UniqueToken.hpp /opt/kokkos/include/Kokkos_Profiling_ProfileSection.hpp /opt/kokkos/include/Kokkos_OpenMP.hpp /opt/kokkos/include/Kokkos_Vectorization.hpp /opt/kokkos/include/Kokkos_Atomic.hpp /opt/kokkos/include/Kokkos_Crs.hpp /opt/kokkos/include/Kokkos_CudaSpace.hpp /opt/kokkos/include/Kokkos_ScratchSpace.hpp /opt/kokkos/include/Kokkos_CopyViews.hpp /opt/kokkos/include/Kokkos_Parallel_Reduce.hpp /opt/kokkos/include/Kokkos_hwloc.hpp /opt/kokkos/include/Kokkos_ROCmSpace.hpp /opt/kokkos/include/Kokkos_Core.hpp /opt/kokkos/include/Kokkos_HBWSpace.hpp /opt/kokkos/include/Kokkos_TaskScheduler.hpp /opt/kokkos/include/Kokkos_Cuda.hpp /opt/kokkos/include/Kokkos_AnonymousSpace.hpp /opt/kokkos/include/KokkosExp_MDRangePolicy.hpp /opt/kokkos/include/Kokkos_Parallel.hpp /opt/kokkos/include/Kokkos_Complex.hpp /opt/kokkos/include/Kokkos_HostSpace.hpp /opt/kokkos/include/Kokkos_View.hpp /opt/kokkos/include/Kokkos_MasterLock.hpp /opt/kokkos/include/Kokkos_Concepts.hpp /opt/kokkos/include/Kokkos_MemoryPool.hpp /opt/kokkos/include/Kokkos_TaskPolicy.hpp /opt/kokkos/include/Kokkos_NumericTraits.hpp /opt/kokkos/include/Kokkos_Timer.hpp /opt/kokkos/include/Kokkos_WorkGraphPolicy.hpp /opt/kokkos/include/Kokkos_Array.hpp /opt/kokkos/include/Kokkos_Threads.hpp /opt/kokkos/include/Kokkos_Layout.hpp /opt/kokkos/include/Kokkos_ROCm.hpp /opt/kokkos/include/Kokkos_MemoryTraits.hpp /opt/kokkos/include/impl/Kokkos_ClockTic.hpp /opt/kokkos/include/impl/Kokkos_ViewLayoutTiled.hpp /opt/kokkos/include/impl/Kokkos_Profiling_DeviceInfo.hpp /opt/kokkos/include/impl/Kokkos_ViewTile.hpp /opt/kokkos/include/impl/Kokkos_ConcurrentBitset.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Sub.hpp /opt/kokkos/include/impl/Kokkos_Serial_Task.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Windows.hpp /opt/kokkos/include/impl/Kokkos_HostThreadTeam.hpp /opt/kokkos/include/impl/Kokkos_FunctorAnalysis.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_And.hpp /opt/kokkos/include/impl/KokkosExp_ViewMapping.hpp /opt/kokkos/include/impl/Kokkos_ViewFillCopyETIAvail.hpp /opt/kokkos/include/impl/Kokkos_SharedAlloc.hpp /opt/kokkos/include/impl/Kokkos_Volatile_Load.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Add.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Generic.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Compare_Exchange_Strong.hpp /opt/kokkos/include/impl/Kokkos_FunctorAdapter.hpp /opt/kokkos/include/impl/Kokkos_Serial_WorkGraphPolicy.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Assembly.hpp /opt/kokkos/include/impl/Kokkos_ViewUniformType.hpp /opt/kokkos/include/impl/Kokkos_ViewCtor.hpp /opt/kokkos/include/impl/Kokkos_TaskQueue.hpp /opt/kokkos/include/impl/Kokkos_CPUDiscovery.hpp /opt/kokkos/include/impl/Kokkos_ViewArray.hpp /opt/kokkos/include/impl/Kokkos_PhysicalLayout.hpp /opt/kokkos/include/impl/Kokkos_HostBarrier.hpp /opt/kokkos/include/impl/Kokkos_Memory_Fence.hpp /opt/kokkos/include/impl/Kokkos_TaskQueue_impl.hpp /opt/kokkos/include/impl/Kokkos_Error.hpp /opt/kokkos/include/impl/Kokkos_Atomic_View.hpp /opt/kokkos/include/impl/Kokkos_Profiling_Interface.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Exchange.hpp /opt/kokkos/include/impl/KokkosExp_Host_IterateTile.hpp /opt/kokkos/include/impl/Kokkos_OldMacros.hpp /opt/kokkos/include/impl/Kokkos_StaticAssert.hpp /opt/kokkos/include/impl/Kokkos_BitOps.hpp /opt/kokkos/include/impl/Kokkos_Traits.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Increment.hpp /opt/kokkos/include/impl/Kokkos_Tags.hpp /opt/kokkos/include/impl/Kokkos_Timer.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Decrement.hpp /opt/kokkos/include/impl/Kokkos_ViewMapping.hpp /opt/kokkos/include/impl/Kokkos_Spinwait.hpp /opt/kokkos/include/impl/Kokkos_Utilities.hpp /opt/kokkos/include/impl/Kokkos_AnalyzePolicy.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Or.hpp /opt/kokkos/include/impl/Kokkos_ViewFillCopyETIDecl.hpp /opt/kokkos/include/Kokkos_DynRankView.hpp /opt/kokkos/include/Kokkos_Vector.hpp /opt/kokkos/include/Kokkos_StaticCrsGraph.hpp /opt/kokkos/include/Kokkos_Functional.hpp /opt/kokkos/include/Kokkos_DualView.hpp /opt/kokkos/include/Kokkos_DynamicView.hpp /opt/kokkos/include/Kokkos_Bitset.hpp /opt/kokkos/include/Kokkos_UnorderedMap.hpp /opt/kokkos/include/Kokkos_ScatterView.hpp /opt/kokkos/include/Kokkos_ErrorReporter.hpp /opt/kokkos/include/Kokkos_OffsetView.hpp /opt/kokkos/include/impl/Kokkos_StaticCrsGraph_factory.hpp /opt/kokkos/include/impl/Kokkos_Functional_impl.hpp /opt/kokkos/include/impl/Kokkos_Bitset_impl.hpp /opt/kokkos/include/impl/Kokkos_UnorderedMap_impl.hpp /opt/kokkos/include/Kokkos_Random.hpp /opt/kokkos/include/Kokkos_Sort.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_WorkGraphPolicy.hpp /opt/kokkos/include/Cuda/Kokkos_CudaExec.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Team.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Alloc.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIAvail.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIDecl.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Version_9_8_Compatibility.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_UniqueToken.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Task.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_abort.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ReduceScan.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Vectorization.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Locks.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile_Refactor.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Error.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Parallel.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_View.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Internal.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Task.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Exec.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Parallel.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_WorkGraphPolicy.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Team.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIAvail.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIDecl.hpp CACHE STRING &quot;Kokkos headers list&quot; FORCE)</span>
+ set(KOKKOS_HEADERS_IMPL CACHE STRING &quot;Kokkos headers impl list&quot; FORCE)
+<span class="gd">-set(KOKKOS_HEADERS_CUDA /opt/kokkos/include/Cuda/Kokkos_Cuda_Task.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_View.hpp /opt/kokkos/include/Cuda/Kokkos_CudaExec.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Team.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIDecl.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Version_9_8_Compatibility.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_UniqueToken.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_abort.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Parallel.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Locks.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_WorkGraphPolicy.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIAvail.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Error.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Vectorization.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile_Refactor.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Alloc.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ReduceScan.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Internal.hpp CACHE STRING &quot;Kokkos headers Cuda list&quot; FORCE)</span>
+<span class="gd">-set(KOKKOS_HEADERS_OPENMP /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Task.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Team.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIDecl.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Parallel.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_WorkGraphPolicy.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIAvail.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Exec.hpp CACHE STRING &quot;Kokkos headers OpenMP list&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_HEADERS_CUDA /opt/kokkos/include/Cuda/Kokkos_Cuda_WorkGraphPolicy.hpp /opt/kokkos/include/Cuda/Kokkos_CudaExec.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Team.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Alloc.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIAvail.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIDecl.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Version_9_8_Compatibility.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_UniqueToken.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Task.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_abort.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ReduceScan.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Vectorization.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Locks.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile_Refactor.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Error.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Parallel.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_View.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Internal.hpp CACHE STRING &quot;Kokkos headers Cuda list&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_HEADERS_OPENMP /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Task.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Exec.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Parallel.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_WorkGraphPolicy.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Team.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIAvail.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIDecl.hpp CACHE STRING &quot;Kokkos headers OpenMP list&quot; FORCE)</span>
+ set(KOKKOS_HEADERS_ROCM CACHE STRING &quot;Kokkos headers ROCm list&quot; FORCE)
+ set(KOKKOS_HEADERS_THREADS CACHE STRING &quot;Kokkos headers Threads list&quot; FORCE)
+ set(KOKKOS_HEADERS_QTHREADS CACHE STRING &quot;Kokkos headers QThreads list&quot; FORCE)
+<span class="gu">@@ -29,12 +29,12 @@ set(KOKKOS_HEADERS_QTHREADS CACHE STRING &quot;Kokkos headers QThreads list&quot; FORCE)</span>
+ set(KOKKOS_OS Linux CACHE STRING &quot;&quot; FORCE)
+ set(KOKKOS_CPP_DEPENDS KokkosCore_config.h /opt/kokkos/include/Kokkos_Serial.hpp /opt/kokkos/include/Kokkos_ExecPolicy.hpp /opt/kokkos/include/Kokkos_OpenMPTargetSpace.hpp /opt/kokkos/include/Kokkos_OpenMPTarget.hpp /opt/kokkos/include/Kokkos_Macros.hpp /opt/kokkos/include/Kokkos_Qthreads.hpp /opt/kokkos/include/Kokkos_Core_fwd.hpp /opt/kokkos/include/Kokkos_Pair.hpp /opt/kokkos/include/Kokkos_UniqueToken.hpp /opt/kokkos/include/Kokkos_Profiling_ProfileSection.hpp /opt/kokkos/include/Kokkos_OpenMP.hpp /opt/kokkos/include/Kokkos_Vectorization.hpp /opt/kokkos/include/Kokkos_Atomic.hpp /opt/kokkos/include/Kokkos_Crs.hpp /opt/kokkos/include/Kokkos_CudaSpace.hpp /opt/kokkos/include/Kokkos_ScratchSpace.hpp /opt/kokkos/include/Kokkos_CopyViews.hpp /opt/kokkos/include/Kokkos_Parallel_Reduce.hpp /opt/kokkos/include/Kokkos_hwloc.hpp /opt/kokkos/include/Kokkos_ROCmSpace.hpp /opt/kokkos/include/Kokkos_Core.hpp /opt/kokkos/include/Kokkos_HBWSpace.hpp /opt/kokkos/include/Kokkos_TaskScheduler.hpp /opt/kokkos/include/Kokkos_Cuda.hpp /opt/kokkos/include/Kokkos_AnonymousSpace.hpp /opt/kokkos/include/KokkosExp_MDRangePolicy.hpp /opt/kokkos/include/Kokkos_Parallel.hpp /opt/kokkos/include/Kokkos_Complex.hpp /opt/kokkos/include/Kokkos_HostSpace.hpp /opt/kokkos/include/Kokkos_View.hpp /opt/kokkos/include/Kokkos_MasterLock.hpp /opt/kokkos/include/Kokkos_Concepts.hpp /opt/kokkos/include/Kokkos_MemoryPool.hpp /opt/kokkos/include/Kokkos_TaskPolicy.hpp /opt/kokkos/include/Kokkos_NumericTraits.hpp /opt/kokkos/include/Kokkos_Timer.hpp /opt/kokkos/include/Kokkos_WorkGraphPolicy.hpp /opt/kokkos/include/Kokkos_Array.hpp /opt/kokkos/include/Kokkos_Threads.hpp /opt/kokkos/include/Kokkos_Layout.hpp /opt/kokkos/include/Kokkos_ROCm.hpp /opt/kokkos/include/Kokkos_MemoryTraits.hpp /opt/kokkos/include/impl/Kokkos_ClockTic.hpp /opt/kokkos/include/impl/Kokkos_ViewLayoutTiled.hpp /opt/kokkos/include/impl/Kokkos_Profiling_DeviceInfo.hpp /opt/kokkos/include/impl/Kokkos_ViewTile.hpp /opt/kokkos/include/impl/Kokkos_ConcurrentBitset.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Sub.hpp /opt/kokkos/include/impl/Kokkos_Serial_Task.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Windows.hpp /opt/kokkos/include/impl/Kokkos_HostThreadTeam.hpp /opt/kokkos/include/impl/Kokkos_FunctorAnalysis.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_And.hpp /opt/kokkos/include/impl/KokkosExp_ViewMapping.hpp /opt/kokkos/include/impl/Kokkos_ViewFillCopyETIAvail.hpp /opt/kokkos/include/impl/Kokkos_SharedAlloc.hpp /opt/kokkos/include/impl/Kokkos_Volatile_Load.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Add.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Generic.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Compare_Exchange_Strong.hpp /opt/kokkos/include/impl/Kokkos_FunctorAdapter.hpp /opt/kokkos/include/impl/Kokkos_Serial_WorkGraphPolicy.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Assembly.hpp /opt/kokkos/include/impl/Kokkos_ViewUniformType.hpp /opt/kokkos/include/impl/Kokkos_ViewCtor.hpp /opt/kokkos/include/impl/Kokkos_TaskQueue.hpp /opt/kokkos/include/impl/Kokkos_CPUDiscovery.hpp /opt/kokkos/include/impl/Kokkos_ViewArray.hpp /opt/kokkos/include/impl/Kokkos_PhysicalLayout.hpp /opt/kokkos/include/impl/Kokkos_HostBarrier.hpp /opt/kokkos/include/impl/Kokkos_Memory_Fence.hpp /opt/kokkos/include/impl/Kokkos_TaskQueue_impl.hpp /opt/kokkos/include/impl/Kokkos_Error.hpp /opt/kokkos/include/impl/Kokkos_Atomic_View.hpp /opt/kokkos/include/impl/Kokkos_Profiling_Interface.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Exchange.hpp /opt/kokkos/include/impl/KokkosExp_Host_IterateTile.hpp /opt/kokkos/include/impl/Kokkos_OldMacros.hpp /opt/kokkos/include/impl/Kokkos_StaticAssert.hpp /opt/kokkos/include/impl/Kokkos_BitOps.hpp /opt/kokkos/include/impl/Kokkos_Traits.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Increment.hpp /opt/kokkos/include/impl/Kokkos_Tags.hpp /opt/kokkos/include/impl/Kokkos_Timer.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Decrement.hpp /opt/kokkos/include/impl/Kokkos_ViewMapping.hpp /opt/kokkos/include/impl/Kokkos_Spinwait.hpp /opt/kokkos/include/impl/Kokkos_Utilities.hpp /opt/kokkos/include/impl/Kokkos_AnalyzePolicy.hpp /opt/kokkos/include/impl/Kokkos_Atomic_Fetch_Or.hpp /opt/kokkos/include/impl/Kokkos_ViewFillCopyETIDecl.hpp /opt/kokkos/include/Kokkos_DynRankView.hpp /opt/kokkos/include/Kokkos_Vector.hpp /opt/kokkos/include/Kokkos_StaticCrsGraph.hpp /opt/kokkos/include/Kokkos_Functional.hpp /opt/kokkos/include/Kokkos_DualView.hpp /opt/kokkos/include/Kokkos_DynamicView.hpp /opt/kokkos/include/Kokkos_Bitset.hpp /opt/kokkos/include/Kokkos_UnorderedMap.hpp /opt/kokkos/include/Kokkos_ScatterView.hpp /opt/kokkos/include/Kokkos_ErrorReporter.hpp /opt/kokkos/include/Kokkos_OffsetView.hpp /opt/kokkos/include/impl/Kokkos_StaticCrsGraph_factory.hpp /opt/kokkos/include/impl/Kokkos_Functional_impl.hpp /opt/kokkos/include/impl/Kokkos_Bitset_impl.hpp /opt/kokkos/include/impl/Kokkos_UnorderedMap_impl.hpp /opt/kokkos/include/Kokkos_Random.hpp /opt/kokkos/include/Kokkos_Sort.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_WorkGraphPolicy.hpp /opt/kokkos/include/Cuda/Kokkos_CudaExec.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Team.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Alloc.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIAvail.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ViewCopyETIDecl.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Version_9_8_Compatibility.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_UniqueToken.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Task.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_abort.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_ReduceScan.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Vectorization.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Locks.hpp /opt/kokkos/include/Cuda/KokkosExp_Cuda_IterateTile_Refactor.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Error.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Parallel.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_View.hpp /opt/kokkos/include/Cuda/Kokkos_Cuda_Internal.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Task.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Exec.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Parallel.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_WorkGraphPolicy.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_Team.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIAvail.hpp /opt/kokkos/include/OpenMP/Kokkos_OpenMP_ViewCopyETIDecl.hpp CACHE STRING &quot;&quot; FORCE)
+ set(KOKKOS_LINK_DEPENDS libkokkos.a CACHE STRING &quot;&quot; FORCE)
+<span class="gd">-set(KOKKOS_CXXFLAGS -I./ -I/opt/kokkos/include -I/opt/kokkos/include -I/opt/kokkos/include -I/opt/kokkos/include/eti --std=c++11 -Xcudafe --diag_suppress=esa_on_defaulted_function_ignored -expt-extended-lambda -mavx -arch=sm_70 -I/usr/local/cuda/include -Xcompiler -fopenmp CACHE STRING &quot;&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_CXXFLAGS --std=c++11 -Xcudafe --diag_suppress=esa_on_defaulted_function_ignored -expt-extended-lambda -mavx -arch=sm_70 -Xcompiler -fopenmp CACHE STRING &quot;&quot; FORCE)</span>
+ set(KOKKOS_CPPFLAGS CACHE STRING &quot;&quot; FORCE)
+<span class="gd">-set(KOKKOS_LDFLAGS -L/opt/kokkos/lib -mavx -arch=sm_70 -L/usr/local/cuda/lib64 -fopenmp CACHE STRING &quot;&quot; FORCE)</span>
+<span class="gd">-set(KOKKOS_CXXLDFLAGS -L/opt/kokkos/lib -L/usr/local/cuda/lib64 CACHE STRING &quot;&quot; FORCE)</span>
+<span class="gd">-set(KOKKOS_LIBS -lkokkos -ldl -lcudart -lcuda CACHE STRING &quot;&quot; FORCE)</span>
+<span class="gd">-set(KOKKOS_EXTRA_LIBS -ldl -lcudart -lcuda CACHE STRING &quot;&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_LDFLAGS -mavx -arch=sm_70 -L/usr/local/cuda/lib64 -fopenmp CACHE STRING &quot;&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_CXXLDFLAGS -L/usr/local/cuda/lib64 CACHE STRING &quot;&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_LIBS -lkokkos -ldl -lrt -lcudart -lcuda CACHE STRING &quot;&quot; FORCE)</span>
+<span class="gi">+set(KOKKOS_EXTRA_LIBS -ldl -lrt -lcudart -lcuda CACHE STRING &quot;&quot; FORCE)</span>
+ set(KOKKOS_LINK_FLAGS -fopenmp CACHE STRING &quot;extra flags to the link step (e.g. OpenMP)&quot; FORCE)
+
+ #Internal settings which need to propagated for Kokkos examples
+<span class="gu">@@ -45,9 +45,9 @@ set(KOKKOS_INTERNAL_USE_SERIAL 1 CACHE STRING &quot;&quot; FORCE)</span>
+ set(KOKKOS_INTERNAL_USE_ROCM 0 CACHE STRING &quot;&quot; FORCE)
+ set(KOKKOS_INTERNAL_USE_QTHREADS 0 CACHE STRING &quot;&quot; FORCE)
+ set(KOKKOS_SRC /scratch/kokkos/core/src/impl/Kokkos_Serial.cpp /scratch/kokkos/core/src/impl/Kokkos_ExecPolicy.cpp /scratch/kokkos/core/src/impl/Kokkos_HostThreadTeam.cpp /scratch/kokkos/core/src/impl/Kokkos_Serial_Task.cpp /scratch/kokkos/core/src/impl/Kokkos_SharedAlloc.cpp /scratch/kokkos/core/src/impl/Kokkos_Spinwait.cpp /scratch/kokkos/core/src/impl/Kokkos_Profiling_Interface.cpp /scratch/kokkos/core/src/impl/Kokkos_CPUDiscovery.cpp /scratch/kokkos/core/src/impl/Kokkos_hwloc.cpp /scratch/kokkos/core/src/impl/Kokkos_HostBarrier.cpp /scratch/kokkos/core/src/impl/Kokkos_Error.cpp /scratch/kokkos/core/src/impl/Kokkos_Core.cpp /scratch/kokkos/core/src/impl/Kokkos_HostSpace.cpp /scratch/kokkos/core/src/impl/Kokkos_MemoryPool.cpp /scratch/kokkos/containers/src/impl/Kokkos_UnorderedMap_impl.cpp /scratch/kokkos/core/src/Cuda/Kokkos_Cuda_Locks.cpp /scratch/kokkos/core/src/Cuda/Kokkos_CudaSpace.cpp /scratch/kokkos/core/src/Cuda/Kokkos_Cuda_Task.cpp /scratch/kokkos/core/src/Cuda/Kokkos_Cuda_Impl.cpp /scratch/kokkos/core/src/OpenMP/Kokkos_OpenMP_Task.cpp /scratch/kokkos/core/src/OpenMP/Kokkos_OpenMP_Exec.cpp CACHE STRING &quot;Kokkos source list&quot; FORCE)
+<span class="gd">-set(KOKKOS_CXX_FLAGS -I./ -I/scratch/kokkos/core/src -I/scratch/kokkos/containers/src -I/scratch/kokkos/algorithms/src -I/scratch/kokkos/core/src/eti --std=c++11 -Xcudafe --diag_suppress=esa_on_defaulted_function_ignored -expt-extended-lambda -mavx -arch=sm_70 -I/usr/local/cuda/include -Xcompiler -fopenmp)</span>
+<span class="gi">+set(KOKKOS_CXX_FLAGS --std=c++11 -Xcudafe --diag_suppress=esa_on_defaulted_function_ignored -expt-extended-lambda -mavx -arch=sm_70 -Xcompiler -fopenmp)</span>
+ set(KOKKOS_CPP_FLAGS )
+<span class="gd">-set(KOKKOS_LD_FLAGS -L/scratch/kokkos/build/core -mavx -arch=sm_70 -L/usr/local/cuda/lib64 -fopenmp)</span>
+<span class="gd">-set(KOKKOS_LIBS_LIST &quot;-lkokkos -ldl -lcudart -lcuda&quot;)</span>
+<span class="gd">-set(KOKKOS_EXTRA_LIBS_LIST &quot;-ldl -lcudart -lcuda&quot;)</span>
+<span class="gi">+set(KOKKOS_LD_FLAGS -mavx -arch=sm_70 -L/usr/local/cuda/lib64 -fopenmp)</span>
+<span class="gi">+set(KOKKOS_LIBS_LIST &quot;-lkokkos -ldl -lrt -lcudart -lcuda&quot;)</span>
+<span class="gi">+set(KOKKOS_EXTRA_LIBS_LIST &quot;-ldl -lrt -lcudart -lcuda&quot;)</span>
+ set(KOKKOS_LINK_FLAGS -fopenmp)
 </pre></div>
 
 </div>
 </div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>But we eplicitly configured with <code>-D CMAKE_BUILD_TYPE=Release</code>?</p>
+<p>(If we didn't specify anything empty which yields no debug nor optimization flags will be used)</p>
+<p><code>-D KOKKOS_ENABLE_DEBUG=&lt;ON|OFF&gt;</code>???</p>
+
 </div>
+</div>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
