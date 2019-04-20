@@ -12,4 +12,6 @@ services:
       - ./jupyter_notebook_config.py:/home/jovyan/.jupyter/jupyter_notebook_config.py:ro
       - ./convert.sh:/usr/local/bin/nbconvert:ro
       - ..:/home/jovyan/workspace
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
     working_dir: /home/jovyan/workspace
