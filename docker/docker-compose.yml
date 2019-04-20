@@ -1,0 +1,14 @@
+version: "3"
+services:
+  nb:
+    image: jupyter/minimal-notebook
+    ports:
+      - "8888:8888"
+      - "8000:8000"
+    network_mode: bridge
+    volumes:
+      - ./jupyter_nbconvert_config.py:/home/jovyan/.jupyter/jupyter_nbconvert_config.py:ro
+      - ./jupyter_notebook_config.py:/home/jovyan/.jupyter/jupyter_notebook_config.py:ro
+      - ./convert.sh:/usr/local/bin/nbconvert:ro
+      - ..:/home/jovyan/workspace
+    working_dir: /home/jovyan/workspace
