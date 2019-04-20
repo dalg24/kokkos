@@ -1,7 +1,8 @@
 version: "3"
 services:
-  nb:
+  nbslides:
     image: jupyter/minimal-notebook
+    container_name: nbslides
     ports:
       - "8888:8888"
       - "8000:8000"
