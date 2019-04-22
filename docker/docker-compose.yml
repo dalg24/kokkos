@@ -1,0 +1,26 @@
+version: "3"
+services:
+  kokkos_dev:
+    image: kokkos:${WHICH}-${VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - KOKKOS_PREFIX=/opt/kokkos
+        - KOKKOS_VERSION=${VERSION}
+        - CONFIGURE_SCRIPT=configure_${WHICH}.sh
+    volumes:
+      - ../bin/nvcc_wrapper:/usr/local/bin/nvcc_wrapper:ro
+      - ../benchmarks/bytes_and_flops/main.cpp:/scratch/source/main.cpp:ro
+      - ../benchmarks/bytes_and_flops/bench.hpp:/scratch/source/bench.hpp:ro
+      - ../benchmarks/bytes_and_flops/bench_stride.hpp:/scratch/source/bench_stride.hpp:ro
+      - ../benchmarks/bytes_and_flops/bench_unroll_stride.hpp:/scratch/source/bench_unroll_stride.hpp:ro
+      - ./CMakeLists.txt:/scratch/source/CMakeLists.txt:ro
+      - ./FindKokkos.cmake:/scratch/source/cmake/FindKokkos.cmake:ro
+      - ./build.sh:/scratch/source/build.sh:ro
+      - build:/scratch/build
+    working_dir: /scratch/build.sh
+    command: bash -xe /scratch/source/build.sh
+    network_mode: none
+volumes:
+  build:
