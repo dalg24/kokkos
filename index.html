@@ -13251,7 +13251,8 @@ Oak Ridge National Laboratory</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="How-to-find-Kokkos-as-an-external-project-and-load-its-setting?">How to find Kokkos as an external project and load its setting?<a class="anchor-link" href="#How-to-find-Kokkos-as-an-external-project-and-load-its-setting?">&#182;</a></h2><ul>
+<h1>How to<br> find Kokkos as an external project<br> and load its setting</h1>
+<ul>
 <li>What are we trying to do?</li>
 <li>How is it done today and what are the limits of the current practice?</li>
 <li>What's different in the approach we suggest and why do we think it is better</li>
@@ -13277,33 +13278,55 @@ Oak Ridge National Laboratory</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span></span><span class="c1">// Foo.cpp</span>
+<div class="highlight"><pre><span></span><span class="c1">// HelloWorld.cpp</span>
 <span class="cp">#include</span> <span class="cpf">&lt;Kokkos_Core.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;cstdio&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;typeinfo&gt;</span><span class="cp"></span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
-  <span class="n">Kokkos</span><span class="o">::</span><span class="n">ScopeGuard</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
-  <span class="n">Kokkos</span><span class="o">::</span><span class="n">View</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">*&gt;</span> <span class="n">v</span><span class="p">(</span><span class="s">&quot;v&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+
+  <span class="n">Kokkos</span><span class="o">::</span><span class="n">initialize</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World on Kokkos execution space %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+          <span class="k">typeid</span><span class="p">(</span><span class="n">Kokkos</span><span class="o">::</span><span class="n">DefaultExecutionSpace</span><span class="p">).</span><span class="n">name</span> <span class="p">());</span>
+
+  <span class="n">Kokkos</span><span class="o">::</span><span class="n">parallel_for</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="n">KOKKOS_LAMBDA</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello from i = %i</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="p">});</span>
+
+  <span class="n">Kokkos</span><span class="o">::</span><span class="n">finalize</span><span class="p">();</span>
 <span class="p">}</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="nb">add_executable</span><span class="p">(</span><span class="s">foo.exe</span> <span class="s">Foo.cpp</span><span class="p">)</span>
-<span class="c"># How do I link to Kokkos???</span>
 </pre></div>
 
 </div>
 </div>
-</div></section></section><section><section>
+</div><div class="fragment">
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Crash-course:-find-an-external-project-and-load-its-settings">Crash course: find an external project and load its settings<a class="anchor-link" href="#Crash-course:-find-an-external-project-and-load-its-settings">&#182;</a></h1><div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">&lt;PackageName&gt;</span> <span class="s">[version]</span> <span class="s">[EXACT]</span> <span class="s">[QUIET]</span> <span class="s">[MODULE]</span>
+<div class="highlight"><pre><span></span><span class="c"># CMakeLists.txt</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">Kokkos</span><span class="p">)</span>
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">hello.exe</span> <span class="s">HelloWorld.cpp</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">hello.exe</span> <span class="s">Kokkos::kokkos</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="CMake-crash-course">CMake crash course<a class="anchor-link" href="#CMake-crash-course">&#182;</a></h2><div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">&lt;PackageName&gt;</span> <span class="s">[version]</span> <span class="s">[EXACT]</span> <span class="s">[QUIET]</span> <span class="s">[MODULE]</span>
              <span class="s">[REQUIRED]</span> <span class="s">[[COMPONENTS]</span> <span class="s">[components...]]</span>
              <span class="s">[OPTIONAL_COMPONENTS</span> <span class="s">components...]</span>
              <span class="s">[NO_POLICY_SCOPE]</span><span class="p">)</span>
 </pre></div>
-<p><code>&lt;PackageName&gt;_FOUND</code> set to indicate whether the package was found or not<br>
-package-specific information provided through variables and <strong>imported targets</strong><br>
-<code>REQUIRED</code> option stops processing with an error message if package cannot be found<br>
-<code>[version]</code> argument requests a version with which the pacakge found should be compatible</p>
+<ul>
+<li><code>&lt;PackageName&gt;_FOUND</code> set to indicate whether the package was found or not  </li>
+<li>package-specific information provided through variables and <strong>imported targets</strong>  </li>
+<li><code>REQUIRED</code> option stops processing with an error message if package cannot be found  </li>
+<li><code>[version]</code> argument requests a version with which the pacakge found should be compatible</li>
+</ul>
 <p>The command has two modes by which it searches for packages: "Module" mode and "Config" mode.<br>
 Above signature selects Module mode and falls back to Config mode (unless <code>MODULE</code> option present)</p>
 
@@ -13332,7 +13355,7 @@ once found configuration file read and processed by CMake</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="HOW-TO-BUILD-KOKKOS">HOW TO BUILD KOKKOS<a class="anchor-link" href="#HOW-TO-BUILD-KOKKOS">&#182;</a></h1><p>Kokkos can be installed via</p>
+<h1 id="How-to-build-Kokkos">How to build Kokkos<a class="anchor-link" href="#How-to-build-Kokkos">&#182;</a></h1><p>Kokkos can be installed via</p>
 <ul>
 <li>generated makefile</li>
 <li>CMake</li>
@@ -13345,60 +13368,24 @@ once found configuration file read and processed by CMake</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span></span>&lt;kokkos_path&gt;/generate_makefile.bash <span class="se">\</span>
-  --prefix<span class="o">=</span>&lt;prefix&gt;
-  --arch<span class="o">=</span>Volta70,SNB <span class="se">\</span>
-  --with-serial <span class="se">\</span>
-  --with-openmp <span class="se">\</span>
-  --with-cuda <span class="se">\</span>
-  --with-cuda-options<span class="o">=</span>enable_lambda
-</pre></div>
-
+<h2 id="Configure">Configure<a class="anchor-link" href="#Configure">&#182;</a></h2>
 </div>
 </div>
 </div><div class="fragment">
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span></span>cmake <span class="se">\</span>
-  -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>&lt;prefix&gt; <span class="se">\</span>
-  -D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span>Release <span class="se">\</span>
-  -D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span>&lt;kokkos_path&gt;/bin/nvcc_wrapper <span class="se">\</span>
-  -D <span class="nv">KOKKOS_ARCH</span><span class="o">=</span><span class="s2">&quot;Volta70;SNB&quot;</span> <span class="se">\</span>
-  -D <span class="nv">KOKKOS_ENABLE_SERIAL</span><span class="o">=</span>ON <span class="se">\</span>
-  -D <span class="nv">KOKKOS_ENABLE_OPENMP</span><span class="o">=</span>ON <span class="se">\</span>
-  -D <span class="nv">KOKKOS_ENABLE_CUDA</span><span class="o">=</span>ON <span class="se">\</span>
-  -D <span class="nv">KOKKOS_ENABLE_CUDA_LAMBDA</span><span class="o">=</span>ON <span class="se">\</span>
-  &lt;kokkos_path&gt;
+<ul>
+<li>Using provided bash script that generates the makefile<div class="highlight"><pre><span></span>&lt;kokkos_path&gt;/generate_makefile.bash <span class="se">\</span>
+--prefix<span class="o">=</span>&lt;prefix&gt; <span class="se">\</span>
+--arch<span class="o">=</span>Volta70,SNB <span class="se">\</span>
+--with-serial <span class="se">\</span>
+--with-openmp <span class="se">\</span>
+--with-cuda <span class="se">\</span>
+--with-cuda-options<span class="o">=</span>enable_lambda
 </pre></div>
-
-</div>
-</div>
-</div></div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="FindKokkos">FindKokkos<a class="anchor-link" href="#FindKokkos">&#182;</a></h1><p>So what do we do?</p>
-<p>Write a "find module", i.e. a <code>FindKokkos.cmake</code> file to be loaded by <code>find_package()</code></p>
-<p><code>Kokkos_FOUND</code>
-<code>Kokkos_INCLUDE_DIRS</code>
-<code>Kokkos_LIBRARIES</code>
-<code>Kokkos_DEFINITIONS</code>
-<code>Kokkos_NVCC_WRAPPER_EXECTUABLE</code>
-<code>Kokkos_LIBRARY_DIRS</code>
-<code>Kokkos_VERSION</code></p>
-<p>Should <strong>not</strong> be used, typically cache variables for user to edit and control the behavior of find modules</p>
-<p><code>Kokkos_LIBRARY</code>
-<code>Kokkos_INCLUDE_DIR</code></p>
-<p>Prevent user to be overwhelmed with settings to configure</p>
-
-</div>
-</div>
-</div><div class="fragment">
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Traditional approach is to use variables for everything, including libraries and executables</p>
+</li>
+</ul>
 
 </div>
 </div>
@@ -13406,8 +13393,40 @@ once found configuration file read and processed by CMake</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>More modern approach is to behave as much like config file packages files as possible, by providing <strong>imported target</strong>.<br>
-Advantage of propagating transitive usage requirements to consumers</p>
+<ul>
+<li>Or using CMake<div class="highlight"><pre><span></span>cmake <span class="se">\</span>
+-D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>&lt;prefix&gt; <span class="se">\</span>
+-D <span class="nv">KOKKOS_ARCH</span><span class="o">=</span><span class="s2">&quot;Volta70;SNB&quot;</span> <span class="se">\</span>
+-D <span class="nv">KOKKOS_ENABLE_SERIAL</span><span class="o">=</span>ON <span class="se">\</span>
+-D <span class="nv">KOKKOS_ENABLE_OPENMP</span><span class="o">=</span>ON <span class="se">\</span>
+-D <span class="nv">KOKKOS_ENABLE_CUDA</span><span class="o">=</span>ON <span class="se">\</span>
+-D <span class="nv">KOKKOS_ENABLE_CUDA_LAMBDA</span><span class="o">=</span>ON <span class="se">\</span>
+-D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span>&lt;kokkos_path&gt;/bin/nvcc_wrapper <span class="se">\</span>
+-D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span>Release <span class="se">\</span>
+&lt;kokkos_path&gt;
+</pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Build-and-install">Build and install<a class="anchor-link" href="#Build-and-install">&#182;</a></h2>
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>As usual</li>
+</ul>
+<div class="highlight"><pre><span></span>make <span class="c1"># or make -j&lt;NPROCS&gt;</span>
+make install
+</pre></div>
 
 </div>
 </div>
@@ -13415,157 +13434,7 @@ Advantage of propagating transitive usage requirements to consumers</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="A-sample-find-module-for-Kokkos">A sample find module for Kokkos<a class="anchor-link" href="#A-sample-find-module-for-Kokkos">&#182;</a></h1><p>Try to use <code>pkg-config</code> to find the library since it is currently available for Kokkos</p>
-<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span><span class="p">)</span>
-<span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">PC_Kokkos</span> <span class="s">QUIET</span> <span class="s">kokkos</span><span class="p">)</span>
-</pre></div>
-<p>define some variables starting <code>PC_Kokkos_</code> that contain the information from the <code>kokkos.pc</code> file</p>
-<p>use the information from <code>pkg-config</code> to provide hints to CMake about where to look</p>
-<div class="highlight"><pre><span></span><span class="nb">find_path</span><span class="p">(</span><span class="s">Kokkos_INCLUDE_DIR</span>
-  <span class="s">NAMES</span> <span class="s">Kokkos_Core.hpp</span>
-  <span class="s">PATHS</span> <span class="o">${</span><span class="nv">PC_Kokkos_INCLUDE_DIRS</span><span class="o">}</span>
-<span class="p">)</span>
-
-<span class="nb">find_library</span><span class="p">(</span><span class="s">Kokkos_LIBRARY</span>
-  <span class="s">NAMES</span> <span class="s">kokkos</span>
-  <span class="s">PATHS</span> <span class="o">${</span><span class="nv">PC_Kokkos_LIBRARY_DIRS</span><span class="o">}</span>
-<span class="p">)</span>
-
-<span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_VERSION</span> <span class="o">${</span><span class="nv">PC_Kokkos_VERSION</span><span class="o">}</span><span class="p">)</span> <span class="c"># not currently defined in kokkos.pc</span>
-
-<span class="nb">include</span><span class="p">(</span><span class="s">FindPackageHandleStandardArgs</span><span class="p">)</span>
-<span class="nb">find_package_handle_standard_args</span><span class="p">(</span><span class="s">Kokkos</span>
-  <span class="s">FOUND_VAR</span> <span class="s">Kokkos_FOUND</span>
-  <span class="s">REQUIRED_VARS</span>
-    <span class="s">Kokkos_LIBRARY</span>
-    <span class="s">Kokkos_INCLUDE_DIR</span>
-  <span class="s">VERSION_VAR</span> <span class="s">Kokkos_VERSION</span> 
-<span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Provide-a-way-for-users-of-the-find-module-to-link-to-Kokkos">Provide a way for users of the find module to link to Kokkos<a class="anchor-link" href="#Provide-a-way-for-users-of-the-find-module-to-link-to-Kokkos">&#182;</a></h3><p>Traditional variable approach looks like</p>
-<div class="highlight"><pre><span></span><span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span><span class="p">)</span>
-  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_LIBRARIES</span> <span class="o">${</span><span class="nv">Kokkos_LIBRARY</span><span class="o">}</span><span class="p">)</span>
-  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_INCLUDE_DIRS</span> <span class="o">${</span><span class="nv">Kokkos_INCLUDE_DIR</span><span class="o">}</span><span class="p">)</span>
-  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_DEFINITIONS</span> <span class="o">${</span><span class="nv">PC_Kokkos_CFLAGS_OTHER</span><span class="o">}</span><span class="p">)</span>
-<span class="nb">endif</span><span class="p">()</span>
-</pre></div>
-<p>When providing imported target, these should be namespaced (note the <code>Kokkos::</code> prefix)<br>
-CMake will recognize that values passed to <code>target_link_libraries()</code> that contain <code>::</code> in their name are supposed to be imported targets (rather than just library names), and will produce appropriate diagnostic messages if that target does not exist</p>
-<div class="highlight"><pre><span></span><span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span> <span class="s">AND</span> <span class="s">NOT</span> <span class="s">TARGET</span> <span class="s">Kokkos::Kokkos</span><span class="p">)</span>
-  <span class="nb">add_library</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">UNKNOWN</span> <span class="s">IMPORTED</span><span class="p">)</span>  
-  <span class="nb">set_target_properties</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">PROPERTIES</span>
-    <span class="s">IMPORTED_LOCATION</span> <span class="s2">&quot;${Kokkos_LIBRARY}&quot;</span>
-    <span class="s">INTERFACE_COMPILE_OPTIONS</span> <span class="s2">&quot;${PC_Kokkos_CFLAGS_OTHER}&quot;</span>
-    <span class="s">INTERFACE_INCLUDE_DIRECTORIES</span> <span class="s2">&quot;${Kokkos_INCLUDE_DIR}&quot;</span>
-  <span class="p">)</span>
-<span class="nb">endif</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span></span><span class="c">#[=======================================================================[.rst:</span>
-<span class="err">FindKokkos</span>
-<span class="err">-------</span>
-
-<span class="err">Finds</span> <span class="err">the</span> <span class="err">Kokkos</span> <span class="err">library.</span>
-
-<span class="err">Imported</span> <span class="err">Targets</span>
-<span class="err">^^^^^^^^^^^^^^^^</span>
-
-<span class="err">This</span> <span class="err">module</span> <span class="err">provides</span> <span class="err">the</span> <span class="err">following</span> <span class="err">imported</span> <span class="err">targets,</span> <span class="err">if</span> <span class="err">found:</span>
-
-<span class="err">``Kokkos::Kokkos``</span>
-  <span class="err">The</span> <span class="err">Kokkos</span> <span class="err">library</span>
-
-<span class="err">Result</span> <span class="err">Variables</span>
-<span class="err">^^^^^^^^^^^^^^^^</span>
-
-<span class="err">This</span> <span class="err">will</span> <span class="err">define</span> <span class="err">the</span> <span class="err">following</span> <span class="err">variables:</span>
-
-<span class="err">``Kokkos_FOUND``</span>
-  <span class="err">True</span> <span class="err">if</span> <span class="err">the</span> <span class="err">system</span> <span class="err">has</span> <span class="err">the</span> <span class="err">Kokkos</span> <span class="err">library.</span>
-<span class="err">``Kokkos_VERSION``</span>
-  <span class="err">The</span> <span class="err">version</span> <span class="err">of</span> <span class="err">the</span> <span class="err">Kokkos</span> <span class="err">library</span> <span class="err">which</span> <span class="err">was</span> <span class="err">found.</span>
-<span class="err">``Kokkos_INCLUDE_DIRS``</span>
-  <span class="err">Include</span> <span class="err">directories</span> <span class="err">needed</span> <span class="err">to</span> <span class="err">use</span> <span class="err">Kokkos.</span>
-<span class="err">``Kokkos_LIBRARIES``</span>
-  <span class="err">Libraries</span> <span class="err">needed</span> <span class="err">to</span> <span class="err">link</span> <span class="err">to</span> <span class="err">Kokkos.</span>
-
-<span class="err">Cache</span> <span class="err">Variables</span>
-<span class="err">^^^^^^^^^^^^^^^</span>
-
-<span class="err">The</span> <span class="err">following</span> <span class="err">cache</span> <span class="err">variables</span> <span class="err">may</span> <span class="err">also</span> <span class="err">be</span> <span class="err">set:</span>
-
-<span class="err">``Kokkos_INCLUDE_DIR``</span>
-  <span class="err">The</span> <span class="err">directory</span> <span class="err">containing</span> <span class="err">``Kokkos_Core.hpp``.</span>
-<span class="err">``Kokkos_LIBRARY``</span>
-  <span class="err">The</span> <span class="err">path</span> <span class="err">to</span> <span class="err">the</span> <span class="err">Kokkos</span> <span class="err">library.</span>
-
-<span class="c">#]=======================================================================]</span>
-
-<span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span><span class="p">)</span>
-<span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">PC_Kokkos</span> <span class="s">QUIET</span> <span class="s">kokkos</span><span class="p">)</span>
-
-<span class="nb">find_path</span><span class="p">(</span><span class="s">Kokkos_INCLUDE_DIR</span>
-  <span class="s">NAMES</span> <span class="s">Kokkos_Core.hpp</span>
-  <span class="s">PATHS</span> <span class="o">${</span><span class="nv">PC_Kokkos_INCLUDE_DIRS</span><span class="o">}</span>
-<span class="p">)</span>
-<span class="nb">find_library</span><span class="p">(</span><span class="s">Kokkos_LIBRARY</span>
-  <span class="s">NAMES</span> <span class="s">kokkos</span>
-  <span class="s">PATHS</span> <span class="o">${</span><span class="nv">PC_Kokkos_LIBRARY_DIRS</span><span class="o">}</span>
-<span class="p">)</span>
-
-<span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_VERSION</span> <span class="o">${</span><span class="nv">PC_Kokkos_VERSION</span><span class="o">}</span><span class="p">)</span>
-
-<span class="nb">include</span><span class="p">(</span><span class="s">FindPackageHandleStandardArgs</span><span class="p">)</span>
-<span class="nb">find_package_handle_standard_args</span><span class="p">(</span><span class="s">Kokkos</span>
-  <span class="s">FOUND_VAR</span> <span class="s">Kokkos_FOUND</span>
-  <span class="s">REQUIRED_VARS</span>
-    <span class="s">Kokkos_LIBRARY</span>
-    <span class="s">Kokkos_INCLUDE_DIR</span>
-  <span class="s">VERSION_VAR</span> <span class="s">Kokkos_VERSION</span> 
-<span class="p">)</span>
-
-<span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span><span class="p">)</span>
-  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_LIBRARIES</span> <span class="o">${</span><span class="nv">Kokkos_LIBRARY</span><span class="o">}</span><span class="p">)</span>
-  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_INCLUDE_DIRS</span> <span class="o">${</span><span class="nv">Kokkos_INCLUDE_DIR</span><span class="o">}</span><span class="p">)</span>
-  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_DEFINITIONS</span> <span class="o">${</span><span class="nv">PC_Kokkos_CFLAGS_OTHER</span><span class="o">}</span><span class="p">)</span>
-<span class="nb">endif</span><span class="p">()</span>
-
-<span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span> <span class="s">AND</span> <span class="s">NOT</span> <span class="s">TARGET</span> <span class="s">Kokkos::Kokkos</span><span class="p">)</span>
-  <span class="nb">add_library</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">UNKNOWN</span> <span class="s">IMPORTED</span><span class="p">)</span>  
-  <span class="nb">set_target_properties</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">PROPERTIES</span>
-    <span class="s">IMPORTED_LOCATION</span> <span class="s2">&quot;${Kokkos_LIBRARY}&quot;</span>
-    <span class="s">INTERFACE_COMPILE_OPTIONS</span> <span class="s2">&quot;${PC_Kokkos_CFLAGS_OTHER}&quot;</span>
-    <span class="s">INTERFACE_INCLUDE_DIRECTORIES</span> <span class="s2">&quot;${Kokkos_INCLUDE_DIR}&quot;</span>
-  <span class="p">)</span>
-<span class="nb">endif</span><span class="p">()</span>
-
-<span class="nb">mark_as_advanced</span><span class="p">(</span>
-  <span class="s">Kokkos_INCLUDE_DIR</span>
-  <span class="s">Kokkos_LIBRARY</span>
-<span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="NONAME">NONAME<a class="anchor-link" href="#NONAME">&#182;</a></h1><p>Every project that uses Kokkos write its own <code>FindKokkos.cmake</code>?</p>
-
+<h1 id="Does-it-matter-if-Kokkos-was-installed-one-way-or-the-other?">Does it matter if Kokkos was installed one way or the other?<a class="anchor-link" href="#Does-it-matter-if-Kokkos-was-installed-one-way-or-the-other?">&#182;</a></h1>
 </div>
 </div>
 </div></section></section><section><section>
@@ -13579,12 +13448,12 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="current-master-5d6e7f7-(tagged-as-2.8.00)">current master <a href="https://github.com/kokkos/kokkos/tree/5d6e7fb38e96aec88d2c514e1f9be1cf2b549b57">5d6e7f7</a> (tagged as 2.8.00)<a class="anchor-link" href="#current-master-5d6e7f7-(tagged-as-2.8.00)">&#182;</a></h1><div class="highlight"><pre><span></span><span class="gh">diff --git a/install_tree_gmake b/install_tree_cmake</span>
+<h2 id="Current-master-5d6e7f7-(tagged-as-2.8.00)">Current master <a class="external-link" href="https://github.com/kokkos/kokkos/tree/5d6e7fb38e96aec88d2c514e1f9be1cf2b549b57">5d6e7f7</a> (tagged as 2.8.00)<a class="anchor-link" href="#Current-master-5d6e7f7-(tagged-as-2.8.00)">&#182;</a></h2><div class="highlight"><pre><span></span><span class="gh">diff --git a/install_tree_gmake b/install_tree_cmake</span>
 <span class="gh">index b9dae0a4..e7e934de 100644</span>
 <span class="gd">--- a/install_tree_gmake</span>
 <span class="gi">+++ b/install_tree_cmake</span>
 <span class="gu">@@ -1,7 +1,4 @@</span>
- /opt/kokkos
+ &lt;prefix&gt;
 <span class="gd">-|-- Makefile.kokkos</span>
 <span class="gd">-|-- bin</span>
 <span class="gd">-|   `-- nvcc_wrapper</span>
@@ -13670,12 +13539,12 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="develop-e45bbef">develop <a href="https://github.com/kokkos/kokkos/tree/e45bbefa878b5eb004f3110d52dd85ae3b9b0d48">e45bbef</a><a class="anchor-link" href="#develop-e45bbef">&#182;</a></h1><div class="highlight"><pre><span></span><span class="gh">diff --git a/install_tree_gmake b/install_tree_cmake</span>
+<h2 id="Current-develop-e45bbef">Current develop <a class="external-link" href="https://github.com/kokkos/kokkos/tree/e45bbefa878b5eb004f3110d52dd85ae3b9b0d48">e45bbef</a><a class="anchor-link" href="#Current-develop-e45bbef">&#182;</a></h2><div class="highlight"><pre><span></span><span class="gh">diff --git a/install_tree_gmake b/install_tree_cmake</span>
 <span class="gh">index e9537c27..fc4c20e3 100644</span>
 <span class="gd">--- a/install_tree_gmake</span>
 <span class="gi">+++ b/install_tree_cmake</span>
 <span class="gu">@@ -1,7 +1,4 @@</span>
- /opt/kokkos
+ &lt;prefix&gt;
 <span class="gd">-|-- Makefile.kokkos</span>
 <span class="gd">-|-- bin</span>
 <span class="gd">-|   `-- nvcc_wrapper</span>
@@ -13770,6 +13639,116 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 
 </div>
 </div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="A-few-observations">A few observations<a class="anchor-link" href="#A-few-observations">&#182;</a></h1>
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>CMake does not install <code>nvcc_wrapper</code></li>
+</ul>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><code>&lt;prefix&gt;/lib/CMake/Kokkos/KokkosConfig.cmake</code> will not be discovered by CMake when <code>&lt;prefix&gt;</code> is added to <code>CMAKE_PREFIX_PATH</code></li>
+</ul>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Duplicated <code>kokkos_generated_settings.cmake</code> both in <code>&lt;prefix&gt;</code> and in <code>&lt;prefix&gt;/cmake/Kokkos</code> is confusing</li>
+</ul>
+
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>On UNIX platforms, CMake will constructs the following set of possible installation prefixes for the package</p>
+<p><code>&lt;prefix&gt;/(lib/&lt;arch&gt;|lib*|share)/cmake/&lt;name&gt;*/</code><br>
+<code>&lt;prefix&gt;/(lib/&lt;arch&gt;|lib*|share)/&lt;name&gt;*/</code>
+<code>&lt;prefix&gt;/(lib/&lt;arch&gt;|lib*|share)/&lt;name&gt;*/(cmake|CMake)/</code><br>
+<code>&lt;prefix&gt;/&lt;name&gt;*/(lib/&lt;arch&gt;|lib*|share)/cmake/&lt;name&gt;*/</code><br>
+<code>&lt;prefix&gt;/&lt;name&gt;*/(lib/&lt;arch&gt;|lib*|share)/&lt;name&gt;*/</code><br>
+<code>&lt;prefix&gt;/&lt;name&gt;*/(lib/&lt;arch&gt;|lib*|share)/&lt;name&gt;*/(cmake|CMake)/</code></p>
+<p><code>&lt;prefix&gt;/lib/Kokkos/CMake/</code> will be searched, <code>&lt;prefix&gt;/lib/CMake/Kokkos</code> will not!!</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Use the (undocumented) <code>CMAKE_FIND_DEBUG_MODE</code> to get a more verbose output</p>
+<div class="highlight"><pre><span></span>Checking prefix <span class="o">[</span>&lt;prefix&gt;<span class="o">]</span>
+Checking file <span class="o">[</span>&lt;prefix&gt;/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>&lt;prefix&gt;/kokkos-config.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>&lt;prefix&gt;/kokkos_generated_settings.cmake/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>&lt;prefix&gt;/kokkos_generated_settings.cmake/kokkos-config.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>&lt;prefix&gt;/lib/cmake/Kokkos/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>&lt;prefix&gt;/lib/cmake/Kokkos/kokkos-config.cmake<span class="o">]</span>
+Checking prefix <span class="o">[</span>/usr/local/nvidia/<span class="o">]</span>
+Checking prefix <span class="o">[</span>/usr/local/cuda/<span class="o">]</span>
+Checking file <span class="o">[</span>/usr/local/cuda/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/usr/local/cuda/kokkos-config.cmake<span class="o">]</span>
+Checking prefix <span class="o">[</span>/usr/local/<span class="o">]</span>
+Checking file <span class="o">[</span>/usr/local/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/usr/local/kokkos-config.cmake<span class="o">]</span>
+Checking prefix <span class="o">[</span>/usr/<span class="o">]</span>
+Checking file <span class="o">[</span>/usr/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/usr/kokkos-config.cmake<span class="o">]</span>
+Checking prefix <span class="o">[</span>/<span class="o">]</span>
+Checking file <span class="o">[</span>/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/kokkos-config.cmake<span class="o">]</span>
+Checking prefix <span class="o">[</span>/usr/X11R6/<span class="o">]</span>
+Checking prefix <span class="o">[</span>/usr/pkg/<span class="o">]</span>
+Checking prefix <span class="o">[</span>/opt/<span class="o">]</span>
+Checking file <span class="o">[</span>/opt/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/opt/kokkos-config.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/opt/kokkos/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/opt/kokkos/kokkos-config.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/opt/kokkos/lib/cmake/Kokkos/KokkosConfig.cmake<span class="o">]</span>
+Checking file <span class="o">[</span>/opt/kokkos/lib/cmake/Kokkos/kokkos-config.cmake<span class="o">]</span>
+CMake Error at CMakeLists.txt:3 <span class="o">(</span>find_package<span class="o">)</span>:
+  By not providing <span class="s2">&quot;FindKokkos.cmake&quot;</span> in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by <span class="s2">&quot;Kokkos&quot;</span>, but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by <span class="s2">&quot;Kokkos&quot;</span> with any
+  of the following names:
+
+    KokkosConfig.cmake
+    kokkos-config.cmake
+
+  Add the installation prefix of <span class="s2">&quot;Kokkos&quot;</span> to CMAKE_PREFIX_PATH or <span class="nb">set</span>
+  <span class="s2">&quot;Kokkos_DIR&quot;</span> to a directory containing one of the above files.  If <span class="s2">&quot;Kokkos&quot;</span>
+  provides a separate development package or SDK, be sure it has been
+  installed.
+
+
+-- Configuring incomplete, errors occurred!
+See also <span class="s2">&quot;/scratch/build/CMakeFiles/CMakeOutput.log&quot;</span>.
+See also <span class="s2">&quot;/scratch/build/CMakeFiles/CMakeError.log&quot;</span>.
+</pre></div>
+
+</div>
+</div>
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -13781,6 +13760,7 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><code>Kokkos_generated_settings.cmake</code> sets a number of variables (44)</p>
 <p><code>KOKKOS_PATH</code>
 <code>KOKKOS_GMAKE_DEVICES</code>
 <code>KOKKOS_GMAKE_ARCH</code>
@@ -13788,7 +13768,7 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <code>KOKKOS_GMAKE_USE_TPLS</code>
 <code>KOKKOS_CXX_STANDARD</code>
 <code>KOKKOS_GMAKE_OPTIONS</code>
-<code>KOKKOS_GMAKE_CUDA_OPTION</code>
+<code>KOKKOS_GMAKE_CUDA_OPTIONS</code>
 <code>KOKKOS_GMAKE_TPL_INCLUDE_DIRS</code>
 <code>KOKKOS_GMAKE_TPL_LIBRARY_DIRS</code>
 <code>KOKKOS_GMAKE_TPL_LIBRARY_NAMES</code>
@@ -13804,12 +13784,20 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <code>KOKKOS_CPP_DEPENDS</code>
 <code>KOKKOS_LINK_DEPENDS</code>
 <code>KOKKOS_CXXFLAGS</code>
-<code>KOKKOS_CPPFLAG</code>
+<code>KOKKOS_CPPFLAGS</code>
 <code>KOKKOS_LDFLAGS</code>
 <code>KOKKOS_CXXLDFLAGS</code>
 <code>KOKKOS_LIBS</code>
 <code>KOKKOS_EXTRA_LIBS</code>
 <code>KOKKOS_LINK_FLAGS</code>
+<code>KOKKOS_INTERNAL_USE_CUDA</code>
+<code>KOKKOS_INTERNAL_USE_OPENMP</code>
+<code>KOKKOS_INTERNAL_USE_HPX</code>
+<code>KOKKOS_INTERNAL_USE_PTHREADS</code>
+<code>KOKKOS_INTERNAL_USE_SERIAL</code>
+<code>KOKKOS_INTERNAL_USE_ROCM</code>
+<code>KOKKOS_INTERNAL_USE_HPX</code>
+<code>KOKKOS_INTERNAL_USE_QTHREADS</code>
 <code>KOKKOS_SRC</code>
 <code>KOKKOS_CXX_FLAGS</code>
 <code>KOKKOS_CPP_FLAGS</code>
@@ -13824,7 +13812,58 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="current-master-5d6e7f7-(tagged-as-2.8.00)">current master <a href="https://github.com/kokkos/kokkos/tree/5d6e7fb38e96aec88d2c514e1f9be1cf2b549b57">5d6e7f7</a> (tagged as 2.8.00)<a class="anchor-link" href="#current-master-5d6e7f7-(tagged-as-2.8.00)">&#182;</a></h1><div class="highlight"><pre><span></span><span class="gh">diff --git a/generated_settings_gmake b/generated_settings_cmake</span>
+<p><code>KOKKOS_GMAKE_DEVICES</code>
+<code>KOKKOS_GMAKE_ARCH</code>
+<code>KOKKOS_GMAKE_OPTIONS</code>
+<code>KOKKOS_GMAKE_CUDA_OPTIONS</code>
+<code>KOKKOS_GMAKE_TPL_INCLUDE_DIRS</code>
+<code>KOKKOS_GMAKE_TPL_LIBRARY_DIRS</code>
+<code>KOKKOS_GMAKE_TPL_LIBRARY_NAMES</code>
+<code>KOKKOS_GMAKE_USE_TPLS</code></p>
+<p><code>KOKKOS_DEBUG_CMAKE</code></p>
+<p><code>KOKKOS_OS</code>
+<code>KOKKOS_PATH</code></p>
+<p><code>KOKKOS_HEADERS</code>
+<code>KOKKOS_HEADERS_IMPL</code>
+<code>KOKKOS_HEADERS_CUDA</code>
+<code>KOKKOS_HEADERS_OPENMP</code>
+<code>KOKKOS_HEADERS_HPX</code>
+<code>KOKKOS_HEADERS_ROCM</code>
+<code>KOKKOS_HEADERS_THREADS</code>
+<code>KOKKOS_HEADERS_QTHREADS</code>
+<code>KOKKOS_SRC</code></p>
+<p><code>KOKKOS_CPP_DEPENDS</code>
+<code>KOKKOS_LINK_DEPENDS</code></p>
+<p><code>KOKKOS_INTERNAL_USE_CUDA</code>
+<code>KOKKOS_INTERNAL_USE_OPENMP</code>
+<code>KOKKOS_INTERNAL_USE_HPX</code>
+<code>KOKKOS_INTERNAL_USE_PTHREADS</code>
+<code>KOKKOS_INTERNAL_USE_SERIAL</code>
+<code>KOKKOS_INTERNAL_USE_ROCM</code>
+<code>KOKKOS_INTERNAL_USE_HPX</code>
+<code>KOKKOS_INTERNAL_USE_QTHREADS</code></p>
+<p><code>KOKKOS_CXXFLAGS</code>
+<code>KOKKOS_CPPFLAGS</code>
+<code>KOKKOS_LDFLAGS</code>
+<code>KOKKOS_CXXLDFLAGS</code>
+<code>KOKKOS_LIBS</code>
+<code>KOKKOS_EXTRA_LIBS</code>
+<code>KOKKOS_LINK_FLAGS</code></p>
+<p><code>KOKKOS_CXX_FLAGS</code>
+<code>KOKKOS_CPP_FLAGS</code>
+<code>KOKKOS_LD_FLAGS</code>
+<code>KOKKOS_LIBS_LIST</code>
+<code>KOKKOS_EXTRA_LIBS_LIST</code>
+<code>KOKKOS_LINK_FLAGS</code></p>
+<p><code>KOKKOS_CXX_STANDARD</code></p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Current-master-5d6e7f7-(tagged-as-2.8.00)">Current master <a class="external-link" href="https://github.com/kokkos/kokkos/tree/5d6e7fb38e96aec88d2c514e1f9be1cf2b549b57">5d6e7f7</a> (tagged as 2.8.00)<a class="anchor-link" href="#Current-master-5d6e7f7-(tagged-as-2.8.00)">&#182;</a></h2><div class="highlight"><pre><span></span><span class="gh">diff --git a/generated_settings_gmake b/generated_settings_cmake</span>
 <span class="gh">index 8ed290c9..d64a5337 100644</span>
 <span class="gd">--- a/generated_settings_gmake</span>
 <span class="gi">+++ b/generated_settings_cmake</span>
@@ -13904,48 +13943,198 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>But we eplicitly configured with <code>-D CMAKE_BUILD_TYPE=Release</code>?</p>
+<h1 id="TL;DR">TL;DR<a class="anchor-link" href="#TL;DR">&#182;</a></h1><p>But we explicitly configured with <code>-D CMAKE_BUILD_TYPE=Release</code>!?</p>
 <p>(If we didn't specify anything empty which yields no debug nor optimization flags will be used)</p>
 <p><code>-D KOKKOS_ENABLE_DEBUG=&lt;ON|OFF&gt;</code>???</p>
 
 </div>
 </div>
-</div></section></section><section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">Kokkos</span> <span class="s">REQUIRED</span><span class="p">)</span>
-<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">&lt;foo&gt;</span> <span class="s">Kokkos::kokkos</span><span class="p">)</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span> <span class="s">REQUIRED</span><span class="p">)</span>
-<span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">KOKKOS</span> <span class="s">REQUIRED</span> <span class="s">IMPORTED_TARGET</span> <span class="s">kokkos</span><span class="p">)</span>
-<span class="c">#                 ^^^^^^</span>
-<span class="c">#                 user&#39;s choice</span>
-<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">&lt;foo&gt;</span> <span class="s">PkgConfig::KOKKOS</span><span class="p">)</span>
-<span class="c">#                                      ^^^^^^</span>
-</pre></div>
+<p><code>KOKKOS_CXX_FLAGS</code> has include directories when installed with generated makefile</p>
+<p>What about <code>KOKKOS_CXX_STANDARD</code>?  <code>"c++11"</code><br>
+Supported values for <code>CMAKE_CXX_STANDARD</code> are <code>98</code>, <code>11</code>, <code>14</code>, <code>17</code>, and <code>20</code></p>
 
 </div>
 </div>
-</div></section></section><section><section>
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>User write a <code>FindKokkos.cmake</code></li>
+<li><p>Duplicated <code>KOKKOS_LINK_FLAGS</code></p>
+</li>
+<li><p><code>KOKKOS_CXXFLAGS</code>
+<code>KOKKOS_CPPFLAGS</code>
+<code>KOKKOS_LDFLAGS</code>
+<code>KOKKOS_CXXLDFLAGS</code>
+next to 
+<code>KOKKOS_CXX_FLAGS</code>
+<code>KOKKOS_CPP_FLAGS</code>
+<code>KOKKOS_LD_FLAGS</code></p>
+</li>
+<li><p>Not following CMake convention <code>&lt;PakageName&gt;_</code></p>
+</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="nb">include</span><span class="p">(</span><span class="s">FindPackageHandleStandardArgs</span><span class="p">)</span>
-<span class="nb">find_path</span><span class="p">(</span><span class="s">KOKKOS_INCLUDE_DIR</span> <span class="s">Kokkos_Core.hpp</span><span class="p">)</span>
-<span class="nb">find_library</span><span class="p">(</span><span class="s">KOKKOS_LIBRARY</span> <span class="s">NAMES</span> <span class="s">kokkos</span><span class="p">)</span>
-<span class="nb">find_package_handle_standard_args</span><span class="p">(</span><span class="s">kokkos</span> <span class="s">REQUIRED_VARS</span>
-  <span class="s">KOKKOS_INCLUDE_DIR</span>
-  <span class="s">KOKKOS_LIBRARY</span>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="What-about-targets?">What about targets?<a class="anchor-link" href="#What-about-targets?">&#182;</a></h1>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>CMake defines a <code>kokkos</code> target (case sensitive!)</li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>You are on your own if you installed using a generated makefile</li>
+</ul>
+
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="How-to-find-Kokkos-and-load-its-settings">How to find Kokkos and load its settings<a class="anchor-link" href="#How-to-find-Kokkos-and-load-its-settings">&#182;</a></h1>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Essentially two options</p>
+<ul>
+<li>Either use what's already there (exported target from Kokkos built using CMake)</li>
+<li>Or do it yourself (find Kokkos module)</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="OPTION-A:-Use-configuration-exported-by-CMake-build">OPTION A: Use configuration exported by CMake build<a class="anchor-link" href="#OPTION-A:-Use-configuration-exported-by-CMake-build">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">Kokkos</span> <span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">&lt;target&gt;</span> <span class="s">kokkos</span><span class="p">)</span> <span class="c"># case sensitive (k)okkos</span>
+<span class="nb">target_include_directories</span><span class="p">(</span><span class="s">&lt;target&gt;</span> <span class="s">PUBLIC</span> <span class="o">${</span><span class="nv">Kokkos_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Caevats">Caevats<a class="anchor-link" href="#Caevats">&#182;</a></h3><ul>
+<li>need to add <code>&lt;prefix&gt;/lib/CMake/Kokkos</code> to <code>CMAKE_PATH_PREFIX</code></li>
+</ul>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>tell your users they have to build Kokkos using cmake</li>
+</ul>
+
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="OPTION-B:-Write-and-maintain-a-Find-Module">OPTION B: Write and maintain a Find Module<a class="anchor-link" href="#OPTION-B:-Write-and-maintain-a-Find-Module">&#182;</a></h2><p>Write a "find module", i.e. a <code>FindKokkos.cmake</code> file to be loaded by <code>find_package()</code> when invoked for <code>Kokkos</code></p>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Traditional approach is to use variables for everything, including libraries and executables</li>
+</ul>
+<p><code>Kokkos_FOUND</code>
+<code>Kokkos_INCLUDE_DIRS</code>
+<code>Kokkos_LIBRARIES</code>
+<code>Kokkos_DEFINITIONS</code>
+<code>Kokkos_LIBRARY_DIRS</code>
+<code>Kokkos_VERSION</code></p>
+<p><code>Kokkos_NVCC_WRAPPER_EXECTUABLE</code></p>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>More modern approach is to behave as much like config file packages files as possible, by providing <strong>imported target</strong>.<br>
+This has the advantage of propagating transitive usage requirements to consumers.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>May use cache variables for users to edit and control the behaviour of the find module</p>
+<p>May provide functions or macros</p>
+
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Find-the-Kokkos-library">Find the Kokkos library<a class="anchor-link" href="#Find-the-Kokkos-library">&#182;</a></h2><p>Try to use <code>pkg-config</code> to find the library since it is currently available for Kokkos</p>
+<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span><span class="p">)</span>
+<span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">PC_Kokkos</span> <span class="s">QUIET</span> <span class="s">kokkos</span><span class="p">)</span>
+</pre></div>
+<p>This will define some variables starting <code>PC_Kokkos_</code> that contain the information from the <code>kokkos.pc</code> file</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Use the information from <code>pkg-config</code> to provide hints to CMake about where to look</p>
+<div class="highlight"><pre><span></span><span class="nb">find_path</span><span class="p">(</span><span class="s">Kokkos_INCLUDE_DIR</span>
+  <span class="s">NAMES</span> <span class="s">Kokkos_Core.hpp</span>
+  <span class="s">PATHS</span> <span class="o">${</span><span class="nv">PC_Kokkos_INCLUDE_DIRS</span><span class="o">}</span>
 <span class="p">)</span>
 
-<span class="nb">add_library</span><span class="p">(</span><span class="s">Kokkos::kokkos</span> <span class="s">INTERFACE</span> <span class="s">IMPORTED</span><span class="p">)</span>
-<span class="nb">set_target_properties</span><span class="p">(</span><span class="s">Kokkos::kokkos</span> <span class="s">PROPERTIES</span>
-  <span class="s">INTERFACE_INCLUDE_DIRECTORIES</span> <span class="o">${</span><span class="nv">KOKKOS_INCLUDE_DIR</span><span class="o">}</span>
-  <span class="s">INTERFACE_LINK_LIBRARIES</span>      <span class="o">${</span><span class="nv">KOKKOS_LIBRARY</span><span class="o">}</span>
+<span class="nb">find_library</span><span class="p">(</span><span class="s">Kokkos_LIBRARY</span>
+  <span class="s">NAMES</span> <span class="s">kokkos</span>
+  <span class="s">PATHS</span> <span class="o">${</span><span class="nv">PC_Kokkos_LIBRARY_DIRS</span><span class="o">}</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -13955,9 +14144,9 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>What's wrong with that module?</li>
-</ul>
+<p>Get the version somehow...</p>
+<div class="highlight"><pre><span></span><span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_VERSION</span> <span class="o">${</span><span class="nv">PC_Kokkos_VERSION</span><span class="o">}</span><span class="p">)</span> <span class="c"># not currently defined in kokkos.pc</span>
+</pre></div>
 
 </div>
 </div>
@@ -13965,45 +14154,177 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span> <span class="s">QUIET</span><span class="p">)</span>
-<span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">PC_KOKKOS</span> <span class="s">kokkos</span> <span class="s">QUIET</span><span class="p">)</span>
+<p>Use <code>FindPackageHandleStandardArgs</code> to do most of the rest of the work</p>
+<div class="highlight"><pre><span></span><span class="nb">include</span><span class="p">(</span><span class="s">FindPackageHandleStandardArgs</span><span class="p">)</span>
+<span class="nb">find_package_handle_standard_args</span><span class="p">(</span><span class="s">Kokkos</span>
+  <span class="s">FOUND_VAR</span> <span class="s">Kokkos_FOUND</span>
+  <span class="s">REQUIRED_VARS</span>
+    <span class="s">Kokkos_LIBRARY</span>
+    <span class="s">Kokkos_INCLUDE_DIR</span>
+  <span class="s">VERSION_VAR</span> <span class="s">Kokkos_VERSION</span> 
+<span class="p">)</span>
+</pre></div>
 
-<span class="nb">find_path</span><span class="p">(</span><span class="s">KOKKOS_SETTINGS_DIR</span> <span class="s">kokkos_generated_settings.cmake</span> <span class="s">HINTS</span> <span class="o">${</span><span class="nv">PC_KOKKOS_PREFIX</span><span class="o">}</span><span class="p">)</span>
-
-<span class="nb">find_path</span><span class="p">(</span><span class="s">KOKKOS_INCLUDE_DIR</span> <span class="s">Kokkos_Core.hpp</span> <span class="s">HINTS</span> <span class="o">${</span><span class="nv">PC_KOKKOS_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
-<span class="nb">find_library</span><span class="p">(</span><span class="s">KOKKOS_LIBRARY</span> <span class="s">NAMES</span> <span class="s">kokkos</span> <span class="s">kokkoscore</span> <span class="s">HINTS</span> <span class="o">${</span><span class="nv">PC_KOKKOS_LIBRARY_DIRS</span><span class="o">}</span><span class="p">)</span>
-
-<span class="nb">include</span><span class="p">(</span><span class="s">FindPackageHandleStandardArgs</span><span class="p">)</span>
-<span class="c"># handle the QUIETLY and REQUIRED arguments and set KOKKOS_FOUND to TRUE</span>
-<span class="c"># if all listed variables are TRUE</span>
-<span class="nb">find_package_handle_standard_args</span><span class="p">(</span><span class="s">KOKKOS</span> <span class="s">DEFAULT_MSG</span> <span class="s">KOKKOS_SETTINGS_DIR</span> <span class="s">KOKKOS_INCLUDE_DIR</span> <span class="s">KOKKOS_LIBRARY</span><span class="p">)</span>
-
-<span class="nb">mark_as_advanced</span><span class="p">(</span><span class="s">KOKKOS_SETTINGS_DIR</span> <span class="s">KOKKOS_INCLUDE_DIR</span> <span class="s">KOKKOS_LIBRARY</span><span class="p">)</span>
-
-<span class="nb">if</span><span class="p">(</span><span class="s">KOKKOS_SETTINGS_DIR</span> <span class="s">AND</span> <span class="s">KOKKOS_INCLUDE_DIR</span> <span class="s">AND</span> <span class="s">KOKKOS_LIBRARY</span><span class="p">)</span>
-  <span class="nb">include</span><span class="p">(</span><span class="o">${</span><span class="nv">KOKKOS_SETTINGS_DIR</span><span class="o">}</span><span class="s">/kokkos_generated_settings.cmake</span><span class="p">)</span>
-  <span class="c"># https://github.com/kokkos/kokkos/issues/1838</span>
-  <span class="nb">set</span><span class="p">(</span><span class="s">KOKKOS_CXX_FLAGS_WITHOUT_INCLUDES_STRING</span><span class="p">)</span>
-  <span class="nb">set</span><span class="p">(</span><span class="s">KOKKOS_CXX_FLAGS_WITHOUT_INCLUDES</span><span class="p">)</span>
-  <span class="nb">foreach</span><span class="p">(</span><span class="s">_f</span> <span class="o">${</span><span class="nv">KOKKOS_CXX_FLAGS</span><span class="o">}</span><span class="p">)</span>
-    <span class="nb">if</span><span class="p">(</span><span class="s">NOT</span> <span class="s">_f</span> <span class="s">MATCHES</span> <span class="s2">&quot;-I.*&quot;</span><span class="p">)</span>
-      <span class="nb">set</span><span class="p">(</span><span class="s">KOKKOS_CXX_FLAGS_WITHOUT_INCLUDES_STRING</span> <span class="s2">&quot;${KOKKOS_CXX_FLAGS_WITHOUT_INCLUDES_STRING} ${_f}&quot;</span><span class="p">)</span>
-      <span class="nb">list</span><span class="p">(</span><span class="s">APPEND</span> <span class="s">KOKKOS_CXX_FLAGS_WITHOUT_INCLUDES</span> <span class="s2">&quot;${_f}&quot;</span><span class="p">)</span>
-    <span class="nb">endif</span><span class="p">()</span>
-  <span class="nb">endforeach</span><span class="p">()</span>
-  <span class="nb">add_library</span><span class="p">(</span><span class="s">Kokkos::kokkos</span> <span class="s">UNKNOWN</span> <span class="s">IMPORTED</span><span class="p">)</span>
-  <span class="nb">set_target_properties</span><span class="p">(</span><span class="s">Kokkos::kokkos</span> <span class="s">PROPERTIES</span>
-    <span class="s">IMPORTED_LOCATION</span> <span class="o">${</span><span class="nv">KOKKOS_LIBRARY</span><span class="o">}</span>
-    <span class="s">INTERFACE_INCLUDE_DIRECTORIES</span> <span class="o">${</span><span class="nv">KOKKOS_INCLUDE_DIR</span><span class="o">}</span>
-    <span class="s">INTERFACE_COMPILE_OPTIONS</span> <span class="s2">&quot;${KOKKOS_CXX_FLAGS_WITHOUT_INCLUDES}&quot;</span>
-    <span class="s">INTERFACE_LINK_LIBRARIES</span> <span class="s2">&quot;${KOKKOS_EXTRA_LIBS}&quot;</span><span class="p">)</span>
-  <span class="c"># check for an empty link flags string to fix a trailing whitespace error when</span>
-  <span class="c"># the link flags are empty (e.g. the serial only case)</span>
-  <span class="nb">if</span><span class="p">(</span><span class="s">KOKKOS_LINK_FLAGS</span><span class="p">)</span>
-    <span class="nb">set_property</span><span class="p">(</span><span class="s">TARGET</span> <span class="s">Kokkos::kokkos</span> <span class="s">APPEND_STRING</span> <span class="s">PROPERTY</span> <span class="s">INTERFACE_LINK_LIBRARIES</span> <span class="s2">&quot; ${KOKKOS_LINK_FLAGS}&quot;</span><span class="p">)</span>
-  <span class="nb">endif</span><span class="p">()</span>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Provide-a-way-for-users-of-the-find-module-to-link-to-Kokkos">Provide a way for users of the find module to link to Kokkos<a class="anchor-link" href="#Provide-a-way-for-users-of-the-find-module-to-link-to-Kokkos">&#182;</a></h2><p>Traditional variable approach looks like</p>
+<div class="highlight"><pre><span></span><span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span><span class="p">)</span>
+  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_LIBRARIES</span> <span class="o">${</span><span class="nv">Kokkos_LIBRARY</span><span class="o">}</span><span class="p">)</span>
+  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_INCLUDE_DIRS</span> <span class="o">${</span><span class="nv">Kokkos_INCLUDE_DIR</span><span class="o">}</span><span class="p">)</span>
+  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_DEFINITIONS</span> <span class="o">${</span><span class="nv">PC_Kokkos_CFLAGS_OTHER</span><span class="o">}</span><span class="p">)</span>
 <span class="nb">endif</span><span class="p">()</span>
 </pre></div>
+<p>Modern approach is</p>
+<div class="highlight"><pre><span></span><span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span> <span class="s">AND</span> <span class="s">NOT</span> <span class="s">TARGET</span> <span class="s">Kokkos::Kokkos</span><span class="p">)</span>
+  <span class="nb">add_library</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">UNKNOWN</span> <span class="s">IMPORTED</span><span class="p">)</span>  
+  <span class="nb">set_target_properties</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">PROPERTIES</span>
+    <span class="s">IMPORTED_LOCATION</span> <span class="s2">&quot;${Kokkos_LIBRARY}&quot;</span>
+    <span class="s">INTERFACE_COMPILE_OPTIONS</span> <span class="s2">&quot;${PC_Kokkos_CFLAGS_OTHER}&quot;</span>
+    <span class="s">INTERFACE_INCLUDE_DIRECTORIES</span> <span class="s2">&quot;${Kokkos_INCLUDE_DIR}&quot;</span>
+  <span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+</pre></div>
+<p>When providing imported target, these should be namespaced (note the <code>Kokkos::</code> prefix)<br>
+CMake will recognize that values passed to <code>target_link_libraries()</code> that contain <code>::</code> in their name are supposed to be imported targets (rather than just library names), and will produce appropriate diagnostic messages if that target does not exist</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="c">#[=======================================================================[.rst:</span>
+<span class="err">FindKokkos</span>
+<span class="err">-------</span>
+
+<span class="err">Finds</span> <span class="err">the</span> <span class="err">Kokkos</span> <span class="err">library.</span>
+
+<span class="err">Imported</span> <span class="err">Targets</span>
+<span class="err">^^^^^^^^^^^^^^^^</span>
+
+<span class="err">This</span> <span class="err">module</span> <span class="err">provides</span> <span class="err">the</span> <span class="err">following</span> <span class="err">imported</span> <span class="err">targets,</span> <span class="err">if</span> <span class="err">found:</span>
+
+<span class="err">``Kokkos::Kokkos``</span>
+  <span class="err">The</span> <span class="err">Kokkos</span> <span class="err">library</span>
+
+<span class="err">Result</span> <span class="err">Variables</span>
+<span class="err">^^^^^^^^^^^^^^^^</span>
+
+<span class="err">This</span> <span class="err">will</span> <span class="err">define</span> <span class="err">the</span> <span class="err">following</span> <span class="err">variables:</span>
+
+<span class="err">``Kokkos_FOUND``</span>
+  <span class="err">True</span> <span class="err">if</span> <span class="err">the</span> <span class="err">system</span> <span class="err">has</span> <span class="err">the</span> <span class="err">Kokkos</span> <span class="err">library.</span>
+<span class="err">``Kokkos_VERSION``</span>
+  <span class="err">The</span> <span class="err">version</span> <span class="err">of</span> <span class="err">the</span> <span class="err">Kokkos</span> <span class="err">library</span> <span class="err">which</span> <span class="err">was</span> <span class="err">found.</span>
+<span class="err">``Kokkos_INCLUDE_DIRS``</span>
+  <span class="err">Include</span> <span class="err">directories</span> <span class="err">needed</span> <span class="err">to</span> <span class="err">use</span> <span class="err">Kokkos.</span>
+<span class="err">``Kokkos_LIBRARIES``</span>
+  <span class="err">Libraries</span> <span class="err">needed</span> <span class="err">to</span> <span class="err">link</span> <span class="err">to</span> <span class="err">Kokkos.</span>
+
+<span class="err">Cache</span> <span class="err">Variables</span>
+<span class="err">^^^^^^^^^^^^^^^</span>
+
+<span class="err">The</span> <span class="err">following</span> <span class="err">cache</span> <span class="err">variables</span> <span class="err">may</span> <span class="err">also</span> <span class="err">be</span> <span class="err">set:</span>
+
+<span class="err">``Kokkos_INCLUDE_DIR``</span>
+  <span class="err">The</span> <span class="err">directory</span> <span class="err">containing</span> <span class="err">``Kokkos_Core.hpp``.</span>
+<span class="err">``Kokkos_LIBRARY``</span>
+  <span class="err">The</span> <span class="err">path</span> <span class="err">to</span> <span class="err">the</span> <span class="err">Kokkos</span> <span class="err">library.</span>
+
+<span class="c">#]=======================================================================]</span>
+
+<span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span><span class="p">)</span>
+<span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">PC_Kokkos</span> <span class="s">QUIET</span> <span class="s">kokkos</span><span class="p">)</span>
+
+<span class="nb">find_path</span><span class="p">(</span><span class="s">Kokkos_INCLUDE_DIR</span>
+  <span class="s">NAMES</span> <span class="s">Kokkos_Core.hpp</span>
+  <span class="s">PATHS</span> <span class="o">${</span><span class="nv">PC_Kokkos_INCLUDE_DIRS</span><span class="o">}</span>
+<span class="p">)</span>
+<span class="nb">find_library</span><span class="p">(</span><span class="s">Kokkos_LIBRARY</span>
+  <span class="s">NAMES</span> <span class="s">kokkos</span>
+  <span class="s">PATHS</span> <span class="o">${</span><span class="nv">PC_Kokkos_LIBRARY_DIRS</span><span class="o">}</span>
+<span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_VERSION</span> <span class="o">${</span><span class="nv">PC_Kokkos_VERSION</span><span class="o">}</span><span class="p">)</span>
+
+<span class="nb">include</span><span class="p">(</span><span class="s">FindPackageHandleStandardArgs</span><span class="p">)</span>
+<span class="nb">find_package_handle_standard_args</span><span class="p">(</span><span class="s">Kokkos</span>
+  <span class="s">FOUND_VAR</span> <span class="s">Kokkos_FOUND</span>
+  <span class="s">REQUIRED_VARS</span>
+    <span class="s">Kokkos_LIBRARY</span>
+    <span class="s">Kokkos_INCLUDE_DIR</span>
+  <span class="s">VERSION_VAR</span> <span class="s">Kokkos_VERSION</span> 
+<span class="p">)</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span><span class="p">)</span>
+  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_LIBRARIES</span> <span class="o">${</span><span class="nv">Kokkos_LIBRARY</span><span class="o">}</span><span class="p">)</span>
+  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_INCLUDE_DIRS</span> <span class="o">${</span><span class="nv">Kokkos_INCLUDE_DIR</span><span class="o">}</span><span class="p">)</span>
+  <span class="nb">set</span><span class="p">(</span><span class="s">Kokkos_DEFINITIONS</span> <span class="o">${</span><span class="nv">PC_Kokkos_CFLAGS_OTHER</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span> <span class="s">AND</span> <span class="s">NOT</span> <span class="s">TARGET</span> <span class="s">Kokkos::Kokkos</span><span class="p">)</span>
+  <span class="nb">add_library</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">UNKNOWN</span> <span class="s">IMPORTED</span><span class="p">)</span>  
+  <span class="nb">set_target_properties</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">PROPERTIES</span>
+    <span class="s">IMPORTED_LOCATION</span> <span class="s2">&quot;${Kokkos_LIBRARY}&quot;</span>
+    <span class="s">INTERFACE_COMPILE_OPTIONS</span> <span class="s2">&quot;${PC_Kokkos_CFLAGS_OTHER}&quot;</span> <span class="c"># !!!!</span>
+    <span class="s">INTERFACE_INCLUDE_DIRECTORIES</span> <span class="s2">&quot;${Kokkos_INCLUDE_DIR}&quot;</span>
+  <span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+
+<span class="nb">mark_as_advanced</span><span class="p">(</span>
+  <span class="s">Kokkos_INCLUDE_DIR</span>
+  <span class="s">Kokkos_LIBRARY</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="OPTION-C:-Let-pkg-config-create-an-imported-target?">OPTION C: Let pkg-config create an imported target?<a class="anchor-link" href="#OPTION-C:-Let-pkg-config-create-an-imported-target?">&#182;</a></h2>
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span> <span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">PC_Kokkos</span> <span class="s">REQUIRED</span> <span class="s">IMPORTED_TARGET</span> <span class="s">kokkos</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">&lt;target&gt;</span> <span class="s">PkgConfig::PC_Kokkos</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">&lt;target&gt;</span> <span class="o">${</span><span class="nv">PC_Kokkos_LDFLAGS</span><span class="o">}</span><span class="p">)</span> <span class="c"># sigh...</span>
+</pre></div>
+
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Have-Kokkos-always-export-its-target?">Have Kokkos always export its target?<a class="anchor-link" href="#Have-Kokkos-always-export-its-target?">&#182;</a></h1><h1 id="What-are-the-risks-and-the-payoffs?">What are the risks and the payoffs?<a class="anchor-link" href="#What-are-the-risks-and-the-payoffs?">&#182;</a></h1><p>Break everybody's working build system</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">Kokkos</span> <span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">&lt;target&gt;</span> <span class="s">Kokkos::kokkos</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="NONAME">NONAME<a class="anchor-link" href="#NONAME">&#182;</a></h1><p>Every project that uses Kokkos write its own <code>FindKokkos.cmake</code>?</p>
 
 </div>
 </div>
@@ -14057,10 +14378,24 @@ CMake will recognize that values passed to <code>target_link_libraries()</code> 
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h1><p>What do we want</p>
 <ol>
-<li>Namespaced targets <code>Kokkos::</code></li>
-<li>Function to check at configure time that the Kokkos that was found has desirable properties</li>
-<li>???</li>
+<li>Install a new package configuration file <code>&lt;prefix&gt;/lib/cmake/kokkos-config.cmake</code> </li>
 </ol>
+<ul>
+<li>Export namespaced targets <code>Kokkos::kokkos</code> alongside the pre-existing one to avoid breaking everybody's code</li>
+</ul>
+<ol>
+<li>Inject deprecation warning in <code>&lt;prefix&gt;/lib/CMake/Kokkos/KokkosConfig.cmake</code> (?)</li>
+<li>Function to check at configure time that the Kokkos that was found has desirable properties</li>
+<li>Consider providing a <code>FindKokkos.cmake</code> module that provide similar functionality for backwards compatibility (?)</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Broken with clang</p>
 
 </div>
 </div>
