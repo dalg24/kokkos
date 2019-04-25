@@ -14442,9 +14442,9 @@ together with <code>Kokkos::kokkos</code></p>
 <span class="nb">endif</span><span class="p">()</span>
 </pre></div>
 <p>Modern approach is</p>
-<div class="highlight"><pre><span></span><span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span> <span class="s">AND</span> <span class="s">NOT</span> <span class="s">TARGET</span> <span class="s">Kokkos::Kokkos</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="nb">if</span><span class="p">(</span><span class="s">Kokkos_FOUND</span> <span class="s">AND</span> <span class="s">NOT</span> <span class="s">TARGET</span> <span class="s">Kokkos::kokkos</span><span class="p">)</span>
   <span class="nb">add_library</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">UNKNOWN</span> <span class="s">IMPORTED</span><span class="p">)</span>  
-  <span class="nb">set_target_properties</span><span class="p">(</span><span class="s">Kokkos::Kokkos</span> <span class="s">PROPERTIES</span>
+  <span class="nb">set_target_properties</span><span class="p">(</span><span class="s">Kokkos::kokkos</span> <span class="s">PROPERTIES</span>
     <span class="s">IMPORTED_LOCATION</span> <span class="s2">&quot;${Kokkos_LIBRARY}&quot;</span>
     <span class="s">INTERFACE_COMPILE_OPTIONS</span> <span class="s2">&quot;${PC_Kokkos_CFLAGS_OTHER}&quot;</span>
     <span class="s">INTERFACE_INCLUDE_DIRECTORIES</span> <span class="s2">&quot;${Kokkos_INCLUDE_DIR}&quot;</span>
