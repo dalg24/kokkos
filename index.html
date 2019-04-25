@@ -14480,16 +14480,48 @@ require(
     }
     #footer-left {
         position: absolute;
-        bottom: 10px;
-        left: 10px;
+        bottom: 0%;
+        left: 0%;
+        background-color: #007833;
+        color: #F8F8F8;
+	width: 33%;
+	font-size: 12px;
+	text-align: center;
+    }
+    #footer-middle {
+        position: absolute;
+        bottom: 0%;
+        left: 33%;
+        background-color: #00CC99;
+        color: #2C5135;
+	width: 33%;
+	font-size: 12px;
+	text-align: center;
+    }
+    #footer-right {
+        position: absolute;
+        bottom: 0%;
+        right: 0%;
+        background-color: #F8F8F8;
+        color: #2C5135;
+        width: 34%;
+	font-size: 12px;
+	text-align: center;
+    }
+    #logo {
+        position: absolute;
+        bottom: 14px;
+        right: 0%;
     }
 </style>
 
 <!-- 2. Create hidden header/footer <div> -->
 <div id="hidden" style="display:none;">
     <div id="header">
-        <div id="header-left">Kokkos Usergroup Meeting, Apr 23-24, 2019</div>
-        <div id="footer-left">Damien L-G
+	<div id="footer-left">Damien L-G (ORNL)</div>
+	<div id="footer-middle">CMake Issues w/ Kokkos</div>
+	<div id="footer-right">April 25th, 2019</div>
+	<div id="logo"><img src="images/ornl_logo.jpg" width=120></div>
     </div>
 </div>
 
