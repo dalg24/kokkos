@@ -1,6 +1,7 @@
 version: "3"
 services:
   kokkos_dev:
+    #image: kokkos:${WHICH}-${VERSION}-clang
     image: kokkos:${WHICH}-${VERSION}
     build:
       context: .
@@ -10,7 +11,7 @@ services:
         - KOKKOS_VERSION=${VERSION}
         - CONFIGURE_SCRIPT=configure_${WHICH}.sh
     volumes:
-      - ../bin/nvcc_wrapper:/usr/local/bin/nvcc_wrapper:ro
+      - ../bin/nvcc_wrapper:/usr/local/bin/nvcc_wrapper:ro # for Kokkos installed using CMake
       - ../benchmarks/bytes_and_flops/main.cpp:/scratch/source/main.cpp:ro
       - ../benchmarks/bytes_and_flops/bench.hpp:/scratch/source/bench.hpp:ro
       - ../benchmarks/bytes_and_flops/bench_stride.hpp:/scratch/source/bench_stride.hpp:ro
@@ -19,8 +20,18 @@ services:
       - ./FindKokkos.cmake:/scratch/source/cmake/FindKokkos.cmake:ro
       - ./build.sh:/scratch/source/build.sh:ro
       - build:/scratch/build
-    working_dir: /scratch/build.sh
+    working_dir: /scratch/build
     command: bash -xe /scratch/source/build.sh
+    network_mode: none
+  trilinos_dev:
+    image: kokkos:tribits-${TRILINOS_VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile_tribits
+      args:
+        - TRILINOS_PREFIX=/opt/trilinos
+        - TRILINOS_VERSION=${TRILINOS_VERSION}
+        - CONFIGURE_SCRIPT=configure_tribits.sh
     network_mode: none
 volumes:
   build:
