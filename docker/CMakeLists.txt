@@ -1,18 +1,27 @@
 cmake_minimum_required(VERSION 3.10)
 
-find_package(Kokkos REQUIRED)
-
 add_executable(bytes_and_flops.exe main.cpp)
-target_link_libraries(bytes_and_flops.exe Kokkos::Kokkos)
 target_include_directories(bytes_and_flops.exe PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
-
-#find_package(PkgConfig)
-#pkg_check_modules(PC_Kokkos REQUIRED IMPORTED_TARGET kokkos)
-#target_link_libraries(bytes_and_flops.exe PkgConfig::PC_Kokkos)
-#target_link_libraries(bytes_and_flops.exe ${PC_Kokkos_LDFLAGS})
-
-#target_link_libraries(bytes_and_flops.exe kokkos)
-##                                         ^^^^^^
-##                                         Lowercase (k)okkos
-#target_include_directories(bytes_and_flops.exe PRIVATE ${Kokkos_INCLUDE_DIRS})
+if(DETECT MATCHES "FindKokkos")
+  find_package(Kokkos REQUIRED)
+  target_link_libraries(bytes_and_flops.exe Kokkos::Kokkos)
+  find_package(CUDA REQUIRED)
+  get_filename_component(CUDA_LIBRARY_DIR ${CUDA_cudart_static_LIBRARY} DIRECTORY)
+  target_link_libraries(bytes_and_flops.exe "-L${CUDA_LIBRARY_DIR}")
+elseif(DETECT MATCHES "PkgConfig")
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(PC_Kokkos REQUIRED IMPORTED_TARGET kokkos)
+  target_link_libraries(bytes_and_flops.exe PkgConfig::PC_Kokkos)
+  target_link_libraries(bytes_and_flops.exe ${PC_Kokkos_LDFLAGS})
+  find_package(CUDA REQUIRED)
+  get_filename_component(CUDA_LIBRARY_DIR ${CUDA_cudart_static_LIBRARY} DIRECTORY)
+  #target_link_directories(bytes_and_flops.exe PRIVATE ${CUDA_LIBRARY_DIR})
+  target_link_libraries(bytes_and_flops.exe "-L${CUDA_LIBRARY_DIR}")
+elseif(DETECT MATCHES "KokkosConfig")
+  find_package(Kokkos REQUIRED)
+  target_link_libraries(bytes_and_flops.exe kokkos) # lowercase (k)okkos
+  target_include_directories(bytes_and_flops.exe PRIVATE ${Kokkos_INCLUDE_DIRS})
+else()
+  message(FATAL_ERROR "Houston we've got a problem\nMODE `${MODE}` was not recognized")
+endif()
