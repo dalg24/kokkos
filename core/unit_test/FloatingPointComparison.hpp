@@ -1,93 +1,93 @@
+/*
+//@HEADER
+// ************************************************************************
+//
+//                        Kokkos v. 3.0
+//       Copyright (2020) National Technology & Engineering
+//               Solutions of Sandia, LLC (NTESS).
+//
+// Under the terms of Contract DE-NA0003525 with NTESS,
+// the U.S. Government retains certain rights in this software.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the Corporation nor the names of the
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY NTESS "AS IS" AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL NTESS OR THE
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+// LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+// NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Questions? Contact Christian R. Trott (crtrott@sandia.gov)
+//
+// ************************************************************************
+//@HEADER
+*/
+
+#ifndef KOKKOS_FLOATING_POINT_COMPARISON_HPP
+
+#include <Kokkos_Macros.hpp>
+#include <impl/Kokkos_Error.hpp>
+
+//____________________________________________________________________________//
+// FIXME remove definition below when available from Kokkos numeric traits
+//____________________________________________________________________________//
+#include <cfloat>
+namespace Kokkos {
+namespace Experimental {
+// clang-format off
+template <class> struct finite_min;
+template <> struct finite_min<float>       { static constexpr       float value = -FLT_MAX; };
+template <> struct finite_min<double>      { static constexpr      double value = -DBL_MAX; };
+template <> struct finite_min<long double> { static constexpr long double value = -LDBL_MAX; };
+template <class> struct finite_max;
+template <> struct finite_max<float>       { static constexpr       float value = FLT_MAX; };
+template <> struct finite_max<double>      { static constexpr      double value = DBL_MAX; };
+template <> struct finite_max<long double> { static constexpr long double value = LDBL_MAX; };
+// clang-format on
+}  // namespace Experimental
+}  // namespace Kokkos
+//____________________________________________________________________________//
+
+//____________________________________________________________________________//
+//____________________________________________________________________________//
+// Code below was taken from Boost.Test Version 1.74.0 and modified to include
+// __host__ __device__ annotations and remove Boost dependencies.
+//____________________________________________________________________________//
+//____________________________________________________________________________//
+
+// clang-format off
+
 //  (C) Copyright Gennadiy Rozental 2001.
 //  Distributed under the Boost Software License, Version 1.0.
-//  (See accompanying file LICENSE_1_0.txt or copy at 
+//  (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//!@file 
+//!@file
 //!@brief algorithms for comparing floating point values
 // ***************************************************************************
 
-#ifndef BOOST_TEST_FLOATING_POINT_COMPARISON_HPP_071894GER
-#define BOOST_TEST_FLOATING_POINT_COMPARISON_HPP_071894GER
-
-// Boost.Test
-#include <boost/test/detail/global_typedef.hpp>
-#include <boost/test/tools/assertion_result.hpp>
-
-// Boost
-#include <boost/limits.hpp>  // for std::numeric_limits
-#include <boost/static_assert.hpp>
-#include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/type_traits/is_floating_point.hpp>
-#include <boost/type_traits/is_array.hpp>
-#include <boost/type_traits/is_reference.hpp>
-#include <boost/type_traits/is_void.hpp>
-#include <boost/type_traits/conditional.hpp>
-#include <boost/utility/enable_if.hpp>
-
-// STL
-#include <iosfwd>
-
-#include <boost/test/detail/suppress_warnings.hpp>
-
-//____________________________________________________________________________//
-
-namespace boost {
-namespace math {
 namespace fpc {
-
-// ************************************************************************** //
-// **************              fpc::tolerance_based            ************** //
-// ************************************************************************** //
-
-
-//! @internal
-//! Protects the instanciation of std::numeric_limits from non-supported types (eg. T=array)
-template <typename T, bool enabled>
-struct tolerance_based_delegate;
-
-template <typename T>
-struct tolerance_based_delegate<T, false> : mpl::false_ {};
-
-// from https://stackoverflow.com/a/16509511/1617295
-template<typename T>
-class is_abstract_class_or_function
-{
-    typedef char (&Two)[2];
-    template<typename U> static char test(U(*)[1]);
-    template<typename U> static Two test(...);
-
-public:
-    static const bool value =
-           !is_reference<T>::value
-        && !is_void<T>::value
-        && (sizeof(test<T>(0)) == sizeof(Two));
-};
-
-// warning: we cannot instanciate std::numeric_limits for incomplete types, we use is_abstract_class_or_function
-// prior to the specialization below
-template <typename T>
-struct tolerance_based_delegate<T, true>
-: mpl::bool_<
-    is_floating_point<T>::value ||
-    (!std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_specialized && !std::numeric_limits<T>::is_exact)>
-{};
-
-
-/*!@brief Indicates if a type can be compared using a tolerance scheme
- *
- * This is a metafunction that should evaluate to @c mpl::true_ if the type
- * @c T can be compared using a tolerance based method, typically for floating point
- * types.
- *
- * This metafunction can be specialized further to declare user types that are
- * floating point (eg. boost.multiprecision).
- */
-template <typename T>
-struct tolerance_based : tolerance_based_delegate<T, !is_array<T>::value && !is_abstract_class_or_function<T>::value>::type {};
 
 // ************************************************************************** //
 // **************                 fpc::strength                ************** //
@@ -106,6 +106,7 @@ enum strength {
 
 template<typename FPT>
 struct percent_tolerance_t {
+    KOKKOS_FUNCTION
     explicit    percent_tolerance_t( FPT v ) : m_value( v ) {}
 
     FPT m_value;
@@ -114,15 +115,7 @@ struct percent_tolerance_t {
 //____________________________________________________________________________//
 
 template<typename FPT>
-inline std::ostream& operator<<( std::ostream& out, percent_tolerance_t<FPT> t )
-{
-    return out << t.m_value;
-}
-
-//____________________________________________________________________________//
-
-template<typename FPT>
-inline percent_tolerance_t<FPT>
+KOKKOS_INLINE_FUNCTION percent_tolerance_t<FPT>
 percent_tolerance( FPT v )
 {
     return percent_tolerance_t<FPT>( v );
@@ -138,8 +131,8 @@ namespace fpc_detail {
 
 // FPT is Floating-Point Type: float, double, long double or User-Defined.
 template<typename FPT>
-inline FPT
-fpt_abs( FPT fpv ) 
+KOKKOS_INLINE_FUNCTION FPT
+fpt_abs( FPT fpv )
 {
     return fpv < static_cast<FPT>(0) ? -fpv : fpv;
 }
@@ -147,31 +140,19 @@ fpt_abs( FPT fpv )
 //____________________________________________________________________________//
 
 template<typename FPT>
-struct fpt_specialized_limits
+struct fpt_limits
 {
-  static FPT    min_value() { return (std::numeric_limits<FPT>::min)(); }
-  static FPT    max_value() { return (std::numeric_limits<FPT>::max)(); }
+  KOKKOS_FUNCTION
+  static FPT    min_value() { return Kokkos::Experimental::finite_min<FPT>::value; }
+  KOKKOS_FUNCTION
+  static FPT    max_value() { return Kokkos::Experimental::finite_max<FPT>::value; }
 };
-
-template<typename FPT>
-struct fpt_non_specialized_limits
-{
-  static FPT    min_value() { return static_cast<FPT>(0); }
-  static FPT    max_value() { return static_cast<FPT>(1000000); } // for our purposes it doesn't really matter what value is returned here
-};
-
-template<typename FPT>
-struct fpt_limits : boost::conditional<std::numeric_limits<FPT>::is_specialized,
-                                       fpt_specialized_limits<FPT>,
-                                       fpt_non_specialized_limits<FPT>
-                                      >::type
-{};
 
 //____________________________________________________________________________//
 
 // both f1 and f2 are unsigned here
 template<typename FPT>
-inline FPT
+KOKKOS_INLINE_FUNCTION FPT
 safe_fpt_division( FPT f1, FPT f2 )
 {
     // Avoid overflow.
@@ -189,19 +170,19 @@ safe_fpt_division( FPT f1, FPT f2 )
 //____________________________________________________________________________//
 
 template<typename FPT, typename ToleranceType>
-inline FPT
+KOKKOS_INLINE_FUNCTION FPT
 fraction_tolerance( ToleranceType tolerance )
 {
   return static_cast<FPT>(tolerance);
-} 
+}
 
 //____________________________________________________________________________//
 
 template<typename FPT2, typename FPT>
-inline FPT2
+KOKKOS_INLINE_FUNCTION FPT2
 fraction_tolerance( percent_tolerance_t<FPT> tolerance )
 {
-    return FPT2(tolerance.m_value)*FPT2(0.01); 
+    return FPT2(tolerance.m_value)*FPT2(0.01);
 }
 
 //____________________________________________________________________________//
@@ -215,7 +196,7 @@ fraction_tolerance( percent_tolerance_t<FPT> tolerance )
 
 /*!@brief Predicate for comparing floating point numbers
  *
- * This predicate is used to compare floating point numbers. In addition the comparison produces maximum 
+ * This predicate is used to compare floating point numbers. In addition the comparison produces maximum
  * related difference, which can be used to generate detailed error message
  * The methods for comparing floating points are detailed in the documentation. The method is chosen
  * by the @ref boost::math::fpc::strength given at construction.
@@ -226,26 +207,31 @@ template<typename FPT>
 class close_at_tolerance {
 public:
     // Public typedefs
+    // NOLINTNEXTLINE(modernize-use-using)
     typedef bool result_type;
 
     // Constructor
     template<typename ToleranceType>
-    explicit    close_at_tolerance( ToleranceType tolerance, fpc::strength fpc_strength = FPC_STRONG ) 
+    KOKKOS_FUNCTION
+    explicit    close_at_tolerance( ToleranceType tolerance, fpc::strength fpc_strength = FPC_STRONG )
     : m_fraction_tolerance( fpc_detail::fraction_tolerance<FPT>( tolerance ) )
     , m_strength( fpc_strength )
     , m_tested_rel_diff( 0 )
     {
-        BOOST_ASSERT_MSG( m_fraction_tolerance >= FPT(0), "tolerance must not be negative!" ); // no reason for tolerance to be negative
+        KOKKOS_ENSURES( m_fraction_tolerance >= FPT(0) && "tolerance must not be negative!" ); // no reason for tolerance to be negative
     }
 
     // Access methods
     //! Returns the tolerance
+    KOKKOS_FUNCTION
     FPT                 fraction_tolerance() const  { return m_fraction_tolerance; }
 
     //! Returns the comparison method
+    KOKKOS_FUNCTION
     fpc::strength       strength() const            { return m_strength; }
 
     //! Returns the failing fraction
+    KOKKOS_FUNCTION
     FPT                 tested_rel_diff() const     { return m_tested_rel_diff; }
 
     /*! Compares two floating point numbers a and b such that their "left" relative difference |a-b|/a and/or
@@ -259,14 +245,15 @@ public:
      * - for @c FPC_WEAK: the min of the two fractions
      * The rationale behind is to report the tolerance to set in order to make a test pass.
      */
+    KOKKOS_FUNCTION
     bool                operator()( FPT left, FPT right ) const
     {
         FPT diff              = fpc_detail::fpt_abs<FPT>( left - right );
         FPT fraction_of_right = fpc_detail::safe_fpt_division( diff, fpc_detail::fpt_abs( right ) );
         FPT fraction_of_left  = fpc_detail::safe_fpt_division( diff, fpc_detail::fpt_abs( left ) );
 
-        FPT max_rel_diff = (std::max)( fraction_of_left, fraction_of_right );
-        FPT min_rel_diff = (std::min)( fraction_of_left, fraction_of_right );
+        FPT max_rel_diff = fraction_of_left > fraction_of_right ? fraction_of_left : fraction_of_right;
+        FPT min_rel_diff = fraction_of_left > fraction_of_right ? fraction_of_right : fraction_of_left;
 
         m_tested_rel_diff = m_strength == FPC_STRONG ? max_rel_diff : min_rel_diff;
 
@@ -288,22 +275,25 @@ private:
 /*!@brief Predicate for comparing floating point numbers against 0
  *
  * Serves the same purpose as boost::math::fpc::close_at_tolerance, but used when one
- * of the operand is null. 
+ * of the operand is null.
  */
 template<typename FPT>
 class small_with_tolerance {
 public:
     // Public typedefs
+    // NOLINTNEXTLINE(modernize-use-using)
     typedef bool result_type;
 
     // Constructor
+    KOKKOS_FUNCTION
     explicit    small_with_tolerance( FPT tolerance ) // <= absolute tolerance
     : m_tolerance( tolerance )
     {
-        BOOST_ASSERT( m_tolerance >= FPT(0) ); // no reason for the tolerance to be negative
+        KOKKOS_ENSURES( m_tolerance >= FPT(0) ); // no reason for the tolerance to be negative
     }
 
     // Action method
+    KOKKOS_FUNCTION
     bool        operator()( FPT fpv ) const
     {
         return fpc::fpc_detail::fpt_abs( fpv ) <= m_tolerance;
@@ -319,7 +309,7 @@ private:
 // ************************************************************************** //
 
 template<typename FPT>
-inline bool
+KOKKOS_INLINE_FUNCTION bool
 is_small( FPT fpv, FPT tolerance )
 {
     return small_with_tolerance<FPT>( tolerance )( fpv );
@@ -328,9 +318,5 @@ is_small( FPT fpv, FPT tolerance )
 //____________________________________________________________________________//
 
 } // namespace fpc
-} // namespace math
-} // namespace boost
 
-#include <boost/test/detail/enable_warnings.hpp>
-
-#endif // BOOST_FLOATING_POINT_COMAPARISON_HPP_071894GER
+#endif
