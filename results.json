@@ -3,1480 +3,1858 @@
 ,{"args":{"name":"CPU HIP API"},"ph":"M","pid":2,"name":"process_name","sort_index":1}
 ,{"args":{"name":"COPY"},"ph":"M","pid":1,"name":"process_name","sort_index":2}
 ,{"args":{"name":"GPU0"},"ph":"M","pid":6,"name":"process_name","sort_index":3}
-,{"ph":"X","name":"Kokkos::Initialization Complete","pid":"0","tid":"1090206","ts":"344934","dur":"0",
+,{"ph":"X","name":"Kokkos::Initialization Complete","pid":"0","tid":"1093097","ts":"343760","dur":"0",
   "args":{
-    "BeginNs":"701970335326798",
-    "EndNs":"701970335326799",
+    "BeginNs":"703525365981764",
+    "EndNs":"703525365981765",
     "pid":"0",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"Kokkos::Initialization Complete"
   }
 }
-,{"ph":"X","name":"Kokkos::View::initialization [V]","pid":"0","tid":"1090206","ts":"345097","dur":"2187",
+,{"ph":"X","name":"Kokkos::View::initialization [V]","pid":"0","tid":"1093097","ts":"350647","dur":"1926",
   "args":{
-    "BeginNs":"701970335489247",
-    "EndNs":"701970337676606",
+    "BeginNs":"703525372869000",
+    "EndNs":"703525374795562",
     "pid":"0",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"Kokkos::View::initialization [V]"
   }
 }
-,{"ph":"X","name":"Kokkos::View::initialization [R]","pid":"0","tid":"1090206","ts":"347989","dur":"52",
+,{"ph":"X","name":"Kokkos::View::initialization [R]","pid":"0","tid":"1093097","ts":"353320","dur":"58",
   "args":{
-    "BeginNs":"701970338381550",
-    "EndNs":"701970338433909",
+    "BeginNs":"703525375541685",
+    "EndNs":"703525375599794",
     "pid":"0",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"Kokkos::View::initialization [R]"
   }
 }
-,{"ph":"X","name":"Kokkos::View::initialization [V_mirror]","pid":"0","tid":"1090206","ts":"348085","dur":"4960",
+,{"ph":"X","name":"Kokkos::View::initialization [V_mirror]","pid":"0","tid":"1093097","ts":"353433","dur":"5140",
   "args":{
-    "BeginNs":"701970338477539",
-    "EndNs":"701970343438314",
+    "BeginNs":"703525375654854",
+    "EndNs":"703525380795736",
     "pid":"0",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"Kokkos::View::initialization [V_mirror]"
   }
 }
-,{"ph":"X","name":"Atomic Loop","pid":"0","tid":"1090206","ts":"558379","dur":"911",
+,{"ph":"X","name":"Atomic Loop","pid":"0","tid":"1093097","ts":"561697","dur":"1648",
   "args":{
-    "BeginNs":"701970548771598",
-    "EndNs":"701970549682770",
+    "BeginNs":"703525583918343",
+    "EndNs":"703525585566668",
     "pid":"0",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"Atomic Loop"
   }
 }
-,{"ph":"X","name":"Kokkos::ScatterView::ResetDuplicates [R]","pid":"0","tid":"1090206","ts":"559370","dur":"60",
+,{"ph":"X","name":"Kokkos::ScatterView::ResetDuplicates [R]","pid":"0","tid":"1093097","ts":"563432","dur":"55",
   "args":{
-    "BeginNs":"701970549762319",
-    "EndNs":"701970549822639",
+    "BeginNs":"703525585653477",
+    "EndNs":"703525585708696",
     "pid":"0",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"Kokkos::ScatterView::ResetDuplicates [R]"
   }
 }
-,{"ph":"X","name":"Atomic Loop","pid":"0","tid":"1090206","ts":"559434","dur":"590",
+,{"ph":"X","name":"Atomic Loop","pid":"0","tid":"1093097","ts":"563491","dur":"580",
   "args":{
-    "BeginNs":"701970549826199",
-    "EndNs":"701970550416433",
+    "BeginNs":"703525585712776",
+    "EndNs":"703525586292901",
     "pid":"0",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"Atomic Loop"
   }
 }
-,{"ph":"X","name":"Kokkos::Finalization Complete","pid":"0","tid":"1090206","ts":"560195","dur":"0",
+,{"ph":"X","name":"Kokkos::Finalization Complete","pid":"0","tid":"1093097","ts":"566207","dur":"0",
   "args":{
-    "BeginNs":"701970550587692",
-    "EndNs":"701970550587693",
+    "BeginNs":"703525588428661",
+    "EndNs":"703525588428662",
     "pid":"0",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"Kokkos::Finalization Complete"
   }
 }
-,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343081","dur":"40",
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"342210","dur":"40",
   "args":{
-    "BeginNs":"701970333473805",
-    "EndNs":"701970333514355",
+    "BeginNs":"703525364431818",
+    "EndNs":"703525364472438",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyHostToDevice",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"40550"
+    "DurationNs":"40620"
   }
 }
-,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"343156","dur":"4",
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"342296","dur":"5",
   "args":{
-    "BeginNs":"701970333549035",
-    "EndNs":"701970333553995",
+    "BeginNs":"703525364518258",
+    "EndNs":"703525364523698",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"FillBuffer",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"4960"
+    "DurationNs":"5440"
   }
 }
-,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343201","dur":"13",
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"342355","dur":"13",
   "args":{
-    "BeginNs":"701970333593364",
-    "EndNs":"701970333606814",
+    "BeginNs":"703525364576877",
+    "EndNs":"703525364590496",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyHostToDevice",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"13450"
+    "DurationNs":"13619"
   }
 }
-,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343226","dur":"19",
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"342385","dur":"19",
   "args":{
-    "BeginNs":"701970333618594",
-    "EndNs":"701970333638083",
+    "BeginNs":"703525364606916",
+    "EndNs":"703525364626386",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyHostToDevice",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"19489"
+    "DurationNs":"19470"
   }
 }
-,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"343264","dur":"3",
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"342426","dur":"3",
   "args":{
-    "BeginNs":"701970333656664",
-    "EndNs":"701970333660344",
+    "BeginNs":"703525364647557",
+    "EndNs":"703525364651237",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"FillBuffer",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
     "DurationNs":"3680"
   }
 }
-,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"343272","dur":"4",
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"342434","dur":"4",
   "args":{
-    "BeginNs":"701970333664504",
-    "EndNs":"701970333668664",
+    "BeginNs":"703525364655397",
+    "EndNs":"703525364659397",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"FillBuffer",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"4160"
+    "DurationNs":"4000"
   }
 }
-,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343947","dur":"19",
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343271","dur":"20",
   "args":{
-    "BeginNs":"701970334340067",
-    "EndNs":"701970334359067",
+    "BeginNs":"703525365492408",
+    "EndNs":"703525365512428",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyHostToDevice",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"19000"
+    "DurationNs":"20020"
   }
 }
-,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"345034","dur":"38",
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"350296","dur":"39",
   "args":{
-    "BeginNs":"701970335426667",
-    "EndNs":"701970335464787",
+    "BeginNs":"703525372517813",
+    "EndNs":"703525372557233",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyHostToDevice",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"38120"
+    "DurationNs":"39420"
   }
 }
-,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"346588","dur":"13",
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"350372","dur":"5",
   "args":{
-    "BeginNs":"701970336981033",
-    "EndNs":"701970336994273",
+    "BeginNs":"703525372593443",
+    "EndNs":"703525372598883",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"FillBuffer",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"5440"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"350407","dur":"13",
+  "args":{
+    "BeginNs":"703525372629252",
+    "EndNs":"703525372642792",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyHostToDevice",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"13240"
+    "DurationNs":"13540"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"347292","dur":"642",
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"350442","dur":"4",
   "args":{
-    "BeginNs":"701970337685036",
-    "EndNs":"701970338327700",
+    "BeginNs":"703525372664052",
+    "EndNs":"703525372668052",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"FillBuffer",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"4000"
+  }
+}
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"350450","dur":"3",
+  "args":{
+    "BeginNs":"703525372672212",
+    "EndNs":"703525372675732",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"FillBuffer",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"3520"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"350593","dur":"28",
+  "args":{
+    "BeginNs":"703525372814570",
+    "EndNs":"703525372843170",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"28600"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"351877","dur":"20",
+  "args":{
+    "BeginNs":"703525374098598",
+    "EndNs":"703525374119008",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"20410"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"352586","dur":"679",
+  "args":{
+    "BeginNs":"703525374807972",
+    "EndNs":"703525375487495",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"642664"
+    "DurationNs":"679523"
   }
 }
-,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"347952","dur":"32",
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"353289","dur":"24",
   "args":{
-    "BeginNs":"701970338344360",
-    "EndNs":"701970338376450",
+    "BeginNs":"703525375511095",
+    "EndNs":"703525375535975",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyHostToDevice",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"32090"
+    "DurationNs":"24880"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"348047","dur":"8",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"353388","dur":"9",
   "args":{
-    "BeginNs":"701970338439959",
-    "EndNs":"701970338448329",
+    "BeginNs":"703525375610124",
+    "EndNs":"703525375619244",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"8370"
+    "DurationNs":"9120"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"348063","dur":"7",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"353409","dur":"7",
   "args":{
-    "BeginNs":"701970338455719",
-    "EndNs":"701970338463479",
+    "BeginNs":"703525375630774",
+    "EndNs":"703525375638534",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
     "DurationNs":"7760"
   }
 }
-,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"553076","dur":"5287",
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"2","ts":"556441","dur":"5233",
   "args":{
-    "BeginNs":"701970543468627",
-    "EndNs":"701970548756488",
+    "BeginNs":"703525578663282",
+    "EndNs":"703525583897223",
     "dev-id":"0",
-    "queue-id":"0",
+    "queue-id":"1",
     "Name":"CopyHostToDevice",
     "pid":"1",
-    "tid":"0",
-    "proc-id":"1090206",
+    "tid":"2",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"5287861"
+    "DurationNs":"5233941"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"559349","dur":"12",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"563414","dur":"11",
   "args":{
-    "BeginNs":"701970549741279",
-    "EndNs":"701970549753979",
+    "BeginNs":"703525585635487",
+    "EndNs":"703525585646687",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"12700"
+    "DurationNs":"11200"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"560114","dur":"7",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"564227","dur":"8",
   "args":{
-    "BeginNs":"701970550506642",
-    "EndNs":"701970550514612",
+    "BeginNs":"703525586448640",
+    "EndNs":"703525586457029",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"7970"
+    "DurationNs":"8389"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"560144","dur":"8",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"564265","dur":"8",
   "args":{
-    "BeginNs":"701970550536352",
-    "EndNs":"701970550544802",
+    "BeginNs":"703525586487079",
+    "EndNs":"703525586495429",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"8450"
+    "DurationNs":"8350"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"560207","dur":"1690",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"564336","dur":"1691",
   "args":{
-    "BeginNs":"701970550599661",
-    "EndNs":"701970552289856",
+    "BeginNs":"703525586557819",
+    "EndNs":"703525588249573",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"1690195"
+    "DurationNs":"1691754"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"561911","dur":"7",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"566041","dur":"7",
   "args":{
-    "BeginNs":"701970552303536",
-    "EndNs":"701970552311066",
+    "BeginNs":"703525588262793",
+    "EndNs":"703525588270263",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"7530"
+    "DurationNs":"7470"
   }
 }
-,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"561930","dur":"7",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"566066","dur":"7",
   "args":{
-    "BeginNs":"701970552322466",
-    "EndNs":"701970552329675",
+    "BeginNs":"703525588287493",
+    "EndNs":"703525588294962",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"CopyDeviceToHost",
     "pid":"1",
     "tid":"0",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"7209"
+    "DurationNs":"7469"
   }
 }
-,{"ph":"X","name":"hipGetDeviceCount","pid":"2","tid":"1090206","ts":"4993","dur":"3",
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"566085","dur":"7",
   "args":{
-    "BeginNs":"701969995386089",
-    "EndNs":"701969995389479",
+    "BeginNs":"703525588306792",
+    "EndNs":"703525588314262",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"7470"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"566104","dur":"7",
+  "args":{
+    "BeginNs":"703525588325882",
+    "EndNs":"703525588333342",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"7460"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"566222","dur":"7",
+  "args":{
+    "BeginNs":"703525588443711",
+    "EndNs":"703525588451601",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"7890"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"566247","dur":"7",
+  "args":{
+    "BeginNs":"703525588468411",
+    "EndNs":"703525588476271",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"7860"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"566270","dur":"7",
+  "args":{
+    "BeginNs":"703525588492171",
+    "EndNs":"703525588499921",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"7750"
+  }
+}
+,{"ph":"X","name":"hipGetDeviceCount","pid":"2","tid":"1093097","ts":"4766","dur":"3",
+  "args":{
+    "BeginNs":"703525026988086",
+    "EndNs":"703525026991676",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipGetDeviceCount",
     "args":"( count(4))",
     "Data":"",
-    "DurationNs":"3390"
+    "DurationNs":"3590"
   }
 }
-,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1090206","ts":"5003","dur":"3",
+,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1093097","ts":"4777","dur":"8",
   "args":{
-    "BeginNs":"701969995395809",
-    "EndNs":"701969995399649",
+    "BeginNs":"703525026998756",
+    "EndNs":"703525027007616",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipGetDeviceProperties",
     "args":"( props({}) device(0))",
     "Data":"",
-    "DurationNs":"3840"
+    "DurationNs":"8860"
   }
 }
-,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1090206","ts":"5008","dur":"1",
+,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1093097","ts":"4788","dur":"1",
   "args":{
-    "BeginNs":"701969995401009",
-    "EndNs":"701969995402069",
+    "BeginNs":"703525027009466",
+    "EndNs":"703525027010576",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipGetDeviceProperties",
     "args":"( props({}) device(1))",
     "Data":"",
-    "DurationNs":"1060"
+    "DurationNs":"1110"
   }
 }
-,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1090206","ts":"5011","dur":"2",
+,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1093097","ts":"4790","dur":"2",
   "args":{
-    "BeginNs":"701969995403209",
-    "EndNs":"701969995405709",
+    "BeginNs":"703525027011686",
+    "EndNs":"703525027013976",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipGetDeviceProperties",
     "args":"( props({}) device(2))",
     "Data":"",
-    "DurationNs":"2500"
+    "DurationNs":"2290"
   }
 }
-,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1090206","ts":"5014","dur":"0",
+,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1093097","ts":"4793","dur":"0",
   "args":{
-    "BeginNs":"701969995406909",
-    "EndNs":"701969995407829",
+    "BeginNs":"703525027015096",
+    "EndNs":"703525027016016",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipGetDeviceProperties",
     "args":"( props({}) device(3))",
     "Data":"",
     "DurationNs":"920"
   }
 }
-,{"ph":"X","name":"hipSetDevice","pid":"2","tid":"1090206","ts":"5021","dur":"0",
+,{"ph":"X","name":"hipSetDevice","pid":"2","tid":"1093097","ts":"4800","dur":"0",
   "args":{
-    "BeginNs":"701969995414039",
-    "EndNs":"701969995414889",
+    "BeginNs":"703525027022286",
+    "EndNs":"703525027022896",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipSetDevice",
     "args":"( deviceId(0))",
     "Data":"",
-    "DurationNs":"850"
+    "DurationNs":"610"
   }
 }
-,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"5036","dur":"74",
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"4814","dur":"73",
   "args":{
-    "BeginNs":"701969995428179",
-    "EndNs":"701969995502778",
+    "BeginNs":"703525027036246",
+    "EndNs":"703525027110165",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMalloc",
     "args":"( ptr(0x155449a00000) size(8320))",
     "Data":"",
-    "DurationNs":"74599"
+    "DurationNs":"73919"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"5118","dur":"338008",
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"4897","dur":"337361",
   "args":{
-    "BeginNs":"701969995510518",
-    "EndNs":"701970333518865",
+    "BeginNs":"703525027119215",
+    "EndNs":"703525364480747",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemcpy",
-    "args":"( dst(0x155449a00000) src(0x7fffffffafc0) sizeBytes(128) kind(4))",
+    "args":"( dst(0x155449a00000) src(0x7fffffffafa0) sizeBytes(128) kind(4))",
     "Data":"",
-    "DurationNs":"338008347"
+    "DurationNs":"337361532"
   }
 }
-,{"ph":"X","name":"hipMemset","pid":"2","tid":"1090206","ts":"343134","dur":"45",
+,{"ph":"X","name":"hipMemset","pid":"2","tid":"1093097","ts":"342270","dur":"49",
   "args":{
-    "BeginNs":"701970333526575",
-    "EndNs":"701970333571594",
+    "BeginNs":"703525364491397",
+    "EndNs":"703525364540987",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemset",
     "args":"( dst(0x155449a00080) value(0) sizeBytes(8192))",
     "Data":"",
-    "DurationNs":"45019"
+    "DurationNs":"49590"
   }
 }
-,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"343182","dur":"6",
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"342324","dur":"12",
   "args":{
-    "BeginNs":"701970333574834",
-    "EndNs":"701970333580864",
+    "BeginNs":"703525364545467",
+    "EndNs":"703525364557677",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMalloc",
     "args":"( ptr(0x155449a0c000) size(65664))",
     "Data":"",
-    "DurationNs":"6030"
+    "DurationNs":"12210"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"343195","dur":"20",
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"342346","dur":"24",
   "args":{
-    "BeginNs":"701970333587664",
-    "EndNs":"701970333608004",
+    "BeginNs":"703525364567927",
+    "EndNs":"703525364591986",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemcpy",
-    "args":"( dst(0x155449a0c000) src(0x7fffffffafc0) sizeBytes(128) kind(4))",
+    "args":"( dst(0x155449a0c000) src(0x7fffffffafa0) sizeBytes(128) kind(4))",
     "Data":"",
-    "DurationNs":"20340"
+    "DurationNs":"24059"
   }
 }
-,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"343217","dur":"2",
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"342372","dur":"3",
   "args":{
-    "BeginNs":"701970333609724",
-    "EndNs":"701970333612184",
+    "BeginNs":"703525364593986",
+    "EndNs":"703525364597716",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMalloc",
     "args":"( ptr(0x155449a1d000) size(20612))",
     "Data":"",
-    "DurationNs":"2460"
+    "DurationNs":"3730"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"343221","dur":"25",
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"342377","dur":"28",
   "args":{
-    "BeginNs":"701970333613404",
-    "EndNs":"701970333639013",
+    "BeginNs":"703525364598956",
+    "EndNs":"703525364627746",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemcpy",
-    "args":"( dst(0x155449a1d000) src(0x7fffffffb010) sizeBytes(128) kind(4))",
+    "args":"( dst(0x155449a1d000) src(0x7fffffffaff0) sizeBytes(128) kind(4))",
     "Data":"",
-    "DurationNs":"25609"
+    "DurationNs":"28790"
   }
 }
-,{"ph":"X","name":"hipMemset","pid":"2","tid":"1090206","ts":"343248","dur":"42",
+,{"ph":"X","name":"hipMemset","pid":"2","tid":"1093097","ts":"342408","dur":"45",
   "args":{
-    "BeginNs":"701970333640383",
-    "EndNs":"701970333682613",
+    "BeginNs":"703525364629446",
+    "EndNs":"703525364674566",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemset",
     "args":"( dst(0x155449a1d080) value(0) sizeBytes(20484))",
     "Data":"",
-    "DurationNs":"42230"
+    "DurationNs":"45120"
   }
 }
-,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"343293","dur":"2",
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"342456","dur":"3",
   "args":{
-    "BeginNs":"701970333685583",
-    "EndNs":"701970333688523",
+    "BeginNs":"703525364677636",
+    "EndNs":"703525364680976",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMalloc",
     "args":"( ptr(0x155449a23000) size(524288))",
     "Data":"",
-    "DurationNs":"2940"
+    "DurationNs":"3340"
   }
 }
-,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"343297","dur":"2",
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"342460","dur":"2",
   "args":{
-    "BeginNs":"701970333689693",
-    "EndNs":"701970333691763",
+    "BeginNs":"703525364682116",
+    "EndNs":"703525364684206",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMalloc",
     "args":"( ptr(0x155449aa3000) size(655360))",
     "Data":"",
-    "DurationNs":"2070"
+    "DurationNs":"2090"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"343937","dur":"30",
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"343257","dur":"34",
   "args":{
-    "BeginNs":"701970334330087",
-    "EndNs":"701970334360427",
+    "BeginNs":"703525365479168",
+    "EndNs":"703525365513758",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemcpy",
-    "args":"( dst(0x155449b46000) src(0x75bd48) sizeBytes(24) kind(1))",
+    "args":"( dst(0x155449b46000) src(0x759d28) sizeBytes(24) kind(1))",
     "Data":"",
-    "DurationNs":"30340"
+    "DurationNs":"34590"
   }
 }
-,{"ph":"X","name":"hipMemcpyToSymbol","pid":"2","tid":"1090206","ts":"343937","dur":"31",
+,{"ph":"X","name":"hipMemcpyToSymbol","pid":"2","tid":"1093097","ts":"343257","dur":"36",
   "args":{
-    "BeginNs":"701970334330087",
-    "EndNs":"701970334362077",
+    "BeginNs":"703525365479168",
+    "EndNs":"703525365515668",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemcpyToSymbol",
-    "args":"( symbol(0x75bcf8) src(0x75bd48) sizeBytes(24) offset(0) kind(1))",
+    "args":"( symbol(0x759cd8) src(0x759d28) sizeBytes(24) offset(0) kind(1))",
     "Data":"",
-    "DurationNs":"31990"
+    "DurationNs":"36500"
   }
 }
-,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"343973","dur":"3",
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1093097","ts":"343298","dur":"4",
   "args":{
-    "BeginNs":"701970334365687",
-    "EndNs":"701970334369217",
+    "BeginNs":"703525365519598",
+    "EndNs":"703525365524278",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"__hipPushCallConfiguration",
     "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
     "Data":"",
-    "DurationNs":"3530"
+    "DurationNs":"4680"
   }
 }
-,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"343983","dur":"0",
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1093097","ts":"343309","dur":"0",
   "args":{
-    "BeginNs":"701970334375427",
-    "EndNs":"701970334376247",
+    "BeginNs":"703525365531028",
+    "EndNs":"703525365531828",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"__hipPopCallConfiguration",
     "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
     "Data":"",
-    "DurationNs":"820"
+    "DurationNs":"800"
   }
 }
-,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"343987","dur":"9",
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1093097","ts":"343313","dur":"10",
   "args":{
-    "BeginNs":"701970334379337",
-    "EndNs":"701970334388457",
+    "BeginNs":"703525365534818",
+    "EndNs":"703525365545468",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipLaunchKernel",
-    "args":"( kernel(Kokkos::(anonymous namespace)::init_lock_array_kernel_atomic()) function_address(0x432f70) numBlocks({}) dimBlocks({}) args(0x5004) sharedMemBytes(0) stream(1))",
+    "args":"( kernel(Kokkos::(anonymous namespace)::init_lock_array_kernel_atomic()) function_address(0x4311b0) numBlocks({}) dimBlocks({}) args(0x5004) sharedMemBytes(0) stream(1))",
     "Data":"",
-    "DurationNs":"9120"
+    "DurationNs":"10650"
   }
 }
-,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"344010","dur":"0",
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1093097","ts":"343338","dur":"0",
   "args":{
-    "BeginNs":"701970334403116",
-    "EndNs":"701970334403656",
+    "BeginNs":"703525365560187",
+    "EndNs":"703525365560717",
     "pid":"2",
-    "tid":"1090206",
-    "Name":"__hipPushCallConfiguration",
-    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
-    "Data":"",
-    "DurationNs":"540"
-  }
-}
-,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"344012","dur":"0",
-  "args":{
-    "BeginNs":"701970334404846",
-    "EndNs":"701970334405416",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"__hipPopCallConfiguration",
-    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
-    "Data":"",
-    "DurationNs":"570"
-  }
-}
-,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"344014","dur":"4",
-  "args":{
-    "BeginNs":"701970334406556",
-    "EndNs":"701970334411186",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipLaunchKernel",
-    "args":"( kernel(Kokkos::(anonymous namespace)::init_lock_array_kernel_threadid(int)) function_address(0x432fc0) numBlocks({}) dimBlocks({}) args(0x7fffffffb0cc) sharedMemBytes(0) stream(1))",
-    "Data":"",
-    "DurationNs":"4630"
-  }
-}
-,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"344942","dur":"78",
-  "args":{
-    "BeginNs":"701970335334778",
-    "EndNs":"701970335413777",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMalloc",
-    "args":"( ptr(0x15500d600000) size(40000128))",
-    "Data":"",
-    "DurationNs":"78999"
-  }
-}
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"345024","dur":"55",
-  "args":{
-    "BeginNs":"701970335416857",
-    "EndNs":"701970335472547",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x15500d600000) src(0x7fffffffb270) sizeBytes(128) kind(4))",
-    "Data":"",
-    "DurationNs":"55690"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"345086","dur":"1",
-  "args":{
-    "BeginNs":"701970335479057",
-    "EndNs":"701970335480197",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"1140"
-  }
-}
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"346578","dur":"24",
-  "args":{
-    "BeginNs":"701970336970963",
-    "EndNs":"701970336995293",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x155449b50000) src(0x75bd48) sizeBytes(24) kind(1))",
-    "Data":"",
-    "DurationNs":"24330"
-  }
-}
-,{"ph":"X","name":"hipMemcpyToSymbol","pid":"2","tid":"1090206","ts":"346578","dur":"25",
-  "args":{
-    "BeginNs":"701970336970963",
-    "EndNs":"701970336996803",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpyToSymbol",
-    "args":"( symbol(0x6ddb70) src(0x75bd48) sizeBytes(24) offset(0) kind(1))",
-    "Data":"",
-    "DurationNs":"25840"
-  }
-}
-,{"ph":"X","name":"hipHostMalloc","pid":"2","tid":"1090206","ts":"346607","dur":"474",
-  "args":{
-    "BeginNs":"701970336999763",
-    "EndNs":"701970337474098",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipHostMalloc",
-    "args":"( ptr(0x155448100000) size(1024000) flags(2147483648))",
-    "Data":"",
-    "DurationNs":"474335"
-  }
-}
-,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"347083","dur":"0",
-  "args":{
-    "BeginNs":"701970337476118",
-    "EndNs":"701970337476958",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"__hipPushCallConfiguration",
-    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
-    "Data":"",
-    "DurationNs":"840"
-  }
-}
-,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"347086","dur":"0",
-  "args":{
-    "BeginNs":"701970337478228",
-    "EndNs":"701970337478828",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"__hipPopCallConfiguration",
-    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
-    "Data":"",
-    "DurationNs":"600"
-  }
-}
-,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"347088","dur":"9",
-  "args":{
-    "BeginNs":"701970337480218",
-    "EndNs":"701970337490018",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipLaunchKernel",
-    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)) function_address(0x4060c0) numBlocks({}) dimBlocks({}) args(0x7fffffffb1f0) sharedMemBytes(0) stream(1))",
-    "Data":"",
-    "DurationNs":"9800"
-  }
-}
-,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1090206","ts":"347102","dur":"178",
-  "args":{
-    "BeginNs":"701970337494348",
-    "EndNs":"701970337672366",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipStreamSynchronize",
-    "args":"( stream(1))",
-    "Data":"",
-    "DurationNs":"178018"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"347282","dur":"0",
-  "args":{
-    "BeginNs":"701970337674256",
-    "EndNs":"701970337675176",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"920"
-  }
-}
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"347287","dur":"650",
-  "args":{
-    "BeginNs":"701970337679556",
-    "EndNs":"701970338329610",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb398) src(0x15500d600000) sizeBytes(128) kind(4))",
-    "Data":"",
-    "DurationNs":"650054"
-  }
-}
-,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"347939","dur":"4",
-  "args":{
-    "BeginNs":"701970338331930",
-    "EndNs":"701970338336190",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMalloc",
-    "args":"( ptr(0x155449b59000) size(400128))",
-    "Data":"",
-    "DurationNs":"4260"
-  }
-}
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"347945","dur":"39",
-  "args":{
-    "BeginNs":"701970338337690",
-    "EndNs":"701970338377550",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x155449b59000) src(0x7fffffffb270) sizeBytes(128) kind(4))",
-    "Data":"",
-    "DurationNs":"39860"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"347987","dur":"0",
-  "args":{
-    "BeginNs":"701970338379380",
-    "EndNs":"701970338380190",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"810"
-  }
-}
-,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"347990","dur":"0",
-  "args":{
-    "BeginNs":"701970338383040",
-    "EndNs":"701970338383570",
-    "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"__hipPushCallConfiguration",
     "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
     "Data":"",
     "DurationNs":"530"
   }
 }
-,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"347992","dur":"0",
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1093097","ts":"343340","dur":"0",
   "args":{
-    "BeginNs":"701970338384610",
-    "EndNs":"701970338385160",
+    "BeginNs":"703525365561907",
+    "EndNs":"703525365562457",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"__hipPopCallConfiguration",
     "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
     "Data":"",
     "DurationNs":"550"
   }
 }
-,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"347994","dur":"4",
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1093097","ts":"343342","dur":"5",
   "args":{
-    "BeginNs":"701970338386210",
-    "EndNs":"701970338390510",
+    "BeginNs":"703525365563587",
+    "EndNs":"703525365569337",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipLaunchKernel",
-    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)) function_address(0x4060c0) numBlocks({}) dimBlocks({}) args(0x7fffffffb1f0) sharedMemBytes(0) stream(1))",
+    "args":"( kernel(Kokkos::(anonymous namespace)::init_lock_array_kernel_threadid(int)) function_address(0x431200) numBlocks({}) dimBlocks({}) args(0x7fffffffb0ac) sharedMemBytes(0) stream(1))",
     "Data":"",
-    "DurationNs":"4300"
+    "DurationNs":"5750"
   }
 }
-,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1090206","ts":"347999","dur":"38",
+,{"ph":"X","name":"hipStreamCreate","pid":"2","tid":"1093097","ts":"343769","dur":"6483",
   "args":{
-    "BeginNs":"701970338391960",
-    "EndNs":"701970338430880",
+    "BeginNs":"703525365990743",
+    "EndNs":"703525372474603",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
+    "Name":"hipStreamCreate",
+    "args":"( stream(2))",
+    "Data":"",
+    "DurationNs":"6483860"
+  }
+}
+,{"ph":"X","name":"hipSetDevice","pid":"2","tid":"1093097","ts":"350260","dur":"0",
+  "args":{
+    "BeginNs":"703525372482293",
+    "EndNs":"703525372483043",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipSetDevice",
+    "args":"( deviceId(0))",
+    "Data":"",
+    "DurationNs":"750"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"350265","dur":"12",
+  "args":{
+    "BeginNs":"703525372487263",
+    "EndNs":"703525372499853",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449b47000) size(8320))",
+    "Data":"",
+    "DurationNs":"12590"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"350281","dur":"64",
+  "args":{
+    "BeginNs":"703525372503153",
+    "EndNs":"703525372567402",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449b47000) src(0x7fffffffb200) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"64249"
+  }
+}
+,{"ph":"X","name":"hipMemset","pid":"2","tid":"1093097","ts":"350348","dur":"44",
+  "args":{
+    "BeginNs":"703525372569802",
+    "EndNs":"703525372614002",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemset",
+    "args":"( dst(0x155449b47080) value(0) sizeBytes(8192))",
+    "Data":"",
+    "DurationNs":"44200"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"350394","dur":"3",
+  "args":{
+    "BeginNs":"703525372615752",
+    "EndNs":"703525372619372",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449b4a000) size(20612))",
+    "Data":"",
+    "DurationNs":"3620"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"350399","dur":"23",
+  "args":{
+    "BeginNs":"703525372620792",
+    "EndNs":"703525372644032",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449b4a000) src(0x7fffffffb250) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"23240"
+  }
+}
+,{"ph":"X","name":"hipMemset","pid":"2","tid":"1093097","ts":"350424","dur":"44",
+  "args":{
+    "BeginNs":"703525372645692",
+    "EndNs":"703525372690201",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemset",
+    "args":"( dst(0x155449b4a080) value(0) sizeBytes(20484))",
+    "Data":"",
+    "DurationNs":"44509"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"350471","dur":"110",
+  "args":{
+    "BeginNs":"703525372692581",
+    "EndNs":"703525372803110",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x15500d600000) size(40000128))",
+    "Data":"",
+    "DurationNs":"110529"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"350583","dur":"39",
+  "args":{
+    "BeginNs":"703525372805200",
+    "EndNs":"703525372844920",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x15500d600000) src(0x7fffffffb250) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"39720"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"350633","dur":"1",
+  "args":{
+    "BeginNs":"703525372854440",
+    "EndNs":"703525372856070",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1630"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"351864","dur":"34",
+  "args":{
+    "BeginNs":"703525374086088",
+    "EndNs":"703525374120448",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449b59000) src(0x759d28) sizeBytes(24) kind(1))",
+    "Data":"",
+    "DurationNs":"34360"
+  }
+}
+,{"ph":"X","name":"hipMemcpyToSymbol","pid":"2","tid":"1093097","ts":"351864","dur":"35",
+  "args":{
+    "BeginNs":"703525374086088",
+    "EndNs":"703525374122028",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpyToSymbol",
+    "args":"( symbol(0x6dbb50) src(0x759d28) sizeBytes(24) offset(0) kind(1))",
+    "Data":"",
+    "DurationNs":"35940"
+  }
+}
+,{"ph":"X","name":"hipHostMalloc","pid":"2","tid":"1093097","ts":"351904","dur":"459",
+  "args":{
+    "BeginNs":"703525374125618",
+    "EndNs":"703525374585124",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipHostMalloc",
+    "args":"( ptr(0x155443f00000) size(1024000) flags(2147483648))",
+    "Data":"",
+    "DurationNs":"459506"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1093097","ts":"352366","dur":"1",
+  "args":{
+    "BeginNs":"703525374587994",
+    "EndNs":"703525374589174",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"1180"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1093097","ts":"352369","dur":"0",
+  "args":{
+    "BeginNs":"703525374590964",
+    "EndNs":"703525374591774",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"810"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1093097","ts":"352372","dur":"11",
+  "args":{
+    "BeginNs":"703525374593944",
+    "EndNs":"703525374605234",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)) function_address(0x405990) numBlocks({}) dimBlocks({}) args(0x7fffffffb1d0) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"11290"
+  }
+}
+,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1093097","ts":"352388","dur":"180",
+  "args":{
+    "BeginNs":"703525374610004",
+    "EndNs":"703525374790532",
+    "pid":"2",
+    "tid":"1093097",
     "Name":"hipStreamSynchronize",
     "args":"( stream(1))",
     "Data":"",
-    "DurationNs":"38920"
+    "DurationNs":"180528"
   }
 }
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"348039","dur":"0",
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"352571","dur":"1",
   "args":{
-    "BeginNs":"701970338432070",
-    "EndNs":"701970338432879",
+    "BeginNs":"703525374792672",
+    "EndNs":"703525374793952",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipDeviceSynchronize",
     "args":"( ))",
     "Data":"",
-    "DurationNs":"809"
+    "DurationNs":"1280"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"348042","dur":"14",
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"352577","dur":"691",
   "args":{
-    "BeginNs":"701970338434929",
-    "EndNs":"701970338449219",
+    "BeginNs":"703525374798692",
+    "EndNs":"703525375490185",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb398) src(0x155449b59000) sizeBytes(128) kind(4))",
+    "args":"( dst(0x7fffffffb378) src(0x15500d600000) sizeBytes(128) kind(4))",
     "Data":"",
-    "DurationNs":"14290"
+    "DurationNs":"691493"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"348058","dur":"13",
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1093097","ts":"353271","dur":"4",
   "args":{
-    "BeginNs":"701970338450489",
-    "EndNs":"701970338464449",
+    "BeginNs":"703525375492695",
+    "EndNs":"703525375497375",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449b62000) size(400128))",
+    "Data":"",
+    "DurationNs":"4680"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"353277","dur":"38",
+  "args":{
+    "BeginNs":"703525375499145",
+    "EndNs":"703525375537385",
+    "pid":"2",
+    "tid":"1093097",
     "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb438) src(0x15500d600000) sizeBytes(128) kind(4))",
+    "args":"( dst(0x155449b62000) src(0x7fffffffb250) sizeBytes(128) kind(4))",
     "Data":"",
-    "DurationNs":"13960"
+    "DurationNs":"38240"
   }
 }
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"348083","dur":"0",
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"353317","dur":"1",
   "args":{
-    "BeginNs":"701970338475509",
-    "EndNs":"701970338476349",
+    "BeginNs":"703525375539315",
+    "EndNs":"703525375540415",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipDeviceSynchronize",
     "args":"( ))",
     "Data":"",
-    "DurationNs":"840"
+    "DurationNs":"1100"
   }
 }
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"353040","dur":"2",
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1093097","ts":"353321","dur":"0",
   "args":{
-    "BeginNs":"701970343432734",
-    "EndNs":"701970343435014",
+    "BeginNs":"703525375543245",
+    "EndNs":"703525375543785",
     "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"2280"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"553055","dur":"1",
-  "args":{
-    "BeginNs":"701970543447167",
-    "EndNs":"701970543449107",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"1940"
-  }
-}
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"553060","dur":"5306",
-  "args":{
-    "BeginNs":"701970543452487",
-    "EndNs":"701970548758778",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x15500d600080) src(0x15500afda0c0) sizeBytes(40000000) kind(4))",
-    "Data":"",
-    "DurationNs":"5306291"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"558368","dur":"0",
-  "args":{
-    "BeginNs":"701970548760208",
-    "EndNs":"701970548761088",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"880"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"558376","dur":"0",
-  "args":{
-    "BeginNs":"701970548768528",
-    "EndNs":"701970548769238",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"710"
-  }
-}
-,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"558383","dur":"1",
-  "args":{
-    "BeginNs":"701970548775158",
-    "EndNs":"701970548776518",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"__hipPushCallConfiguration",
-    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
-    "Data":"",
-    "DurationNs":"1360"
-  }
-}
-,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"558386","dur":"1",
-  "args":{
-    "BeginNs":"701970548778548",
-    "EndNs":"701970548779668",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"__hipPopCallConfiguration",
-    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
-    "Data":"",
-    "DurationNs":"1120"
-  }
-}
-,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"558389","dur":"10",
-  "args":{
-    "BeginNs":"701970548781608",
-    "EndNs":"701970548792518",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipLaunchKernel",
-    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)) function_address(0x406050) numBlocks({}) dimBlocks({}) args(0x7fffffffb488) sharedMemBytes(0) stream(1))",
-    "Data":"",
-    "DurationNs":"10910"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"558402","dur":"887",
-  "args":{
-    "BeginNs":"701970548794198",
-    "EndNs":"701970549681490",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"887292"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559291","dur":"0",
-  "args":{
-    "BeginNs":"701970549683900",
-    "EndNs":"701970549684690",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"790"
-  }
-}
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"559335","dur":"29",
-  "args":{
-    "BeginNs":"701970549727139",
-    "EndNs":"701970549756449",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb2f8) src(0x155449b59000) sizeBytes(128) kind(4))",
-    "Data":"",
-    "DurationNs":"29310"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559367","dur":"1",
-  "args":{
-    "BeginNs":"701970549759709",
-    "EndNs":"701970549760729",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"1020"
-  }
-}
-,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"559372","dur":"0",
-  "args":{
-    "BeginNs":"701970549764809",
-    "EndNs":"701970549765729",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"__hipPushCallConfiguration",
-    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
-    "Data":"",
-    "DurationNs":"920"
-  }
-}
-,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"559376","dur":"1",
-  "args":{
-    "BeginNs":"701970549768239",
-    "EndNs":"701970549769249",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"__hipPopCallConfiguration",
-    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
-    "Data":"",
-    "DurationNs":"1010"
-  }
-}
-,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"559378","dur":"10",
-  "args":{
-    "BeginNs":"701970549770929",
-    "EndNs":"701970549781289",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipLaunchKernel",
-    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP> const*)) function_address(0x405f30) numBlocks({}) dimBlocks({}) args(0x7fffffffb1e0) sharedMemBytes(0) stream(1))",
-    "Data":"",
-    "DurationNs":"10360"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559391","dur":"37",
-  "args":{
-    "BeginNs":"701970549783789",
-    "EndNs":"701970549821169",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"37380"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559432","dur":"0",
-  "args":{
-    "BeginNs":"701970549824239",
-    "EndNs":"701970549825119",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"880"
-  }
-}
-,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"559435","dur":"0",
-  "args":{
-    "BeginNs":"701970549827619",
-    "EndNs":"701970549828159",
-    "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"__hipPushCallConfiguration",
     "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
     "Data":"",
     "DurationNs":"540"
   }
 }
-,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"559437","dur":"0",
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1093097","ts":"353323","dur":"0",
   "args":{
-    "BeginNs":"701970549829228",
-    "EndNs":"701970549829778",
+    "BeginNs":"703525375544825",
+    "EndNs":"703525375545355",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"__hipPopCallConfiguration",
     "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
     "Data":"",
-    "DurationNs":"550"
+    "DurationNs":"530"
   }
 }
-,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"559438","dur":"6",
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1093097","ts":"353325","dur":"5",
   "args":{
-    "BeginNs":"701970549830918",
-    "EndNs":"701970549837888",
+    "BeginNs":"703525375546415",
+    "EndNs":"703525375552145",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipLaunchKernel",
-    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)) function_address(0x405f90) numBlocks({}) dimBlocks({}) args(0x7fffffffb498) sharedMemBytes(0) stream(1))",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)) function_address(0x405990) numBlocks({}) dimBlocks({}) args(0x7fffffffb1d0) sharedMemBytes(0) stream(1))",
     "Data":"",
-    "DurationNs":"6970"
+    "DurationNs":"5730"
   }
 }
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559447","dur":"575",
+,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1093097","ts":"353332","dur":"42",
   "args":{
-    "BeginNs":"701970549839638",
-    "EndNs":"701970550415203",
+    "BeginNs":"703525375553665",
+    "EndNs":"703525375596374",
     "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"575565"
-  }
-}
-,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"560025","dur":"0",
-  "args":{
-    "BeginNs":"701970550417393",
-    "EndNs":"701970550418193",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipDeviceSynchronize",
-    "args":"( ))",
-    "Data":"",
-    "DurationNs":"800"
-  }
-}
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"560104","dur":"19",
-  "args":{
-    "BeginNs":"701970550496582",
-    "EndNs":"701970550515652",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb2a0) src(0x155449b59000) sizeBytes(128) kind(4))",
-    "Data":"",
-    "DurationNs":"19070"
-  }
-}
-,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"560127","dur":"9",
-  "args":{
-    "BeginNs":"701970550519702",
-    "EndNs":"701970550529202",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipFree",
-    "args":"( ptr(0x155449b59000))",
-    "Data":"",
-    "DurationNs":"9500"
-  }
-}
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"560138","dur":"15",
-  "args":{
-    "BeginNs":"701970550530602",
-    "EndNs":"701970550545652",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb2a0) src(0x15500d600000) sizeBytes(128) kind(4))",
-    "Data":"",
-    "DurationNs":"15050"
-  }
-}
-,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"560154","dur":"37",
-  "args":{
-    "BeginNs":"701970550546922",
-    "EndNs":"701970550584442",
-    "pid":"2",
-    "tid":"1090206",
-    "Name":"hipFree",
-    "args":"( ptr(0x15500d600000))",
-    "Data":"",
-    "DurationNs":"37520"
-  }
-}
-,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1090206","ts":"560198","dur":"1",
-  "args":{
-    "BeginNs":"701970550590482",
-    "EndNs":"701970550591491",
-    "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipStreamSynchronize",
     "args":"( stream(1))",
     "Data":"",
-    "DurationNs":"1009"
+    "DurationNs":"42709"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"560200","dur":"1698",
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"353376","dur":"1",
   "args":{
-    "BeginNs":"701970550592701",
-    "EndNs":"701970552291386",
+    "BeginNs":"703525375597624",
+    "EndNs":"703525375598794",
     "pid":"2",
-    "tid":"1090206",
-    "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb418) src(0x155449a00000) sizeBytes(128) kind(4))",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
     "Data":"",
-    "DurationNs":"1698685"
+    "DurationNs":"1170"
   }
 }
-,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"561901","dur":"2",
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"353379","dur":"19",
   "args":{
-    "BeginNs":"701970552293256",
-    "EndNs":"701970552296176",
+    "BeginNs":"703525375600804",
+    "EndNs":"703525375620634",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb378) src(0x155449b62000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"19830"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"353400","dur":"17",
+  "args":{
+    "BeginNs":"703525375622034",
+    "EndNs":"703525375639864",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb418) src(0x15500d600000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"17830"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"353431","dur":"1",
+  "args":{
+    "BeginNs":"703525375652484",
+    "EndNs":"703525375653604",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1120"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"358568","dur":"3",
+  "args":{
+    "BeginNs":"703525380789716",
+    "EndNs":"703525380792966",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"3250"
+  }
+}
+,{"ph":"X","name":"hipMemcpyAsync","pid":"2","tid":"1093097","ts":"556421","dur":"5257",
+  "args":{
+    "BeginNs":"703525578642462",
+    "EndNs":"703525583899743",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpyAsync",
+    "args":"( dst(0x15500d600080) src(0x1550059da0c0) sizeBytes(40000000) kind(4) stream(2))",
+    "Data":"",
+    "DurationNs":"5257281"
+  }
+}
+,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1093097","ts":"561683","dur":"1",
+  "args":{
+    "BeginNs":"703525583904423",
+    "EndNs":"703525583905893",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipStreamSynchronize",
+    "args":"( stream(2))",
+    "Data":"",
+    "DurationNs":"1470"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"561692","dur":"1",
+  "args":{
+    "BeginNs":"703525583914253",
+    "EndNs":"703525583915683",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1430"
+  }
+}
+,{"ph":"X","name":"hipHostMalloc","pid":"2","tid":"1093097","ts":"561700","dur":"1022",
+  "args":{
+    "BeginNs":"703525583921403",
+    "EndNs":"703525584944353",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipHostMalloc",
+    "args":"( ptr(0x155343d00000) size(1024000) flags(2147483648))",
+    "Data":"",
+    "DurationNs":"1022950"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1093097","ts":"562726","dur":"1",
+  "args":{
+    "BeginNs":"703525584948163",
+    "EndNs":"703525584949333",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(2))",
+    "Data":"",
+    "DurationNs":"1170"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1093097","ts":"562729","dur":"0",
+  "args":{
+    "BeginNs":"703525584950983",
+    "EndNs":"703525584951843",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(2))",
+    "Data":"",
+    "DurationNs":"860"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1093097","ts":"562732","dur":"16",
+  "args":{
+    "BeginNs":"703525584954093",
+    "EndNs":"703525584970373",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop<Kokkos::Experimental::HIP>(Kokkos::Experimental::HIP const&, Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop<Kokkos::Experimental::HIP>(Kokkos::Experimental::HIP const&, Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::Experimental::HIP> const*)) function_address(0x405a00) numBlocks({}) dimBlocks({}) args(0x7fffffffb320) sharedMemBytes(0) stream(2))",
+    "Data":"",
+    "DurationNs":"16280"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"562752","dur":"591",
+  "args":{
+    "BeginNs":"703525584973523",
+    "EndNs":"703525585564698",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"591175"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"563347","dur":"1",
+  "args":{
+    "BeginNs":"703525585568468",
+    "EndNs":"703525585570008",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1540"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"563403","dur":"23",
+  "args":{
+    "BeginNs":"703525585624357",
+    "EndNs":"703525585647947",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb2d8) src(0x155449b62000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"23590"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"563429","dur":"1",
+  "args":{
+    "BeginNs":"703525585650757",
+    "EndNs":"703525585652027",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1270"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1093097","ts":"563435","dur":"0",
+  "args":{
+    "BeginNs":"703525585656487",
+    "EndNs":"703525585657117",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"630"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1093097","ts":"563437","dur":"0",
+  "args":{
+    "BeginNs":"703525585658377",
+    "EndNs":"703525585658937",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"560"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1093097","ts":"563438","dur":"8",
+  "args":{
+    "BeginNs":"703525585659987",
+    "EndNs":"703525585668677",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP> const*)) function_address(0x405860) numBlocks({}) dimBlocks({}) args(0x7fffffffb1c0) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"8690"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"563449","dur":"37",
+  "args":{
+    "BeginNs":"703525585670437",
+    "EndNs":"703525585707676",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"37239"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"563488","dur":"1",
+  "args":{
+    "BeginNs":"703525585710036",
+    "EndNs":"703525585711246",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1210"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1093097","ts":"563493","dur":"0",
+  "args":{
+    "BeginNs":"703525585714816",
+    "EndNs":"703525585715396",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"580"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1093097","ts":"563495","dur":"0",
+  "args":{
+    "BeginNs":"703525585716446",
+    "EndNs":"703525585716956",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"510"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1093097","ts":"563496","dur":"7",
+  "args":{
+    "BeginNs":"703525585718056",
+    "EndNs":"703525585725286",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)) function_address(0x4058c0) numBlocks({}) dimBlocks({}) args(0x7fffffffb478) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"7230"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"563505","dur":"564",
+  "args":{
+    "BeginNs":"703525585726796",
+    "EndNs":"703525586291701",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"564905"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1093097","ts":"564072","dur":"1",
+  "args":{
+    "BeginNs":"703525586293961",
+    "EndNs":"703525586295141",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1180"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"564214","dur":"22",
+  "args":{
+    "BeginNs":"703525586436300",
+    "EndNs":"703525586458339",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb280) src(0x155449b62000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"22039"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1093097","ts":"564241","dur":"13",
+  "args":{
+    "BeginNs":"703525586462939",
+    "EndNs":"703525586476029",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipFree",
+    "args":"( ptr(0x155449b62000))",
+    "Data":"",
+    "DurationNs":"13090"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"564256","dur":"19",
+  "args":{
+    "BeginNs":"703525586477609",
+    "EndNs":"703525586496809",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb280) src(0x15500d600000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"19200"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1093097","ts":"564276","dur":"44",
+  "args":{
+    "BeginNs":"703525586498129",
+    "EndNs":"703525586542859",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipFree",
+    "args":"( ptr(0x15500d600000))",
+    "Data":"",
+    "DurationNs":"44730"
+  }
+}
+,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1093097","ts":"564323","dur":"1",
+  "args":{
+    "BeginNs":"703525586544989",
+    "EndNs":"703525586546189",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipStreamSynchronize",
+    "args":"( stream(2))",
+    "Data":"",
+    "DurationNs":"1200"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"564326","dur":"1703",
+  "args":{
+    "BeginNs":"703525586547449",
+    "EndNs":"703525588251333",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb438) src(0x155449b47000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"1703884"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"566031","dur":"18",
+  "args":{
+    "BeginNs":"703525588253093",
+    "EndNs":"703525588271543",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb250) src(0x155449b47000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"18450"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1093097","ts":"566051","dur":"4",
+  "args":{
+    "BeginNs":"703525588272963",
+    "EndNs":"703525588277093",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipFree",
+    "args":"( ptr(0x155449b47000))",
+    "Data":"",
+    "DurationNs":"4130"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"566056","dur":"17",
+  "args":{
+    "BeginNs":"703525588278303",
+    "EndNs":"703525588296282",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb438) src(0x155449a0c000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"17979"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"566076","dur":"17",
+  "args":{
+    "BeginNs":"703525588297752",
+    "EndNs":"703525588315592",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb438) src(0x155449b4a000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"17840"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"566095","dur":"17",
+  "args":{
+    "BeginNs":"703525588316832",
+    "EndNs":"703525588334582",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb250) src(0x155449b4a000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"17750"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1093097","ts":"566114","dur":"3",
+  "args":{
+    "BeginNs":"703525588335842",
+    "EndNs":"703525588339162",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipFree",
+    "args":"( ptr(0x155449b4a000))",
+    "Data":"",
+    "DurationNs":"3320"
+  }
+}
+,{"ph":"X","name":"hipHostFree","pid":"2","tid":"1093097","ts":"566120","dur":"82",
+  "args":{
+    "BeginNs":"703525588341992",
+    "EndNs":"703525588424921",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipHostFree",
+    "args":"( ptr(0x155343d00000))",
+    "Data":"",
+    "DurationNs":"82929"
+  }
+}
+,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1093097","ts":"566209","dur":"1",
+  "args":{
+    "BeginNs":"703525588431031",
+    "EndNs":"703525588432401",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipStreamSynchronize",
+    "args":"( stream(1))",
+    "Data":"",
+    "DurationNs":"1370"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"566212","dur":"19",
+  "args":{
+    "BeginNs":"703525588433501",
+    "EndNs":"703525588452831",
+    "pid":"2",
+    "tid":"1093097",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb3f8) src(0x155449a00000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"19330"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1093097","ts":"566233","dur":"3",
+  "args":{
+    "BeginNs":"703525588454741",
+    "EndNs":"703525588458321",
+    "pid":"2",
+    "tid":"1093097",
     "Name":"hipFree",
     "args":"( ptr(0x155449a00000))",
     "Data":"",
-    "DurationNs":"2920"
+    "DurationNs":"3580"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"561905","dur":"14",
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"566238","dur":"18",
   "args":{
-    "BeginNs":"701970552297296",
-    "EndNs":"701970552312016",
+    "BeginNs":"703525588459451",
+    "EndNs":"703525588477641",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb418) src(0x155449a0c000) sizeBytes(128) kind(4))",
+    "args":"( dst(0x7fffffffb3f8) src(0x155449a0c000) sizeBytes(128) kind(4))",
     "Data":"",
-    "DurationNs":"14720"
+    "DurationNs":"18190"
   }
 }
-,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"561921","dur":"2",
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1093097","ts":"566257","dur":"3",
   "args":{
-    "BeginNs":"701970552313176",
-    "EndNs":"701970552316146",
+    "BeginNs":"703525588479031",
+    "EndNs":"703525588482501",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipFree",
     "args":"( ptr(0x155449a0c000))",
     "Data":"",
-    "DurationNs":"2970"
+    "DurationNs":"3470"
   }
 }
-,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"561925","dur":"13",
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1093097","ts":"566262","dur":"17",
   "args":{
-    "BeginNs":"701970552317196",
-    "EndNs":"701970552330445",
+    "BeginNs":"703525588483561",
+    "EndNs":"703525588501451",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipMemcpy",
-    "args":"( dst(0x7fffffffb418) src(0x155449a1d000) sizeBytes(128) kind(4))",
+    "args":"( dst(0x7fffffffb3f8) src(0x155449a1d000) sizeBytes(128) kind(4))",
     "Data":"",
-    "DurationNs":"13249"
+    "DurationNs":"17890"
   }
 }
-,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"561939","dur":"3",
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1093097","ts":"566281","dur":"3",
   "args":{
-    "BeginNs":"701970552331695",
-    "EndNs":"701970552334835",
+    "BeginNs":"703525588502731",
+    "EndNs":"703525588506401",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipFree",
     "args":"( ptr(0x155449a1d000))",
     "Data":"",
-    "DurationNs":"3140"
+    "DurationNs":"3670"
   }
 }
-,{"ph":"X","name":"hipHostFree","pid":"2","tid":"1090206","ts":"561945","dur":"106",
+,{"ph":"X","name":"hipHostFree","pid":"2","tid":"1093097","ts":"566286","dur":"99",
   "args":{
-    "BeginNs":"701970552337245",
-    "EndNs":"701970552443824",
+    "BeginNs":"703525588507631",
+    "EndNs":"703525588606670",
     "pid":"2",
-    "tid":"1090206",
+    "tid":"1093097",
     "Name":"hipHostFree",
-    "args":"( ptr(0x155448100000))",
+    "args":"( ptr(0x155443f00000))",
     "Data":"",
-    "DurationNs":"106579"
+    "DurationNs":"99039"
   }
 }
-,{"ph":"X","name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_atomic()","pid":"6","tid":"1","ts":"344007","dur":"11",
+,{"ph":"X","name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_atomic()","pid":"6","tid":"1","ts":"343337","dur":"11",
   "args":{
-    "BeginNs":"701970334399499",
-    "EndNs":"701970334410699",
+    "BeginNs":"703525365558936",
+    "EndNs":"703525365569976",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_atomic()",
     "pid":"6",
     "tid":"1",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"11200"
+    "DurationNs":"11040"
   }
 }
-,{"ph":"X","name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_threadid(int)","pid":"6","tid":"1","ts":"344028","dur":"7",
+,{"ph":"X","name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_threadid(int)","pid":"6","tid":"1","ts":"343360","dur":"7",
   "args":{
-    "BeginNs":"701970334421099",
-    "EndNs":"701970334428139",
+    "BeginNs":"703525365582136",
+    "EndNs":"703525365589176",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_threadid(int)",
     "pid":"6",
     "tid":"1",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
     "DurationNs":"7040"
   }
 }
-,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"347109","dur":"153",
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"352398","dur":"153",
   "args":{
-    "BeginNs":"701970337501727",
-    "EndNs":"701970337655487",
+    "BeginNs":"703525374619333",
+    "EndNs":"703525374772773",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)",
     "pid":"6",
     "tid":"1",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"153760"
+    "DurationNs":"153440"
   }
 }
-,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"348014","dur":"7",
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"353350","dur":"8",
   "args":{
-    "BeginNs":"701970338406811",
-    "EndNs":"701970338414331",
+    "BeginNs":"703525375571465",
+    "EndNs":"703525375579465",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)",
     "pid":"6",
     "tid":"1",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"7520"
+    "DurationNs":"8000"
   }
 }
-,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)","pid":"6","tid":"1","ts":"558709","dur":"542",
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop<Kokkos::Experimental::HIP>(Kokkos::Experimental::HIP const&, Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop<Kokkos::Experimental::HIP>(Kokkos::Experimental::HIP const&, Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"2","ts":"562775","dur":"531",
   "args":{
-    "BeginNs":"701970549101761",
-    "EndNs":"701970549644321",
+    "BeginNs":"703525584996979",
+    "EndNs":"703525585528339",
+    "dev-id":"0",
+    "queue-id":"1",
+    "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop<Kokkos::Experimental::HIP>(Kokkos::Experimental::HIP const&, Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop<Kokkos::Experimental::HIP>(Kokkos::Experimental::HIP const&, Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::Experimental::HIP> const*)",
+    "pid":"6",
+    "tid":"2",
+    "proc-id":"1093097",
+    "Data":"",
+    "DurationNs":"531360"
+  }
+}
+,{"ph":"X","name":"Unknown command type","pid":"6","tid":"0","ts":"563342","dur":"0",
+  "args":{
+    "BeginNs":"703525585563388",
+    "EndNs":"703525585563388",
     "dev-id":"0",
     "queue-id":"0",
-    "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)",
+    "Name":"Unknown command type",
     "pid":"6",
-    "tid":"1",
-    "proc-id":"1090206",
+    "tid":"0",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"542560"
+    "DurationNs":"0"
   }
 }
-,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"559404","dur":"7",
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"563464","dur":"7",
   "args":{
-    "BeginNs":"701970549796780",
-    "EndNs":"701970549804140",
+    "BeginNs":"703525585685727",
+    "EndNs":"703525585693407",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP> const*)",
     "pid":"6",
     "tid":"1",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"7360"
+    "DurationNs":"7680"
   }
 }
-,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)","pid":"6","tid":"1","ts":"559458","dur":"535",
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)","pid":"6","tid":"1","ts":"563517","dur":"523",
   "args":{
-    "BeginNs":"701970549850364",
-    "EndNs":"701970550385884",
+    "BeginNs":"703525585739322",
+    "EndNs":"703525586263002",
     "dev-id":"0",
     "queue-id":"0",
     "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)",
     "pid":"6",
     "tid":"1",
-    "proc-id":"1090206",
+    "proc-id":"1093097",
     "Data":"",
-    "DurationNs":"535520"
+    "DurationNs":"523680"
   }
 }
-,{"ts":343081,"ph":"s","cat":"DataFlow","id":0,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":343081,"ph":"t","cat":"DataFlow","id":0,"pid":1,"tid":0,"name":"dep"}
-,{"ts":343156,"ph":"s","cat":"DataFlow","id":1,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":343156,"ph":"t","cat":"DataFlow","id":1,"pid":1,"tid":0,"name":"dep"}
-,{"ts":343201,"ph":"s","cat":"DataFlow","id":2,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":343201,"ph":"t","cat":"DataFlow","id":2,"pid":1,"tid":0,"name":"dep"}
-,{"ts":343226,"ph":"s","cat":"DataFlow","id":3,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":343226,"ph":"t","cat":"DataFlow","id":3,"pid":1,"tid":0,"name":"dep"}
-,{"ts":343272,"ph":"s","cat":"DataFlow","id":4,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":343272,"ph":"t","cat":"DataFlow","id":4,"pid":1,"tid":0,"name":"dep"}
-,{"ts":343947,"ph":"s","cat":"DataFlow","id":5,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":343947,"ph":"t","cat":"DataFlow","id":5,"pid":1,"tid":0,"name":"dep"}
-,{"ts":345034,"ph":"s","cat":"DataFlow","id":6,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":345034,"ph":"t","cat":"DataFlow","id":6,"pid":1,"tid":0,"name":"dep"}
-,{"ts":346588,"ph":"s","cat":"DataFlow","id":7,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":346588,"ph":"t","cat":"DataFlow","id":7,"pid":1,"tid":0,"name":"dep"}
-,{"ts":347292,"ph":"s","cat":"DataFlow","id":8,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":347292,"ph":"t","cat":"DataFlow","id":8,"pid":1,"tid":0,"name":"dep"}
-,{"ts":347952,"ph":"s","cat":"DataFlow","id":9,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":347952,"ph":"t","cat":"DataFlow","id":9,"pid":1,"tid":0,"name":"dep"}
-,{"ts":348047,"ph":"s","cat":"DataFlow","id":10,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":348047,"ph":"t","cat":"DataFlow","id":10,"pid":1,"tid":0,"name":"dep"}
-,{"ts":348063,"ph":"s","cat":"DataFlow","id":11,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":348063,"ph":"t","cat":"DataFlow","id":11,"pid":1,"tid":0,"name":"dep"}
-,{"ts":553076,"ph":"s","cat":"DataFlow","id":12,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":553076,"ph":"t","cat":"DataFlow","id":12,"pid":1,"tid":0,"name":"dep"}
-,{"ts":559349,"ph":"s","cat":"DataFlow","id":13,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":559349,"ph":"t","cat":"DataFlow","id":13,"pid":1,"tid":0,"name":"dep"}
-,{"ts":560114,"ph":"s","cat":"DataFlow","id":14,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":560114,"ph":"t","cat":"DataFlow","id":14,"pid":1,"tid":0,"name":"dep"}
-,{"ts":560144,"ph":"s","cat":"DataFlow","id":15,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":560144,"ph":"t","cat":"DataFlow","id":15,"pid":1,"tid":0,"name":"dep"}
-,{"ts":560207,"ph":"s","cat":"DataFlow","id":16,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":560207,"ph":"t","cat":"DataFlow","id":16,"pid":1,"tid":0,"name":"dep"}
-,{"ts":561911,"ph":"s","cat":"DataFlow","id":17,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":561911,"ph":"t","cat":"DataFlow","id":17,"pid":1,"tid":0,"name":"dep"}
-,{"ts":561930,"ph":"s","cat":"DataFlow","id":18,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":561930,"ph":"t","cat":"DataFlow","id":18,"pid":1,"tid":0,"name":"dep"}
-,{"ts":343996,"ph":"s","cat":"DataFlow","id":74,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":344007,"ph":"t","cat":"DataFlow","id":74,"pid":6,"tid":1,"name":"dep"}
-,{"ts":344018,"ph":"s","cat":"DataFlow","id":75,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":344028,"ph":"t","cat":"DataFlow","id":75,"pid":6,"tid":1,"name":"dep"}
-,{"ts":347097,"ph":"s","cat":"DataFlow","id":76,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":347109,"ph":"t","cat":"DataFlow","id":76,"pid":6,"tid":1,"name":"dep"}
-,{"ts":347998,"ph":"s","cat":"DataFlow","id":77,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":348014,"ph":"t","cat":"DataFlow","id":77,"pid":6,"tid":1,"name":"dep"}
-,{"ts":558399,"ph":"s","cat":"DataFlow","id":78,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":558709,"ph":"t","cat":"DataFlow","id":78,"pid":6,"tid":1,"name":"dep"}
-,{"ts":559388,"ph":"s","cat":"DataFlow","id":79,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":559404,"ph":"t","cat":"DataFlow","id":79,"pid":6,"tid":1,"name":"dep"}
-,{"ts":559444,"ph":"s","cat":"DataFlow","id":80,"pid":2,"tid":1090206,"name":"dep"}
-,{"ts":559458,"ph":"t","cat":"DataFlow","id":80,"pid":6,"tid":1,"name":"dep"}
+,{"ts":342210,"ph":"s","cat":"DataFlow","id":0,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":342210,"ph":"t","cat":"DataFlow","id":0,"pid":1,"tid":0,"name":"dep"}
+,{"ts":342296,"ph":"s","cat":"DataFlow","id":1,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":342296,"ph":"t","cat":"DataFlow","id":1,"pid":1,"tid":0,"name":"dep"}
+,{"ts":342355,"ph":"s","cat":"DataFlow","id":2,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":342355,"ph":"t","cat":"DataFlow","id":2,"pid":1,"tid":0,"name":"dep"}
+,{"ts":342385,"ph":"s","cat":"DataFlow","id":3,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":342385,"ph":"t","cat":"DataFlow","id":3,"pid":1,"tid":0,"name":"dep"}
+,{"ts":342434,"ph":"s","cat":"DataFlow","id":4,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":342434,"ph":"t","cat":"DataFlow","id":4,"pid":1,"tid":0,"name":"dep"}
+,{"ts":343271,"ph":"s","cat":"DataFlow","id":5,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":343271,"ph":"t","cat":"DataFlow","id":5,"pid":1,"tid":0,"name":"dep"}
+,{"ts":350296,"ph":"s","cat":"DataFlow","id":6,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":350296,"ph":"t","cat":"DataFlow","id":6,"pid":1,"tid":0,"name":"dep"}
+,{"ts":350372,"ph":"s","cat":"DataFlow","id":7,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":350372,"ph":"t","cat":"DataFlow","id":7,"pid":1,"tid":0,"name":"dep"}
+,{"ts":350407,"ph":"s","cat":"DataFlow","id":8,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":350407,"ph":"t","cat":"DataFlow","id":8,"pid":1,"tid":0,"name":"dep"}
+,{"ts":350450,"ph":"s","cat":"DataFlow","id":9,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":350450,"ph":"t","cat":"DataFlow","id":9,"pid":1,"tid":0,"name":"dep"}
+,{"ts":350593,"ph":"s","cat":"DataFlow","id":10,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":350593,"ph":"t","cat":"DataFlow","id":10,"pid":1,"tid":0,"name":"dep"}
+,{"ts":351877,"ph":"s","cat":"DataFlow","id":11,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":351877,"ph":"t","cat":"DataFlow","id":11,"pid":1,"tid":0,"name":"dep"}
+,{"ts":352586,"ph":"s","cat":"DataFlow","id":12,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":352586,"ph":"t","cat":"DataFlow","id":12,"pid":1,"tid":0,"name":"dep"}
+,{"ts":353289,"ph":"s","cat":"DataFlow","id":13,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":353289,"ph":"t","cat":"DataFlow","id":13,"pid":1,"tid":0,"name":"dep"}
+,{"ts":353388,"ph":"s","cat":"DataFlow","id":14,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":353388,"ph":"t","cat":"DataFlow","id":14,"pid":1,"tid":0,"name":"dep"}
+,{"ts":353409,"ph":"s","cat":"DataFlow","id":15,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":353409,"ph":"t","cat":"DataFlow","id":15,"pid":1,"tid":0,"name":"dep"}
+,{"ts":556441,"ph":"s","cat":"DataFlow","id":16,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":556441,"ph":"t","cat":"DataFlow","id":16,"pid":1,"tid":2,"name":"dep"}
+,{"ts":563414,"ph":"s","cat":"DataFlow","id":17,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":563414,"ph":"t","cat":"DataFlow","id":17,"pid":1,"tid":0,"name":"dep"}
+,{"ts":564227,"ph":"s","cat":"DataFlow","id":18,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":564227,"ph":"t","cat":"DataFlow","id":18,"pid":1,"tid":0,"name":"dep"}
+,{"ts":564265,"ph":"s","cat":"DataFlow","id":19,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":564265,"ph":"t","cat":"DataFlow","id":19,"pid":1,"tid":0,"name":"dep"}
+,{"ts":564336,"ph":"s","cat":"DataFlow","id":20,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":564336,"ph":"t","cat":"DataFlow","id":20,"pid":1,"tid":0,"name":"dep"}
+,{"ts":566041,"ph":"s","cat":"DataFlow","id":21,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":566041,"ph":"t","cat":"DataFlow","id":21,"pid":1,"tid":0,"name":"dep"}
+,{"ts":566066,"ph":"s","cat":"DataFlow","id":22,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":566066,"ph":"t","cat":"DataFlow","id":22,"pid":1,"tid":0,"name":"dep"}
+,{"ts":566085,"ph":"s","cat":"DataFlow","id":23,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":566085,"ph":"t","cat":"DataFlow","id":23,"pid":1,"tid":0,"name":"dep"}
+,{"ts":566104,"ph":"s","cat":"DataFlow","id":24,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":566104,"ph":"t","cat":"DataFlow","id":24,"pid":1,"tid":0,"name":"dep"}
+,{"ts":566222,"ph":"s","cat":"DataFlow","id":25,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":566222,"ph":"t","cat":"DataFlow","id":25,"pid":1,"tid":0,"name":"dep"}
+,{"ts":566247,"ph":"s","cat":"DataFlow","id":26,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":566247,"ph":"t","cat":"DataFlow","id":26,"pid":1,"tid":0,"name":"dep"}
+,{"ts":566270,"ph":"s","cat":"DataFlow","id":27,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":566270,"ph":"t","cat":"DataFlow","id":27,"pid":1,"tid":0,"name":"dep"}
+,{"ts":343323,"ph":"s","cat":"DataFlow","id":91,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":343337,"ph":"t","cat":"DataFlow","id":91,"pid":6,"tid":1,"name":"dep"}
+,{"ts":343347,"ph":"s","cat":"DataFlow","id":92,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":343360,"ph":"t","cat":"DataFlow","id":92,"pid":6,"tid":1,"name":"dep"}
+,{"ts":352383,"ph":"s","cat":"DataFlow","id":93,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":352398,"ph":"t","cat":"DataFlow","id":93,"pid":6,"tid":1,"name":"dep"}
+,{"ts":353330,"ph":"s","cat":"DataFlow","id":94,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":353350,"ph":"t","cat":"DataFlow","id":94,"pid":6,"tid":1,"name":"dep"}
+,{"ts":562748,"ph":"s","cat":"DataFlow","id":95,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":562775,"ph":"t","cat":"DataFlow","id":95,"pid":6,"tid":2,"name":"dep"}
+,{"ts":563342,"ph":"s","cat":"DataFlow","id":96,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":563342,"ph":"t","cat":"DataFlow","id":96,"pid":6,"tid":0,"name":"dep"}
+,{"ts":563446,"ph":"s","cat":"DataFlow","id":97,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":563464,"ph":"t","cat":"DataFlow","id":97,"pid":6,"tid":1,"name":"dep"}
+,{"ts":563503,"ph":"s","cat":"DataFlow","id":98,"pid":2,"tid":1093097,"name":"dep"}
+,{"ts":563517,"ph":"t","cat":"DataFlow","id":98,"pid":6,"tid":1,"name":"dep"}
 ],
 "otherData": {
     "CMD": "rocminfo",
