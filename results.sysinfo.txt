@@ -45,14 +45,14 @@ Agent 1
   Pool Info:               
     Pool 1                   
       Segment:                 GLOBAL; FLAGS: KERNARG, FINE GRAINED
-      Size:                    65084680(0x3e11d08) KB             
+      Size:                    65056568(0x3e0af38) KB             
       Allocatable:             TRUE                               
       Alloc Granule:           4KB                                
       Alloc Alignment:         4KB                                
       Accessible by all:       TRUE                               
     Pool 2                   
       Segment:                 GLOBAL; FLAGS: COARSE GRAINED      
-      Size:                    65084680(0x3e11d08) KB             
+      Size:                    65056568(0x3e0af38) KB             
       Allocatable:             TRUE                               
       Alloc Granule:           4KB                                
       Alloc Alignment:         4KB                                
@@ -137,14 +137,14 @@ Agent 3
   Pool Info:               
     Pool 1                   
       Segment:                 GLOBAL; FLAGS: KERNARG, FINE GRAINED
-      Size:                    66027352(0x3ef7f58) KB             
+      Size:                    66055476(0x3efed34) KB             
       Allocatable:             TRUE                               
       Alloc Granule:           4KB                                
       Alloc Alignment:         4KB                                
       Accessible by all:       TRUE                               
     Pool 2                   
       Segment:                 GLOBAL; FLAGS: COARSE GRAINED      
-      Size:                    66027352(0x3ef7f58) KB             
+      Size:                    66055476(0x3efed34) KB             
       Allocatable:             TRUE                               
       Alloc Granule:           4KB                                
       Alloc Alignment:         4KB                                
@@ -201,7 +201,7 @@ Agent 4
 Agent 5                  
 *******                  
   Name:                    gfx906                             
-  Uuid:                    GPU-3f2020c172e620f4               
+  Uuid:                    GPU-d1e8396172e6269a               
   Marketing Name:          Vega 20                            
   Vendor Name:             AMD                                
   Feature:                 KERNEL_DISPATCH                    
@@ -218,7 +218,7 @@ Agent 5
   Chip ID:                 26273(0x66a1)                      
   Cacheline Size:          64(0x40)                           
   Max Clock Freq. (MHz):   1800                               
-  BDFID:                   2048                               
+  BDFID:                   1792                               
   Internal Node ID:        4                                  
   Compute Unit:            64                                 
   SIMDs per CU:            4                                  
@@ -279,7 +279,7 @@ Agent 5
 Agent 6                  
 *******                  
   Name:                    gfx906                             
-  Uuid:                    GPU-544c796172e6269b               
+  Uuid:                    GPU-7bc8396172e620ff               
   Marketing Name:          Vega 20                            
   Vendor Name:             AMD                                
   Feature:                 KERNEL_DISPATCH                    
@@ -357,7 +357,7 @@ Agent 6
 Agent 7                  
 *******                  
   Name:                    gfx906                             
-  Uuid:                    GPU-974c10e172e62127               
+  Uuid:                    GPU-974a808172e62127               
   Marketing Name:          Vega 20                            
   Vendor Name:             AMD                                
   Feature:                 KERNEL_DISPATCH                    
@@ -374,7 +374,7 @@ Agent 7
   Chip ID:                 26273(0x66a1)                      
   Cacheline Size:          64(0x40)                           
   Max Clock Freq. (MHz):   1800                               
-  BDFID:                   17664                              
+  BDFID:                   17920                              
   Internal Node ID:        6                                  
   Compute Unit:            64                                 
   SIMDs per CU:            4                                  
@@ -435,7 +435,7 @@ Agent 7
 Agent 8                  
 *******                  
   Name:                    gfx906                             
-  Uuid:                    GPU-d36410a172e626c1               
+  Uuid:                    GPU-d1e2188172e6269a               
   Marketing Name:          Vega 20                            
   Vendor Name:             AMD                                
   Feature:                 KERNEL_DISPATCH                    
