@@ -1,0 +1,1909 @@
+{ "traceEvents":[{}
+,{"args":{"name":"Markers and Ranges"},"ph":"M","pid":0,"name":"process_name","sort_index":0}
+,{"args":{"name":"CPU HIP API"},"ph":"M","pid":2,"name":"process_name","sort_index":1}
+,{"args":{"name":"COPY"},"ph":"M","pid":1,"name":"process_name","sort_index":2}
+,{"args":{"name":"GPU0"},"ph":"M","pid":6,"name":"process_name","sort_index":3}
+,{"ph":"X","name":"Kokkos::Initialization Complete","pid":"0","tid":"1090206","ts":"344934","dur":"0",
+  "args":{
+    "BeginNs":"701970335326798",
+    "EndNs":"701970335326799",
+    "pid":"0",
+    "tid":"1090206",
+    "Name":"Kokkos::Initialization Complete"
+  }
+}
+,{"ph":"X","name":"Kokkos::View::initialization [V]","pid":"0","tid":"1090206","ts":"345097","dur":"2187",
+  "args":{
+    "BeginNs":"701970335489247",
+    "EndNs":"701970337676606",
+    "pid":"0",
+    "tid":"1090206",
+    "Name":"Kokkos::View::initialization [V]"
+  }
+}
+,{"ph":"X","name":"Kokkos::View::initialization [R]","pid":"0","tid":"1090206","ts":"347989","dur":"52",
+  "args":{
+    "BeginNs":"701970338381550",
+    "EndNs":"701970338433909",
+    "pid":"0",
+    "tid":"1090206",
+    "Name":"Kokkos::View::initialization [R]"
+  }
+}
+,{"ph":"X","name":"Kokkos::View::initialization [V_mirror]","pid":"0","tid":"1090206","ts":"348085","dur":"4960",
+  "args":{
+    "BeginNs":"701970338477539",
+    "EndNs":"701970343438314",
+    "pid":"0",
+    "tid":"1090206",
+    "Name":"Kokkos::View::initialization [V_mirror]"
+  }
+}
+,{"ph":"X","name":"Atomic Loop","pid":"0","tid":"1090206","ts":"558379","dur":"911",
+  "args":{
+    "BeginNs":"701970548771598",
+    "EndNs":"701970549682770",
+    "pid":"0",
+    "tid":"1090206",
+    "Name":"Atomic Loop"
+  }
+}
+,{"ph":"X","name":"Kokkos::ScatterView::ResetDuplicates [R]","pid":"0","tid":"1090206","ts":"559370","dur":"60",
+  "args":{
+    "BeginNs":"701970549762319",
+    "EndNs":"701970549822639",
+    "pid":"0",
+    "tid":"1090206",
+    "Name":"Kokkos::ScatterView::ResetDuplicates [R]"
+  }
+}
+,{"ph":"X","name":"Atomic Loop","pid":"0","tid":"1090206","ts":"559434","dur":"590",
+  "args":{
+    "BeginNs":"701970549826199",
+    "EndNs":"701970550416433",
+    "pid":"0",
+    "tid":"1090206",
+    "Name":"Atomic Loop"
+  }
+}
+,{"ph":"X","name":"Kokkos::Finalization Complete","pid":"0","tid":"1090206","ts":"560195","dur":"0",
+  "args":{
+    "BeginNs":"701970550587692",
+    "EndNs":"701970550587693",
+    "pid":"0",
+    "tid":"1090206",
+    "Name":"Kokkos::Finalization Complete"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343081","dur":"40",
+  "args":{
+    "BeginNs":"701970333473805",
+    "EndNs":"701970333514355",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"40550"
+  }
+}
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"343156","dur":"4",
+  "args":{
+    "BeginNs":"701970333549035",
+    "EndNs":"701970333553995",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"FillBuffer",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"4960"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343201","dur":"13",
+  "args":{
+    "BeginNs":"701970333593364",
+    "EndNs":"701970333606814",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"13450"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343226","dur":"19",
+  "args":{
+    "BeginNs":"701970333618594",
+    "EndNs":"701970333638083",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"19489"
+  }
+}
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"343264","dur":"3",
+  "args":{
+    "BeginNs":"701970333656664",
+    "EndNs":"701970333660344",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"FillBuffer",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"3680"
+  }
+}
+,{"ph":"X","name":"FillBuffer","pid":"1","tid":"0","ts":"343272","dur":"4",
+  "args":{
+    "BeginNs":"701970333664504",
+    "EndNs":"701970333668664",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"FillBuffer",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"4160"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"343947","dur":"19",
+  "args":{
+    "BeginNs":"701970334340067",
+    "EndNs":"701970334359067",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"19000"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"345034","dur":"38",
+  "args":{
+    "BeginNs":"701970335426667",
+    "EndNs":"701970335464787",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"38120"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"346588","dur":"13",
+  "args":{
+    "BeginNs":"701970336981033",
+    "EndNs":"701970336994273",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"13240"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"347292","dur":"642",
+  "args":{
+    "BeginNs":"701970337685036",
+    "EndNs":"701970338327700",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"642664"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"347952","dur":"32",
+  "args":{
+    "BeginNs":"701970338344360",
+    "EndNs":"701970338376450",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"32090"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"348047","dur":"8",
+  "args":{
+    "BeginNs":"701970338439959",
+    "EndNs":"701970338448329",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"8370"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"348063","dur":"7",
+  "args":{
+    "BeginNs":"701970338455719",
+    "EndNs":"701970338463479",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"7760"
+  }
+}
+,{"ph":"X","name":"CopyHostToDevice","pid":"1","tid":"0","ts":"553076","dur":"5287",
+  "args":{
+    "BeginNs":"701970543468627",
+    "EndNs":"701970548756488",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyHostToDevice",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"5287861"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"559349","dur":"12",
+  "args":{
+    "BeginNs":"701970549741279",
+    "EndNs":"701970549753979",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"12700"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"560114","dur":"7",
+  "args":{
+    "BeginNs":"701970550506642",
+    "EndNs":"701970550514612",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"7970"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"560144","dur":"8",
+  "args":{
+    "BeginNs":"701970550536352",
+    "EndNs":"701970550544802",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"8450"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"560207","dur":"1690",
+  "args":{
+    "BeginNs":"701970550599661",
+    "EndNs":"701970552289856",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"1690195"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"561911","dur":"7",
+  "args":{
+    "BeginNs":"701970552303536",
+    "EndNs":"701970552311066",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"7530"
+  }
+}
+,{"ph":"X","name":"CopyDeviceToHost","pid":"1","tid":"0","ts":"561930","dur":"7",
+  "args":{
+    "BeginNs":"701970552322466",
+    "EndNs":"701970552329675",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"CopyDeviceToHost",
+    "pid":"1",
+    "tid":"0",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"7209"
+  }
+}
+,{"ph":"X","name":"hipGetDeviceCount","pid":"2","tid":"1090206","ts":"4993","dur":"3",
+  "args":{
+    "BeginNs":"701969995386089",
+    "EndNs":"701969995389479",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipGetDeviceCount",
+    "args":"( count(4))",
+    "Data":"",
+    "DurationNs":"3390"
+  }
+}
+,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1090206","ts":"5003","dur":"3",
+  "args":{
+    "BeginNs":"701969995395809",
+    "EndNs":"701969995399649",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipGetDeviceProperties",
+    "args":"( props({}) device(0))",
+    "Data":"",
+    "DurationNs":"3840"
+  }
+}
+,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1090206","ts":"5008","dur":"1",
+  "args":{
+    "BeginNs":"701969995401009",
+    "EndNs":"701969995402069",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipGetDeviceProperties",
+    "args":"( props({}) device(1))",
+    "Data":"",
+    "DurationNs":"1060"
+  }
+}
+,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1090206","ts":"5011","dur":"2",
+  "args":{
+    "BeginNs":"701969995403209",
+    "EndNs":"701969995405709",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipGetDeviceProperties",
+    "args":"( props({}) device(2))",
+    "Data":"",
+    "DurationNs":"2500"
+  }
+}
+,{"ph":"X","name":"hipGetDeviceProperties","pid":"2","tid":"1090206","ts":"5014","dur":"0",
+  "args":{
+    "BeginNs":"701969995406909",
+    "EndNs":"701969995407829",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipGetDeviceProperties",
+    "args":"( props({}) device(3))",
+    "Data":"",
+    "DurationNs":"920"
+  }
+}
+,{"ph":"X","name":"hipSetDevice","pid":"2","tid":"1090206","ts":"5021","dur":"0",
+  "args":{
+    "BeginNs":"701969995414039",
+    "EndNs":"701969995414889",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipSetDevice",
+    "args":"( deviceId(0))",
+    "Data":"",
+    "DurationNs":"850"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"5036","dur":"74",
+  "args":{
+    "BeginNs":"701969995428179",
+    "EndNs":"701969995502778",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449a00000) size(8320))",
+    "Data":"",
+    "DurationNs":"74599"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"5118","dur":"338008",
+  "args":{
+    "BeginNs":"701969995510518",
+    "EndNs":"701970333518865",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449a00000) src(0x7fffffffafc0) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"338008347"
+  }
+}
+,{"ph":"X","name":"hipMemset","pid":"2","tid":"1090206","ts":"343134","dur":"45",
+  "args":{
+    "BeginNs":"701970333526575",
+    "EndNs":"701970333571594",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemset",
+    "args":"( dst(0x155449a00080) value(0) sizeBytes(8192))",
+    "Data":"",
+    "DurationNs":"45019"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"343182","dur":"6",
+  "args":{
+    "BeginNs":"701970333574834",
+    "EndNs":"701970333580864",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449a0c000) size(65664))",
+    "Data":"",
+    "DurationNs":"6030"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"343195","dur":"20",
+  "args":{
+    "BeginNs":"701970333587664",
+    "EndNs":"701970333608004",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449a0c000) src(0x7fffffffafc0) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"20340"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"343217","dur":"2",
+  "args":{
+    "BeginNs":"701970333609724",
+    "EndNs":"701970333612184",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449a1d000) size(20612))",
+    "Data":"",
+    "DurationNs":"2460"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"343221","dur":"25",
+  "args":{
+    "BeginNs":"701970333613404",
+    "EndNs":"701970333639013",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449a1d000) src(0x7fffffffb010) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"25609"
+  }
+}
+,{"ph":"X","name":"hipMemset","pid":"2","tid":"1090206","ts":"343248","dur":"42",
+  "args":{
+    "BeginNs":"701970333640383",
+    "EndNs":"701970333682613",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemset",
+    "args":"( dst(0x155449a1d080) value(0) sizeBytes(20484))",
+    "Data":"",
+    "DurationNs":"42230"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"343293","dur":"2",
+  "args":{
+    "BeginNs":"701970333685583",
+    "EndNs":"701970333688523",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449a23000) size(524288))",
+    "Data":"",
+    "DurationNs":"2940"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"343297","dur":"2",
+  "args":{
+    "BeginNs":"701970333689693",
+    "EndNs":"701970333691763",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449aa3000) size(655360))",
+    "Data":"",
+    "DurationNs":"2070"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"343937","dur":"30",
+  "args":{
+    "BeginNs":"701970334330087",
+    "EndNs":"701970334360427",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449b46000) src(0x75bd48) sizeBytes(24) kind(1))",
+    "Data":"",
+    "DurationNs":"30340"
+  }
+}
+,{"ph":"X","name":"hipMemcpyToSymbol","pid":"2","tid":"1090206","ts":"343937","dur":"31",
+  "args":{
+    "BeginNs":"701970334330087",
+    "EndNs":"701970334362077",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpyToSymbol",
+    "args":"( symbol(0x75bcf8) src(0x75bd48) sizeBytes(24) offset(0) kind(1))",
+    "Data":"",
+    "DurationNs":"31990"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"343973","dur":"3",
+  "args":{
+    "BeginNs":"701970334365687",
+    "EndNs":"701970334369217",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"3530"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"343983","dur":"0",
+  "args":{
+    "BeginNs":"701970334375427",
+    "EndNs":"701970334376247",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"820"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"343987","dur":"9",
+  "args":{
+    "BeginNs":"701970334379337",
+    "EndNs":"701970334388457",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(Kokkos::(anonymous namespace)::init_lock_array_kernel_atomic()) function_address(0x432f70) numBlocks({}) dimBlocks({}) args(0x5004) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"9120"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"344010","dur":"0",
+  "args":{
+    "BeginNs":"701970334403116",
+    "EndNs":"701970334403656",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"540"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"344012","dur":"0",
+  "args":{
+    "BeginNs":"701970334404846",
+    "EndNs":"701970334405416",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"570"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"344014","dur":"4",
+  "args":{
+    "BeginNs":"701970334406556",
+    "EndNs":"701970334411186",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(Kokkos::(anonymous namespace)::init_lock_array_kernel_threadid(int)) function_address(0x432fc0) numBlocks({}) dimBlocks({}) args(0x7fffffffb0cc) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"4630"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"344942","dur":"78",
+  "args":{
+    "BeginNs":"701970335334778",
+    "EndNs":"701970335413777",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x15500d600000) size(40000128))",
+    "Data":"",
+    "DurationNs":"78999"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"345024","dur":"55",
+  "args":{
+    "BeginNs":"701970335416857",
+    "EndNs":"701970335472547",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x15500d600000) src(0x7fffffffb270) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"55690"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"345086","dur":"1",
+  "args":{
+    "BeginNs":"701970335479057",
+    "EndNs":"701970335480197",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1140"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"346578","dur":"24",
+  "args":{
+    "BeginNs":"701970336970963",
+    "EndNs":"701970336995293",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449b50000) src(0x75bd48) sizeBytes(24) kind(1))",
+    "Data":"",
+    "DurationNs":"24330"
+  }
+}
+,{"ph":"X","name":"hipMemcpyToSymbol","pid":"2","tid":"1090206","ts":"346578","dur":"25",
+  "args":{
+    "BeginNs":"701970336970963",
+    "EndNs":"701970336996803",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpyToSymbol",
+    "args":"( symbol(0x6ddb70) src(0x75bd48) sizeBytes(24) offset(0) kind(1))",
+    "Data":"",
+    "DurationNs":"25840"
+  }
+}
+,{"ph":"X","name":"hipHostMalloc","pid":"2","tid":"1090206","ts":"346607","dur":"474",
+  "args":{
+    "BeginNs":"701970336999763",
+    "EndNs":"701970337474098",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipHostMalloc",
+    "args":"( ptr(0x155448100000) size(1024000) flags(2147483648))",
+    "Data":"",
+    "DurationNs":"474335"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"347083","dur":"0",
+  "args":{
+    "BeginNs":"701970337476118",
+    "EndNs":"701970337476958",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"840"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"347086","dur":"0",
+  "args":{
+    "BeginNs":"701970337478228",
+    "EndNs":"701970337478828",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"600"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"347088","dur":"9",
+  "args":{
+    "BeginNs":"701970337480218",
+    "EndNs":"701970337490018",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)) function_address(0x4060c0) numBlocks({}) dimBlocks({}) args(0x7fffffffb1f0) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"9800"
+  }
+}
+,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1090206","ts":"347102","dur":"178",
+  "args":{
+    "BeginNs":"701970337494348",
+    "EndNs":"701970337672366",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipStreamSynchronize",
+    "args":"( stream(1))",
+    "Data":"",
+    "DurationNs":"178018"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"347282","dur":"0",
+  "args":{
+    "BeginNs":"701970337674256",
+    "EndNs":"701970337675176",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"920"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"347287","dur":"650",
+  "args":{
+    "BeginNs":"701970337679556",
+    "EndNs":"701970338329610",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb398) src(0x15500d600000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"650054"
+  }
+}
+,{"ph":"X","name":"hipMalloc","pid":"2","tid":"1090206","ts":"347939","dur":"4",
+  "args":{
+    "BeginNs":"701970338331930",
+    "EndNs":"701970338336190",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMalloc",
+    "args":"( ptr(0x155449b59000) size(400128))",
+    "Data":"",
+    "DurationNs":"4260"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"347945","dur":"39",
+  "args":{
+    "BeginNs":"701970338337690",
+    "EndNs":"701970338377550",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x155449b59000) src(0x7fffffffb270) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"39860"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"347987","dur":"0",
+  "args":{
+    "BeginNs":"701970338379380",
+    "EndNs":"701970338380190",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"810"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"347990","dur":"0",
+  "args":{
+    "BeginNs":"701970338383040",
+    "EndNs":"701970338383570",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"530"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"347992","dur":"0",
+  "args":{
+    "BeginNs":"701970338384610",
+    "EndNs":"701970338385160",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"550"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"347994","dur":"4",
+  "args":{
+    "BeginNs":"701970338386210",
+    "EndNs":"701970338390510",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)) function_address(0x4060c0) numBlocks({}) dimBlocks({}) args(0x7fffffffb1f0) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"4300"
+  }
+}
+,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1090206","ts":"347999","dur":"38",
+  "args":{
+    "BeginNs":"701970338391960",
+    "EndNs":"701970338430880",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipStreamSynchronize",
+    "args":"( stream(1))",
+    "Data":"",
+    "DurationNs":"38920"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"348039","dur":"0",
+  "args":{
+    "BeginNs":"701970338432070",
+    "EndNs":"701970338432879",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"809"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"348042","dur":"14",
+  "args":{
+    "BeginNs":"701970338434929",
+    "EndNs":"701970338449219",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb398) src(0x155449b59000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"14290"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"348058","dur":"13",
+  "args":{
+    "BeginNs":"701970338450489",
+    "EndNs":"701970338464449",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb438) src(0x15500d600000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"13960"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"348083","dur":"0",
+  "args":{
+    "BeginNs":"701970338475509",
+    "EndNs":"701970338476349",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"840"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"353040","dur":"2",
+  "args":{
+    "BeginNs":"701970343432734",
+    "EndNs":"701970343435014",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"2280"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"553055","dur":"1",
+  "args":{
+    "BeginNs":"701970543447167",
+    "EndNs":"701970543449107",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1940"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"553060","dur":"5306",
+  "args":{
+    "BeginNs":"701970543452487",
+    "EndNs":"701970548758778",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x15500d600080) src(0x15500afda0c0) sizeBytes(40000000) kind(4))",
+    "Data":"",
+    "DurationNs":"5306291"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"558368","dur":"0",
+  "args":{
+    "BeginNs":"701970548760208",
+    "EndNs":"701970548761088",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"880"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"558376","dur":"0",
+  "args":{
+    "BeginNs":"701970548768528",
+    "EndNs":"701970548769238",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"710"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"558383","dur":"1",
+  "args":{
+    "BeginNs":"701970548775158",
+    "EndNs":"701970548776518",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"1360"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"558386","dur":"1",
+  "args":{
+    "BeginNs":"701970548778548",
+    "EndNs":"701970548779668",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"1120"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"558389","dur":"10",
+  "args":{
+    "BeginNs":"701970548781608",
+    "EndNs":"701970548792518",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)) function_address(0x406050) numBlocks({}) dimBlocks({}) args(0x7fffffffb488) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"10910"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"558402","dur":"887",
+  "args":{
+    "BeginNs":"701970548794198",
+    "EndNs":"701970549681490",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"887292"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559291","dur":"0",
+  "args":{
+    "BeginNs":"701970549683900",
+    "EndNs":"701970549684690",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"790"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"559335","dur":"29",
+  "args":{
+    "BeginNs":"701970549727139",
+    "EndNs":"701970549756449",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb2f8) src(0x155449b59000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"29310"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559367","dur":"1",
+  "args":{
+    "BeginNs":"701970549759709",
+    "EndNs":"701970549760729",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"1020"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"559372","dur":"0",
+  "args":{
+    "BeginNs":"701970549764809",
+    "EndNs":"701970549765729",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"920"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"559376","dur":"1",
+  "args":{
+    "BeginNs":"701970549768239",
+    "EndNs":"701970549769249",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"1010"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"559378","dur":"10",
+  "args":{
+    "BeginNs":"701970549770929",
+    "EndNs":"701970549781289",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP> const*)) function_address(0x405f30) numBlocks({}) dimBlocks({}) args(0x7fffffffb1e0) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"10360"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559391","dur":"37",
+  "args":{
+    "BeginNs":"701970549783789",
+    "EndNs":"701970549821169",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"37380"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559432","dur":"0",
+  "args":{
+    "BeginNs":"701970549824239",
+    "EndNs":"701970549825119",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"880"
+  }
+}
+,{"ph":"X","name":"__hipPushCallConfiguration","pid":"2","tid":"1090206","ts":"559435","dur":"0",
+  "args":{
+    "BeginNs":"701970549827619",
+    "EndNs":"701970549828159",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPushCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"540"
+  }
+}
+,{"ph":"X","name":"__hipPopCallConfiguration","pid":"2","tid":"1090206","ts":"559437","dur":"0",
+  "args":{
+    "BeginNs":"701970549829228",
+    "EndNs":"701970549829778",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"__hipPopCallConfiguration",
+    "args":"( gridDim({}) blockDim({}) sharedMem(0) stream(1))",
+    "Data":"",
+    "DurationNs":"550"
+  }
+}
+,{"ph":"X","name":"hipLaunchKernel","pid":"2","tid":"1090206","ts":"559438","dur":"6",
+  "args":{
+    "BeginNs":"701970549830918",
+    "EndNs":"701970549837888",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipLaunchKernel",
+    "args":"( kernel(void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)) function_address(0x405f90) numBlocks({}) dimBlocks({}) args(0x7fffffffb498) sharedMemBytes(0) stream(1))",
+    "Data":"",
+    "DurationNs":"6970"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"559447","dur":"575",
+  "args":{
+    "BeginNs":"701970549839638",
+    "EndNs":"701970550415203",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"575565"
+  }
+}
+,{"ph":"X","name":"hipDeviceSynchronize","pid":"2","tid":"1090206","ts":"560025","dur":"0",
+  "args":{
+    "BeginNs":"701970550417393",
+    "EndNs":"701970550418193",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipDeviceSynchronize",
+    "args":"( ))",
+    "Data":"",
+    "DurationNs":"800"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"560104","dur":"19",
+  "args":{
+    "BeginNs":"701970550496582",
+    "EndNs":"701970550515652",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb2a0) src(0x155449b59000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"19070"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"560127","dur":"9",
+  "args":{
+    "BeginNs":"701970550519702",
+    "EndNs":"701970550529202",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipFree",
+    "args":"( ptr(0x155449b59000))",
+    "Data":"",
+    "DurationNs":"9500"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"560138","dur":"15",
+  "args":{
+    "BeginNs":"701970550530602",
+    "EndNs":"701970550545652",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb2a0) src(0x15500d600000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"15050"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"560154","dur":"37",
+  "args":{
+    "BeginNs":"701970550546922",
+    "EndNs":"701970550584442",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipFree",
+    "args":"( ptr(0x15500d600000))",
+    "Data":"",
+    "DurationNs":"37520"
+  }
+}
+,{"ph":"X","name":"hipStreamSynchronize","pid":"2","tid":"1090206","ts":"560198","dur":"1",
+  "args":{
+    "BeginNs":"701970550590482",
+    "EndNs":"701970550591491",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipStreamSynchronize",
+    "args":"( stream(1))",
+    "Data":"",
+    "DurationNs":"1009"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"560200","dur":"1698",
+  "args":{
+    "BeginNs":"701970550592701",
+    "EndNs":"701970552291386",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb418) src(0x155449a00000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"1698685"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"561901","dur":"2",
+  "args":{
+    "BeginNs":"701970552293256",
+    "EndNs":"701970552296176",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipFree",
+    "args":"( ptr(0x155449a00000))",
+    "Data":"",
+    "DurationNs":"2920"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"561905","dur":"14",
+  "args":{
+    "BeginNs":"701970552297296",
+    "EndNs":"701970552312016",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb418) src(0x155449a0c000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"14720"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"561921","dur":"2",
+  "args":{
+    "BeginNs":"701970552313176",
+    "EndNs":"701970552316146",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipFree",
+    "args":"( ptr(0x155449a0c000))",
+    "Data":"",
+    "DurationNs":"2970"
+  }
+}
+,{"ph":"X","name":"hipMemcpy","pid":"2","tid":"1090206","ts":"561925","dur":"13",
+  "args":{
+    "BeginNs":"701970552317196",
+    "EndNs":"701970552330445",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipMemcpy",
+    "args":"( dst(0x7fffffffb418) src(0x155449a1d000) sizeBytes(128) kind(4))",
+    "Data":"",
+    "DurationNs":"13249"
+  }
+}
+,{"ph":"X","name":"hipFree","pid":"2","tid":"1090206","ts":"561939","dur":"3",
+  "args":{
+    "BeginNs":"701970552331695",
+    "EndNs":"701970552334835",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipFree",
+    "args":"( ptr(0x155449a1d000))",
+    "Data":"",
+    "DurationNs":"3140"
+  }
+}
+,{"ph":"X","name":"hipHostFree","pid":"2","tid":"1090206","ts":"561945","dur":"106",
+  "args":{
+    "BeginNs":"701970552337245",
+    "EndNs":"701970552443824",
+    "pid":"2",
+    "tid":"1090206",
+    "Name":"hipHostFree",
+    "args":"( ptr(0x155448100000))",
+    "Data":"",
+    "DurationNs":"106579"
+  }
+}
+,{"ph":"X","name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_atomic()","pid":"6","tid":"1","ts":"344007","dur":"11",
+  "args":{
+    "BeginNs":"701970334399499",
+    "EndNs":"701970334410699",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_atomic()",
+    "pid":"6",
+    "tid":"1",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"11200"
+  }
+}
+,{"ph":"X","name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_threadid(int)","pid":"6","tid":"1","ts":"344028","dur":"7",
+  "args":{
+    "BeginNs":"701970334421099",
+    "EndNs":"701970334428139",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"Kokkos::(anonymous namespace)::init_lock_array_kernel_threadid(int)",
+    "pid":"6",
+    "tid":"1",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"7040"
+  }
+}
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"347109","dur":"153",
+  "args":{
+    "BeginNs":"701970337501727",
+    "EndNs":"701970337655487",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)",
+    "pid":"6",
+    "tid":"1",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"153760"
+  }
+}
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"348014","dur":"7",
+  "args":{
+    "BeginNs":"701970338406811",
+    "EndNs":"701970338414331",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::ViewValueFunctor<Kokkos::Experimental::HIP, int, true>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, Kokkos::IndexType<long> >, Kokkos::Experimental::HIP> const*)",
+    "pid":"6",
+    "tid":"1",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"7520"
+  }
+}
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)","pid":"6","tid":"1","ts":"558709","dur":"542",
+  "args":{
+    "BeginNs":"701970549101761",
+    "EndNs":"701970549644321",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<atomic_loop(Kokkos::View<int**>, Kokkos::View<int*, Kokkos::MemoryTraits<4u> >)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)",
+    "pid":"6",
+    "tid":"1",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"542560"
+  }
+}
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP> const*)","pid":"6","tid":"1","ts":"559404","dur":"7",
+  "args":{
+    "BeginNs":"701970549796780",
+    "EndNs":"701970549804140",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP>, 1024u, 1u>(Kokkos::Impl::ParallelFor<Kokkos::Impl::Experimental::ResetDuplicates<Kokkos::Experimental::HIP, int, Kokkos::Experimental::ScatterSum>, Kokkos::RangePolicy<Kokkos::Experimental::HIP, unsigned long>, Kokkos::Experimental::HIP> const*)",
+    "pid":"6",
+    "tid":"1",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"7360"
+  }
+}
+,{"ph":"X","name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)","pid":"6","tid":"1","ts":"559458","dur":"535",
+  "args":{
+    "BeginNs":"701970549850364",
+    "EndNs":"701970550385884",
+    "dev-id":"0",
+    "queue-id":"0",
+    "Name":"void Kokkos::Experimental::Impl::hip_parallel_launch_local_memory<Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy>, 1024u, 1u>(Kokkos::Impl::ParallelFor<scatter_view_loop(Kokkos::View<int**>, Kokkos::View<int*>)::{lambda(int)#1}, Kokkos::RangePolicy<Kokkos::Experimental::HIP>, Kokkos::RangePolicy> const*)",
+    "pid":"6",
+    "tid":"1",
+    "proc-id":"1090206",
+    "Data":"",
+    "DurationNs":"535520"
+  }
+}
+,{"ts":343081,"ph":"s","cat":"DataFlow","id":0,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":343081,"ph":"t","cat":"DataFlow","id":0,"pid":1,"tid":0,"name":"dep"}
+,{"ts":343156,"ph":"s","cat":"DataFlow","id":1,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":343156,"ph":"t","cat":"DataFlow","id":1,"pid":1,"tid":0,"name":"dep"}
+,{"ts":343201,"ph":"s","cat":"DataFlow","id":2,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":343201,"ph":"t","cat":"DataFlow","id":2,"pid":1,"tid":0,"name":"dep"}
+,{"ts":343226,"ph":"s","cat":"DataFlow","id":3,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":343226,"ph":"t","cat":"DataFlow","id":3,"pid":1,"tid":0,"name":"dep"}
+,{"ts":343272,"ph":"s","cat":"DataFlow","id":4,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":343272,"ph":"t","cat":"DataFlow","id":4,"pid":1,"tid":0,"name":"dep"}
+,{"ts":343947,"ph":"s","cat":"DataFlow","id":5,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":343947,"ph":"t","cat":"DataFlow","id":5,"pid":1,"tid":0,"name":"dep"}
+,{"ts":345034,"ph":"s","cat":"DataFlow","id":6,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":345034,"ph":"t","cat":"DataFlow","id":6,"pid":1,"tid":0,"name":"dep"}
+,{"ts":346588,"ph":"s","cat":"DataFlow","id":7,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":346588,"ph":"t","cat":"DataFlow","id":7,"pid":1,"tid":0,"name":"dep"}
+,{"ts":347292,"ph":"s","cat":"DataFlow","id":8,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":347292,"ph":"t","cat":"DataFlow","id":8,"pid":1,"tid":0,"name":"dep"}
+,{"ts":347952,"ph":"s","cat":"DataFlow","id":9,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":347952,"ph":"t","cat":"DataFlow","id":9,"pid":1,"tid":0,"name":"dep"}
+,{"ts":348047,"ph":"s","cat":"DataFlow","id":10,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":348047,"ph":"t","cat":"DataFlow","id":10,"pid":1,"tid":0,"name":"dep"}
+,{"ts":348063,"ph":"s","cat":"DataFlow","id":11,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":348063,"ph":"t","cat":"DataFlow","id":11,"pid":1,"tid":0,"name":"dep"}
+,{"ts":553076,"ph":"s","cat":"DataFlow","id":12,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":553076,"ph":"t","cat":"DataFlow","id":12,"pid":1,"tid":0,"name":"dep"}
+,{"ts":559349,"ph":"s","cat":"DataFlow","id":13,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":559349,"ph":"t","cat":"DataFlow","id":13,"pid":1,"tid":0,"name":"dep"}
+,{"ts":560114,"ph":"s","cat":"DataFlow","id":14,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":560114,"ph":"t","cat":"DataFlow","id":14,"pid":1,"tid":0,"name":"dep"}
+,{"ts":560144,"ph":"s","cat":"DataFlow","id":15,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":560144,"ph":"t","cat":"DataFlow","id":15,"pid":1,"tid":0,"name":"dep"}
+,{"ts":560207,"ph":"s","cat":"DataFlow","id":16,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":560207,"ph":"t","cat":"DataFlow","id":16,"pid":1,"tid":0,"name":"dep"}
+,{"ts":561911,"ph":"s","cat":"DataFlow","id":17,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":561911,"ph":"t","cat":"DataFlow","id":17,"pid":1,"tid":0,"name":"dep"}
+,{"ts":561930,"ph":"s","cat":"DataFlow","id":18,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":561930,"ph":"t","cat":"DataFlow","id":18,"pid":1,"tid":0,"name":"dep"}
+,{"ts":343996,"ph":"s","cat":"DataFlow","id":74,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":344007,"ph":"t","cat":"DataFlow","id":74,"pid":6,"tid":1,"name":"dep"}
+,{"ts":344018,"ph":"s","cat":"DataFlow","id":75,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":344028,"ph":"t","cat":"DataFlow","id":75,"pid":6,"tid":1,"name":"dep"}
+,{"ts":347097,"ph":"s","cat":"DataFlow","id":76,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":347109,"ph":"t","cat":"DataFlow","id":76,"pid":6,"tid":1,"name":"dep"}
+,{"ts":347998,"ph":"s","cat":"DataFlow","id":77,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":348014,"ph":"t","cat":"DataFlow","id":77,"pid":6,"tid":1,"name":"dep"}
+,{"ts":558399,"ph":"s","cat":"DataFlow","id":78,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":558709,"ph":"t","cat":"DataFlow","id":78,"pid":6,"tid":1,"name":"dep"}
+,{"ts":559388,"ph":"s","cat":"DataFlow","id":79,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":559404,"ph":"t","cat":"DataFlow","id":79,"pid":6,"tid":1,"name":"dep"}
+,{"ts":559444,"ph":"s","cat":"DataFlow","id":80,"pid":2,"tid":1090206,"name":"dep"}
+,{"ts":559458,"ph":"t","cat":"DataFlow","id":80,"pid":6,"tid":1,"name":"dep"}
+],
+"otherData": {
+    "CMD": "rocminfo",
+    "HSASystemAttributes.RuntimeVersion": "1.1",
+    "HSASystemAttributes.SystemTimestampFreq.": "1000.000000MHz",
+    "HSASystemAttributes.Sig.MaxWaitDuration": "18446744073709551615(0xFFFFFFFFFFFFFFFF)(timestampcount)",
+    "HSASystemAttributes.MachineModel": "LARGE",
+    "HSASystemAttributes.SystemEndianness": "LITTLE",
+    "Agent1.Name": "AMDEPYC760132-CoreProcessor",
+    "Agent1.Uuid": "CPU-XX",
+    "Agent1.MarketingName": "AMDEPYC760132-CoreProcessor",
+    "Agent1.VendorName": "CPU",
+    "Agent1.Feature": "Nonespecified",
+    "Agent1.Profile": "FULL_PROFILE",
+    "Agent1.FloatRoundMode": "NEAR",
+    "Agent1.MaxQueueNumber": "0(0x0)",
+    "Agent1.QueueMinSize": "0(0x0)",
+    "Agent1.QueueMaxSize": "0(0x0)",
+    "Agent1.QueueType": "MULTI",
+    "Agent1.Node": "0",
+    "Agent1.DeviceType": "CPU",
+    "Agent1.CacheInfo.L1": "32768(0x8000)KB",
+    "Agent1.ChipID": "0(0x0)",
+    "Agent1.CachelineSize": "64(0x40)",
+    "Agent1.MaxClockFreq.(MHz)": "2200",
+    "Agent1.BDFID": "0",
+    "Agent1.InternalNodeID": "0",
+    "Agent1.ComputeUnit": "16",
+    "Agent1.SIMDsperCU": "0",
+    "Agent1.ShaderEngines": "0",
+    "Agent1.ShaderArrs.perEng.": "0",
+    "Agent1.WatchPtsonAddr.Ranges": "1",
+    "Agent1.Features": "None",
+    "Agent1.PoolInfo.Pool1.Segment": "GLOBAL",
+    "Agent1.PoolInfo.Pool1.FLAGS": "KERNARG,FINEGRAINED",
+    "Agent1.PoolInfo.Pool1.Size": "65084680(0x3e11d08)KB",
+    "Agent1.PoolInfo.Pool1.Allocatable": "TRUE",
+    "Agent1.PoolInfo.Pool1.AllocGranule": "4KB",
+    "Agent1.PoolInfo.Pool1.AllocAlignment": "4KB",
+    "Agent1.PoolInfo.Pool1.Accessiblebyall": "TRUE",
+    "Agent1.PoolInfo.Pool2.Segment": "GLOBAL",
+    "Agent1.PoolInfo.Pool2.FLAGS": "COARSEGRAINED",
+    "Agent1.PoolInfo.Pool2.Size": "65084680(0x3e11d08)KB",
+    "Agent1.PoolInfo.Pool2.Allocatable": "TRUE",
+    "Agent1.PoolInfo.Pool2.AllocGranule": "4KB",
+    "Agent1.PoolInfo.Pool2.AllocAlignment": "4KB",
+    "Agent1.PoolInfo.Pool2.Accessiblebyall": "TRUE",
+    "Agent2.Name": "AMDEPYC760132-CoreProcessor",
+    "Agent2.Uuid": "CPU-XX",
+    "Agent2.MarketingName": "AMDEPYC760132-CoreProcessor",
+    "Agent2.VendorName": "CPU",
+    "Agent2.Feature": "Nonespecified",
+    "Agent2.Profile": "FULL_PROFILE",
+    "Agent2.FloatRoundMode": "NEAR",
+    "Agent2.MaxQueueNumber": "0(0x0)",
+    "Agent2.QueueMinSize": "0(0x0)",
+    "Agent2.QueueMaxSize": "0(0x0)",
+    "Agent2.QueueType": "MULTI",
+    "Agent2.Node": "1",
+    "Agent2.DeviceType": "CPU",
+    "Agent2.CacheInfo.L1": "32768(0x8000)KB",
+    "Agent2.ChipID": "0(0x0)",
+    "Agent2.CachelineSize": "64(0x40)",
+    "Agent2.MaxClockFreq.(MHz)": "2200",
+    "Agent2.BDFID": "0",
+    "Agent2.InternalNodeID": "1",
+    "Agent2.ComputeUnit": "16",
+    "Agent2.SIMDsperCU": "0",
+    "Agent2.ShaderEngines": "0",
+    "Agent2.ShaderArrs.perEng.": "0",
+    "Agent2.WatchPtsonAddr.Ranges": "1",
+    "Agent2.Features": "None",
+    "Agent2.PoolInfo.Pool1.Segment": "GLOBAL",
+    "Agent2.PoolInfo.Pool1.FLAGS": "KERNARG,FINEGRAINED",
+    "Agent2.PoolInfo.Pool1.Size": "66055476(0x3efed34)KB",
+    "Agent2.PoolInfo.Pool1.Allocatable": "TRUE",
+    "Agent2.PoolInfo.Pool1.AllocGranule": "4KB",
+    "Agent2.PoolInfo.Pool1.AllocAlignment": "4KB",
+    "Agent2.PoolInfo.Pool1.Accessiblebyall": "TRUE",
+    "Agent2.PoolInfo.Pool2.Segment": "GLOBAL",
+    "Agent2.PoolInfo.Pool2.FLAGS": "COARSEGRAINED",
+    "Agent2.PoolInfo.Pool2.Size": "66055476(0x3efed34)KB",
+    "Agent2.PoolInfo.Pool2.Allocatable": "TRUE",
+    "Agent2.PoolInfo.Pool2.AllocGranule": "4KB",
+    "Agent2.PoolInfo.Pool2.AllocAlignment": "4KB",
+    "Agent2.PoolInfo.Pool2.Accessiblebyall": "TRUE",
+    "Agent3.Name": "AMDEPYC760132-CoreProcessor",
+    "Agent3.Uuid": "CPU-XX",
+    "Agent3.MarketingName": "AMDEPYC760132-CoreProcessor",
+    "Agent3.VendorName": "CPU",
+    "Agent3.Feature": "Nonespecified",
+    "Agent3.Profile": "FULL_PROFILE",
+    "Agent3.FloatRoundMode": "NEAR",
+    "Agent3.MaxQueueNumber": "0(0x0)",
+    "Agent3.QueueMinSize": "0(0x0)",
+    "Agent3.QueueMaxSize": "0(0x0)",
+    "Agent3.QueueType": "MULTI",
+    "Agent3.Node": "2",
+    "Agent3.DeviceType": "CPU",
+    "Agent3.CacheInfo.L1": "32768(0x8000)KB",
+    "Agent3.ChipID": "0(0x0)",
+    "Agent3.CachelineSize": "64(0x40)",
+    "Agent3.MaxClockFreq.(MHz)": "2200",
+    "Agent3.BDFID": "0",
+    "Agent3.InternalNodeID": "2",
+    "Agent3.ComputeUnit": "16",
+    "Agent3.SIMDsperCU": "0",
+    "Agent3.ShaderEngines": "0",
+    "Agent3.ShaderArrs.perEng.": "0",
+    "Agent3.WatchPtsonAddr.Ranges": "1",
+    "Agent3.Features": "None",
+    "Agent3.PoolInfo.Pool1.Segment": "GLOBAL",
+    "Agent3.PoolInfo.Pool1.FLAGS": "KERNARG,FINEGRAINED",
+    "Agent3.PoolInfo.Pool1.Size": "66027352(0x3ef7f58)KB",
+    "Agent3.PoolInfo.Pool1.Allocatable": "TRUE",
+    "Agent3.PoolInfo.Pool1.AllocGranule": "4KB",
+    "Agent3.PoolInfo.Pool1.AllocAlignment": "4KB",
+    "Agent3.PoolInfo.Pool1.Accessiblebyall": "TRUE",
+    "Agent3.PoolInfo.Pool2.Segment": "GLOBAL",
+    "Agent3.PoolInfo.Pool2.FLAGS": "COARSEGRAINED",
+    "Agent3.PoolInfo.Pool2.Size": "66027352(0x3ef7f58)KB",
+    "Agent3.PoolInfo.Pool2.Allocatable": "TRUE",
+    "Agent3.PoolInfo.Pool2.AllocGranule": "4KB",
+    "Agent3.PoolInfo.Pool2.AllocAlignment": "4KB",
+    "Agent3.PoolInfo.Pool2.Accessiblebyall": "TRUE",
+    "Agent4.Name": "AMDEPYC760132-CoreProcessor",
+    "Agent4.Uuid": "CPU-XX",
+    "Agent4.MarketingName": "AMDEPYC760132-CoreProcessor",
+    "Agent4.VendorName": "CPU",
+    "Agent4.Feature": "Nonespecified",
+    "Agent4.Profile": "FULL_PROFILE",
+    "Agent4.FloatRoundMode": "NEAR",
+    "Agent4.MaxQueueNumber": "0(0x0)",
+    "Agent4.QueueMinSize": "0(0x0)",
+    "Agent4.QueueMaxSize": "0(0x0)",
+    "Agent4.QueueType": "MULTI",
+    "Agent4.Node": "3",
+    "Agent4.DeviceType": "CPU",
+    "Agent4.CacheInfo.L1": "32768(0x8000)KB",
+    "Agent4.ChipID": "0(0x0)",
+    "Agent4.CachelineSize": "64(0x40)",
+    "Agent4.MaxClockFreq.(MHz)": "2200",
+    "Agent4.BDFID": "0",
+    "Agent4.InternalNodeID": "3",
+    "Agent4.ComputeUnit": "16",
+    "Agent4.SIMDsperCU": "0",
+    "Agent4.ShaderEngines": "0",
+    "Agent4.ShaderArrs.perEng.": "0",
+    "Agent4.WatchPtsonAddr.Ranges": "1",
+    "Agent4.Features": "None",
+    "Agent4.PoolInfo.Pool1.Segment": "GLOBAL",
+    "Agent4.PoolInfo.Pool1.FLAGS": "KERNARG,FINEGRAINED",
+    "Agent4.PoolInfo.Pool1.Size": "66055664(0x3efedf0)KB",
+    "Agent4.PoolInfo.Pool1.Allocatable": "TRUE",
+    "Agent4.PoolInfo.Pool1.AllocGranule": "4KB",
+    "Agent4.PoolInfo.Pool1.AllocAlignment": "4KB",
+    "Agent4.PoolInfo.Pool1.Accessiblebyall": "TRUE",
+    "Agent4.PoolInfo.Pool2.Segment": "GLOBAL",
+    "Agent4.PoolInfo.Pool2.FLAGS": "COARSEGRAINED",
+    "Agent4.PoolInfo.Pool2.Size": "66055664(0x3efedf0)KB",
+    "Agent4.PoolInfo.Pool2.Allocatable": "TRUE",
+    "Agent4.PoolInfo.Pool2.AllocGranule": "4KB",
+    "Agent4.PoolInfo.Pool2.AllocAlignment": "4KB",
+    "Agent4.PoolInfo.Pool2.Accessiblebyall": "TRUE",
+    "Agent5.Name": "gfx906",
+    "Agent5.Uuid": "GPU-3f2020c172e620f4",
+    "Agent5.MarketingName": "Vega20",
+    "Agent5.VendorName": "AMD",
+    "Agent5.Feature": "KERNEL_DISPATCH",
+    "Agent5.Profile": "BASE_PROFILE",
+    "Agent5.FloatRoundMode": "NEAR",
+    "Agent5.MaxQueueNumber": "128(0x80)",
+    "Agent5.QueueMinSize": "4096(0x1000)",
+    "Agent5.QueueMaxSize": "131072(0x20000)",
+    "Agent5.QueueType": "MULTI",
+    "Agent5.Node": "4",
+    "Agent5.DeviceType": "GPU",
+    "Agent5.CacheInfo.L1": "16(0x10)KB",
+    "Agent5.ChipID": "26273(0x66a1)",
+    "Agent5.CachelineSize": "64(0x40)",
+    "Agent5.MaxClockFreq.(MHz)": "1800",
+    "Agent5.BDFID": "2048",
+    "Agent5.InternalNodeID": "4",
+    "Agent5.ComputeUnit": "64",
+    "Agent5.SIMDsperCU": "4",
+    "Agent5.ShaderEngines": "4",
+    "Agent5.ShaderArrs.perEng.": "1",
+    "Agent5.WatchPtsonAddr.Ranges": "4",
+    "Agent5.Features": "KERNEL_DISPATCH",
+    "Agent5.FastF16Operation": "FALSE",
+    "Agent5.WavefrontSize": "64(0x40)",
+    "Agent5.WorkgroupMaxSize": "1024(0x400)",
+    "Agent5.WorkgroupMaxSizeperDimension.x": "1024(0x400)",
+    "Agent5.WorkgroupMaxSizeperDimension.y": "1024(0x400)",
+    "Agent5.WorkgroupMaxSizeperDimension.z": "1024(0x400)",
+    "Agent5.MaxWavesPerCU": "40(0x28)",
+    "Agent5.MaxWork-itemPerCU": "2560(0xa00)",
+    "Agent5.GridMaxSize": "4294967295(0xffffffff)",
+    "Agent5.GridMaxSizeperDimension.x": "4294967295(0xffffffff)",
+    "Agent5.GridMaxSizeperDimension.y": "4294967295(0xffffffff)",
+    "Agent5.GridMaxSizeperDimension.z": "4294967295(0xffffffff)",
+    "Agent5.Maxfbarriers/Workgrp": "32",
+    "Agent5.PoolInfo.Pool1.Segment": "GLOBAL",
+    "Agent5.PoolInfo.Pool1.FLAGS": "COARSEGRAINED",
+    "Agent5.PoolInfo.Pool1.Size": "33538048(0x1ffc000)KB",
+    "Agent5.PoolInfo.Pool1.Allocatable": "TRUE",
+    "Agent5.PoolInfo.Pool1.AllocGranule": "4KB",
+    "Agent5.PoolInfo.Pool1.AllocAlignment": "4KB",
+    "Agent5.PoolInfo.Pool1.Accessiblebyall": "FALSE",
+    "Agent5.PoolInfo.Pool2.Segment": "GROUP",
+    "Agent5.PoolInfo.Pool2.Size": "64(0x40)KB",
+    "Agent5.PoolInfo.Pool2.Allocatable": "FALSE",
+    "Agent5.PoolInfo.Pool2.AllocGranule": "0KB",
+    "Agent5.PoolInfo.Pool2.AllocAlignment": "0KB",
+    "Agent5.PoolInfo.Pool2.Accessiblebyall": "FALSE",
+    "Agent5.ISAInfo.ISA1.Name": "amdgcn-amd-amdhsa--gfx906",
+    "Agent5.ISAInfo.ISA1.MachineModels": "HSA_MACHINE_MODEL_LARGE",
+    "Agent5.ISAInfo.ISA1.Profiles": "HSA_PROFILE_BASE",
+    "Agent5.ISAInfo.ISA1.DefaultRoundingMode": "NEAR",
+    "Agent5.ISAInfo.ISA1.DefaultRoundingMode": "NEAR",
+    "Agent5.ISAInfo.ISA1.Fastf16": "TRUE",
+    "Agent5.ISAInfo.ISA1.WorkgroupMaxSize": "1024(0x400)",
+    "Agent5.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.x": "1024(0x400)",
+    "Agent5.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.y": "1024(0x400)",
+    "Agent5.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.z": "1024(0x400)",
+    "Agent5.ISAInfo.ISA1.GridMaxSize": "4294967295(0xffffffff)",
+    "Agent5.ISAInfo.ISA1.GridMaxSizeperDimension.x": "4294967295(0xffffffff)",
+    "Agent5.ISAInfo.ISA1.GridMaxSizeperDimension.y": "4294967295(0xffffffff)",
+    "Agent5.ISAInfo.ISA1.GridMaxSizeperDimension.z": "4294967295(0xffffffff)",
+    "Agent5.ISAInfo.ISA1.FBarrierMaxSize": "32",
+    "Agent6.Name": "gfx906",
+    "Agent6.Uuid": "GPU-544c796172e6269b",
+    "Agent6.MarketingName": "Vega20",
+    "Agent6.VendorName": "AMD",
+    "Agent6.Feature": "KERNEL_DISPATCH",
+    "Agent6.Profile": "BASE_PROFILE",
+    "Agent6.FloatRoundMode": "NEAR",
+    "Agent6.MaxQueueNumber": "128(0x80)",
+    "Agent6.QueueMinSize": "4096(0x1000)",
+    "Agent6.QueueMaxSize": "131072(0x20000)",
+    "Agent6.QueueType": "MULTI",
+    "Agent6.Node": "5",
+    "Agent6.DeviceType": "GPU",
+    "Agent6.CacheInfo.L1": "16(0x10)KB",
+    "Agent6.ChipID": "26273(0x66a1)",
+    "Agent6.CachelineSize": "64(0x40)",
+    "Agent6.MaxClockFreq.(MHz)": "1800",
+    "Agent6.BDFID": "10496",
+    "Agent6.InternalNodeID": "5",
+    "Agent6.ComputeUnit": "64",
+    "Agent6.SIMDsperCU": "4",
+    "Agent6.ShaderEngines": "4",
+    "Agent6.ShaderArrs.perEng.": "1",
+    "Agent6.WatchPtsonAddr.Ranges": "4",
+    "Agent6.Features": "KERNEL_DISPATCH",
+    "Agent6.FastF16Operation": "FALSE",
+    "Agent6.WavefrontSize": "64(0x40)",
+    "Agent6.WorkgroupMaxSize": "1024(0x400)",
+    "Agent6.WorkgroupMaxSizeperDimension.x": "1024(0x400)",
+    "Agent6.WorkgroupMaxSizeperDimension.y": "1024(0x400)",
+    "Agent6.WorkgroupMaxSizeperDimension.z": "1024(0x400)",
+    "Agent6.MaxWavesPerCU": "40(0x28)",
+    "Agent6.MaxWork-itemPerCU": "2560(0xa00)",
+    "Agent6.GridMaxSize": "4294967295(0xffffffff)",
+    "Agent6.GridMaxSizeperDimension.x": "4294967295(0xffffffff)",
+    "Agent6.GridMaxSizeperDimension.y": "4294967295(0xffffffff)",
+    "Agent6.GridMaxSizeperDimension.z": "4294967295(0xffffffff)",
+    "Agent6.Maxfbarriers/Workgrp": "32",
+    "Agent6.PoolInfo.Pool1.Segment": "GLOBAL",
+    "Agent6.PoolInfo.Pool1.FLAGS": "COARSEGRAINED",
+    "Agent6.PoolInfo.Pool1.Size": "33538048(0x1ffc000)KB",
+    "Agent6.PoolInfo.Pool1.Allocatable": "TRUE",
+    "Agent6.PoolInfo.Pool1.AllocGranule": "4KB",
+    "Agent6.PoolInfo.Pool1.AllocAlignment": "4KB",
+    "Agent6.PoolInfo.Pool1.Accessiblebyall": "FALSE",
+    "Agent6.PoolInfo.Pool2.Segment": "GROUP",
+    "Agent6.PoolInfo.Pool2.Size": "64(0x40)KB",
+    "Agent6.PoolInfo.Pool2.Allocatable": "FALSE",
+    "Agent6.PoolInfo.Pool2.AllocGranule": "0KB",
+    "Agent6.PoolInfo.Pool2.AllocAlignment": "0KB",
+    "Agent6.PoolInfo.Pool2.Accessiblebyall": "FALSE",
+    "Agent6.ISAInfo.ISA1.Name": "amdgcn-amd-amdhsa--gfx906",
+    "Agent6.ISAInfo.ISA1.MachineModels": "HSA_MACHINE_MODEL_LARGE",
+    "Agent6.ISAInfo.ISA1.Profiles": "HSA_PROFILE_BASE",
+    "Agent6.ISAInfo.ISA1.DefaultRoundingMode": "NEAR",
+    "Agent6.ISAInfo.ISA1.DefaultRoundingMode": "NEAR",
+    "Agent6.ISAInfo.ISA1.Fastf16": "TRUE",
+    "Agent6.ISAInfo.ISA1.WorkgroupMaxSize": "1024(0x400)",
+    "Agent6.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.x": "1024(0x400)",
+    "Agent6.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.y": "1024(0x400)",
+    "Agent6.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.z": "1024(0x400)",
+    "Agent6.ISAInfo.ISA1.GridMaxSize": "4294967295(0xffffffff)",
+    "Agent6.ISAInfo.ISA1.GridMaxSizeperDimension.x": "4294967295(0xffffffff)",
+    "Agent6.ISAInfo.ISA1.GridMaxSizeperDimension.y": "4294967295(0xffffffff)",
+    "Agent6.ISAInfo.ISA1.GridMaxSizeperDimension.z": "4294967295(0xffffffff)",
+    "Agent6.ISAInfo.ISA1.FBarrierMaxSize": "32",
+    "Agent7.Name": "gfx906",
+    "Agent7.Uuid": "GPU-974c10e172e62127",
+    "Agent7.MarketingName": "Vega20",
+    "Agent7.VendorName": "AMD",
+    "Agent7.Feature": "KERNEL_DISPATCH",
+    "Agent7.Profile": "BASE_PROFILE",
+    "Agent7.FloatRoundMode": "NEAR",
+    "Agent7.MaxQueueNumber": "128(0x80)",
+    "Agent7.QueueMinSize": "4096(0x1000)",
+    "Agent7.QueueMaxSize": "131072(0x20000)",
+    "Agent7.QueueType": "MULTI",
+    "Agent7.Node": "6",
+    "Agent7.DeviceType": "GPU",
+    "Agent7.CacheInfo.L1": "16(0x10)KB",
+    "Agent7.ChipID": "26273(0x66a1)",
+    "Agent7.CachelineSize": "64(0x40)",
+    "Agent7.MaxClockFreq.(MHz)": "1800",
+    "Agent7.BDFID": "17664",
+    "Agent7.InternalNodeID": "6",
+    "Agent7.ComputeUnit": "64",
+    "Agent7.SIMDsperCU": "4",
+    "Agent7.ShaderEngines": "4",
+    "Agent7.ShaderArrs.perEng.": "1",
+    "Agent7.WatchPtsonAddr.Ranges": "4",
+    "Agent7.Features": "KERNEL_DISPATCH",
+    "Agent7.FastF16Operation": "FALSE",
+    "Agent7.WavefrontSize": "64(0x40)",
+    "Agent7.WorkgroupMaxSize": "1024(0x400)",
+    "Agent7.WorkgroupMaxSizeperDimension.x": "1024(0x400)",
+    "Agent7.WorkgroupMaxSizeperDimension.y": "1024(0x400)",
+    "Agent7.WorkgroupMaxSizeperDimension.z": "1024(0x400)",
+    "Agent7.MaxWavesPerCU": "40(0x28)",
+    "Agent7.MaxWork-itemPerCU": "2560(0xa00)",
+    "Agent7.GridMaxSize": "4294967295(0xffffffff)",
+    "Agent7.GridMaxSizeperDimension.x": "4294967295(0xffffffff)",
+    "Agent7.GridMaxSizeperDimension.y": "4294967295(0xffffffff)",
+    "Agent7.GridMaxSizeperDimension.z": "4294967295(0xffffffff)",
+    "Agent7.Maxfbarriers/Workgrp": "32",
+    "Agent7.PoolInfo.Pool1.Segment": "GLOBAL",
+    "Agent7.PoolInfo.Pool1.FLAGS": "COARSEGRAINED",
+    "Agent7.PoolInfo.Pool1.Size": "33538048(0x1ffc000)KB",
+    "Agent7.PoolInfo.Pool1.Allocatable": "TRUE",
+    "Agent7.PoolInfo.Pool1.AllocGranule": "4KB",
+    "Agent7.PoolInfo.Pool1.AllocAlignment": "4KB",
+    "Agent7.PoolInfo.Pool1.Accessiblebyall": "FALSE",
+    "Agent7.PoolInfo.Pool2.Segment": "GROUP",
+    "Agent7.PoolInfo.Pool2.Size": "64(0x40)KB",
+    "Agent7.PoolInfo.Pool2.Allocatable": "FALSE",
+    "Agent7.PoolInfo.Pool2.AllocGranule": "0KB",
+    "Agent7.PoolInfo.Pool2.AllocAlignment": "0KB",
+    "Agent7.PoolInfo.Pool2.Accessiblebyall": "FALSE",
+    "Agent7.ISAInfo.ISA1.Name": "amdgcn-amd-amdhsa--gfx906",
+    "Agent7.ISAInfo.ISA1.MachineModels": "HSA_MACHINE_MODEL_LARGE",
+    "Agent7.ISAInfo.ISA1.Profiles": "HSA_PROFILE_BASE",
+    "Agent7.ISAInfo.ISA1.DefaultRoundingMode": "NEAR",
+    "Agent7.ISAInfo.ISA1.DefaultRoundingMode": "NEAR",
+    "Agent7.ISAInfo.ISA1.Fastf16": "TRUE",
+    "Agent7.ISAInfo.ISA1.WorkgroupMaxSize": "1024(0x400)",
+    "Agent7.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.x": "1024(0x400)",
+    "Agent7.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.y": "1024(0x400)",
+    "Agent7.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.z": "1024(0x400)",
+    "Agent7.ISAInfo.ISA1.GridMaxSize": "4294967295(0xffffffff)",
+    "Agent7.ISAInfo.ISA1.GridMaxSizeperDimension.x": "4294967295(0xffffffff)",
+    "Agent7.ISAInfo.ISA1.GridMaxSizeperDimension.y": "4294967295(0xffffffff)",
+    "Agent7.ISAInfo.ISA1.GridMaxSizeperDimension.z": "4294967295(0xffffffff)",
+    "Agent7.ISAInfo.ISA1.FBarrierMaxSize": "32",
+    "Agent8.Name": "gfx906",
+    "Agent8.Uuid": "GPU-d36410a172e626c1",
+    "Agent8.MarketingName": "Vega20",
+    "Agent8.VendorName": "AMD",
+    "Agent8.Feature": "KERNEL_DISPATCH",
+    "Agent8.Profile": "BASE_PROFILE",
+    "Agent8.FloatRoundMode": "NEAR",
+    "Agent8.MaxQueueNumber": "128(0x80)",
+    "Agent8.QueueMinSize": "4096(0x1000)",
+    "Agent8.QueueMaxSize": "131072(0x20000)",
+    "Agent8.QueueType": "MULTI",
+    "Agent8.Node": "7",
+    "Agent8.DeviceType": "GPU",
+    "Agent8.CacheInfo.L1": "16(0x10)KB",
+    "Agent8.ChipID": "26273(0x66a1)",
+    "Agent8.CachelineSize": "64(0x40)",
+    "Agent8.MaxClockFreq.(MHz)": "1800",
+    "Agent8.BDFID": "25856",
+    "Agent8.InternalNodeID": "7",
+    "Agent8.ComputeUnit": "64",
+    "Agent8.SIMDsperCU": "4",
+    "Agent8.ShaderEngines": "4",
+    "Agent8.ShaderArrs.perEng.": "1",
+    "Agent8.WatchPtsonAddr.Ranges": "4",
+    "Agent8.Features": "KERNEL_DISPATCH",
+    "Agent8.FastF16Operation": "FALSE",
+    "Agent8.WavefrontSize": "64(0x40)",
+    "Agent8.WorkgroupMaxSize": "1024(0x400)",
+    "Agent8.WorkgroupMaxSizeperDimension.x": "1024(0x400)",
+    "Agent8.WorkgroupMaxSizeperDimension.y": "1024(0x400)",
+    "Agent8.WorkgroupMaxSizeperDimension.z": "1024(0x400)",
+    "Agent8.MaxWavesPerCU": "40(0x28)",
+    "Agent8.MaxWork-itemPerCU": "2560(0xa00)",
+    "Agent8.GridMaxSize": "4294967295(0xffffffff)",
+    "Agent8.GridMaxSizeperDimension.x": "4294967295(0xffffffff)",
+    "Agent8.GridMaxSizeperDimension.y": "4294967295(0xffffffff)",
+    "Agent8.GridMaxSizeperDimension.z": "4294967295(0xffffffff)",
+    "Agent8.Maxfbarriers/Workgrp": "32",
+    "Agent8.PoolInfo.Pool1.Segment": "GLOBAL",
+    "Agent8.PoolInfo.Pool1.FLAGS": "COARSEGRAINED",
+    "Agent8.PoolInfo.Pool1.Size": "33538048(0x1ffc000)KB",
+    "Agent8.PoolInfo.Pool1.Allocatable": "TRUE",
+    "Agent8.PoolInfo.Pool1.AllocGranule": "4KB",
+    "Agent8.PoolInfo.Pool1.AllocAlignment": "4KB",
+    "Agent8.PoolInfo.Pool1.Accessiblebyall": "FALSE",
+    "Agent8.PoolInfo.Pool2.Segment": "GROUP",
+    "Agent8.PoolInfo.Pool2.Size": "64(0x40)KB",
+    "Agent8.PoolInfo.Pool2.Allocatable": "FALSE",
+    "Agent8.PoolInfo.Pool2.AllocGranule": "0KB",
+    "Agent8.PoolInfo.Pool2.AllocAlignment": "0KB",
+    "Agent8.PoolInfo.Pool2.Accessiblebyall": "FALSE",
+    "Agent8.ISAInfo.ISA1.Name": "amdgcn-amd-amdhsa--gfx906",
+    "Agent8.ISAInfo.ISA1.MachineModels": "HSA_MACHINE_MODEL_LARGE",
+    "Agent8.ISAInfo.ISA1.Profiles": "HSA_PROFILE_BASE",
+    "Agent8.ISAInfo.ISA1.DefaultRoundingMode": "NEAR",
+    "Agent8.ISAInfo.ISA1.DefaultRoundingMode": "NEAR",
+    "Agent8.ISAInfo.ISA1.Fastf16": "TRUE",
+    "Agent8.ISAInfo.ISA1.WorkgroupMaxSize": "1024(0x400)",
+    "Agent8.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.x": "1024(0x400)",
+    "Agent8.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.y": "1024(0x400)",
+    "Agent8.ISAInfo.ISA1.WorkgroupMaxSizeperDimension.z": "1024(0x400)",
+    "Agent8.ISAInfo.ISA1.GridMaxSize": "4294967295(0xffffffff)",
+    "Agent8.ISAInfo.ISA1.GridMaxSizeperDimension.x": "4294967295(0xffffffff)",
+    "Agent8.ISAInfo.ISA1.GridMaxSizeperDimension.y": "4294967295(0xffffffff)",
+    "Agent8.ISAInfo.ISA1.GridMaxSizeperDimension.z": "4294967295(0xffffffff)",
+    "Agent8.ISAInfo.ISA1.FBarrierMaxSize": "32"
+  }
+}
