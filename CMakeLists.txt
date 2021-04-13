@@ -287,3 +287,5 @@ IF (HAS_PARENT)
     SET_PROPERTY(GLOBAL PROPERTY Kokkos_ENABLE_${DEV} ON)
   ENDFOREACH()
 ENDIF()
+
+add_subdirectory(benchmarks/zero_initialization)

@@ -1,0 +1,7 @@
+find_package(benchmark REQUIRED CONFIG)
+add_executable(KokkosBenchmark_ZeroInitialization zero_init_bench.cpp)
+target_link_libraries(KokkosBenchmark_ZeroInitialization Kokkos::kokkos benchmark::benchmark)
+if (KOKKOS_ENABLE_HIP)
+    find_package(rocThrust REQUIRED CONFIG)
+    target_link_libraries(KokkosBenchmark_ZeroInitialization roc::rocthrust)
+endif ()
