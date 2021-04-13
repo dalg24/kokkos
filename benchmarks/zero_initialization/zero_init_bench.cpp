@@ -18,6 +18,11 @@ template <>
 struct AXPY<Kokkos_> {
   template <class ExecutionSpace, class View>
   AXPY(ExecutionSpace const &s, View x, View y) {
+    run(s, x, y);
+  }
+
+  template <class ExecutionSpace, class View>
+  void run(ExecutionSpace const &s, View x, View y) {
     typename View::value_type a = 2;
     Kokkos::parallel_for(
         Kokkos::RangePolicy<ExecutionSpace>(0, x.size()),
@@ -30,6 +35,11 @@ template <>
 struct AXPY<Thrust_> {
   template <class ExecutionSpace, class View>
   AXPY(ExecutionSpace const &s, View x, View y) {
+    run(s, x, y);
+  }
+
+  template <class ExecutionSpace, class View>
+  void run(ExecutionSpace const &s, View x, View y) {
     using T                       = typename View::value_type;
     T a                           = 2;
     int n                         = x.size();
@@ -43,6 +53,14 @@ struct AXPY<Thrust_> {
 };
 
 #if defined(KOKKOS_ENABLE_HIP) || defined(KOKKOS_ENABLE_CUDA)
+template <class T>
+__global__ void impl(int n, T a, T *x, T *y) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < n) {
+    y[i] = a * x[i] + y[i];
+  }
+}
+
 template <>
 #ifdef KOKKOS_ENABLE_HIP
 struct AXPY<HIP_>
@@ -52,25 +70,16 @@ struct AXPY<CUDA_>
 {
   template <class ExecutionSpace, class View>
   AXPY(ExecutionSpace const &s, View x, View y) {
-#ifdef KOKKOS_ENABLE_CUDA
     run(s, x, y);
   }
 
   template <class ExecutionSpace, class View>
   void run(ExecutionSpace const &s, View x, View y) const {
-#endif
     typename View::value_type a = 2;
     int n                       = x.size();
     int m                       = 512;
     impl<<<(n + m - 1) / m, m>>>(n, a, x.data(), y.data());
     s.fence();
-  }
-  template <class T>
-  __global__ static void impl(int n, T a, T *x, T *y) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if (i < n) {
-      y[i] = a * x[i] + y[i];
-    }
   }
 };
 #endif
@@ -82,6 +91,11 @@ template <>
 struct DOT<Kokkos_> {
   template <class ExecutionSpace, class View>
   DOT(ExecutionSpace const &s, View x, View y) {
+    run(s, x, y);
+  }
+
+  template <class ExecutionSpace, class View>
+  void run(ExecutionSpace const &s, View x, View y) {
     using T = typename View::value_type;
     T r{};
     Kokkos::parallel_reduce(
