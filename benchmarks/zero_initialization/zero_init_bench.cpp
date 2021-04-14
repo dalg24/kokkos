@@ -14,6 +14,8 @@ struct SYCL_ {};
 struct HIP_ {};
 struct CUDA_ {};
 struct OMP_ {};
+struct OMP_lambda_ptr_ {};
+struct OMP_lambda_view_ {};
 
 template <class>
 struct AXPY;
@@ -66,11 +68,48 @@ struct AXPY<OMP_> {
     using T     = typename View::value_type;
     T const a   = 2;
     int const n = x.size();
-    T *xp       = x.data();
-    T *yp       = y.data();
+    auto xp     = x.data();
+    auto yp     = y.data();
+
 #pragma omp target teams distribute parallel for is_device_ptr(xp, yp)
     for (int i = 0; i < n; ++i) {
       yp[i] = a * xp[i] + yp[i];
+    }
+    s.fence();
+  }
+};
+
+template <>
+struct AXPY<OMP_lambda_ptr_> {
+  template <class ExecutionSpace, class View>
+  AXPY(ExecutionSpace const &s, View x, View y) {
+    using T     = typename View::value_type;
+    T const a   = 2;
+    int const n = x.size();
+    T *xp       = x.data();
+    T *yp       = y.data();
+
+    auto f = [=](int i) { yp[i] = a * xp[i] + yp[i]; };
+#pragma omp target teams distribute parallel for map(to : f)
+    for (int i = 0; i < n; ++i) {
+      f(i);
+    }
+    s.fence();
+  }
+};
+
+template <>
+struct AXPY<OMP_lambda_view_> {
+  template <class ExecutionSpace, class View>
+  AXPY(ExecutionSpace const &s, View x, View y) {
+    using T     = typename View::value_type;
+    T const a   = 2;
+    int const n = x.size();
+
+    auto f = [=](int i) { y[i] = a * x[i] + y[i]; };
+#pragma omp target teams distribute parallel for map(to : f)
+    for (int i = 0; i < n; ++i) {
+      f(i);
     }
     s.fence();
   }
@@ -111,20 +150,19 @@ struct AXPY<CUDA_>
 
 #if defined(KOKKOS_ENABLE_SYCL)
 template <>
-struct AXPY<SYCL_>
-{
+struct AXPY<SYCL_> {
   template <class ExecutionSpace, class View>
   AXPY(ExecutionSpace const &s, View x, View y) {
-   sycl::queue sycl_queue = *s.impl_internal_space_instance()->m_queue;
-   sycl_queue.submit([&](cl::sycl::handler &cgh) {
-      auto * x_ = x.data();
-      auto * y_ = y.data();
+    sycl::queue sycl_queue = *s.impl_internal_space_instance()->m_queue;
+    sycl_queue.submit([&](cl::sycl::handler &cgh) {
+      auto *x_                    = x.data();
+      auto *y_                    = y.data();
       typename View::value_type a = 2;
-      cgh.parallel_for(
-        cl::sycl::range<1>(x.size()), [=](cl::sycl::item<1> itemId) {
-          const int i = itemId.get_id();
-          y_[i] = a * x_[i] + y_[i];
-        });
+      cgh.parallel_for(cl::sycl::range<1>(x.size()),
+                       [=](cl::sycl::item<1> itemId) {
+                         const int i = itemId.get_id();
+                         y_[i]       = a * x_[i] + y_[i];
+                       });
     });
     sycl_queue.wait();
   }
@@ -178,11 +216,49 @@ struct DOT<OMP_> {
     T *xp       = x.data();
     T *yp       = y.data();
 
-    double result = 0.;
-#pragma omp target teams distribute parallel for \
-      is_device_ptr(xp,yp) reduction(+:result)
+    T result = 0.;
+
+#pragma omp target teams distribute parallel for reduction(+:result) is_device_ptr(xp, yp)
     for (int i = 0; i < n; ++i) {
-      result += xp[i] * yp[i];
+      result += xp[i] + yp[i];
+    }
+    s.fence();
+  }
+};
+
+template <>
+struct DOT<OMP_lambda_ptr_> {
+  template <class ExecutionSpace, class View>
+  DOT(ExecutionSpace const &s, View x, View y) {
+    using T     = typename View::value_type;
+    int const n = x.size();
+    T *xp       = x.data();
+    T *yp       = y.data();
+
+    T result = 0.;
+
+    auto f = [=](int i, auto &result) { result += xp[i] + yp[i]; };
+#pragma omp target teams distribute parallel for reduction(+:result) map(to:f)
+    for (int i = 0; i < n; ++i) {
+      f(i, result);
+    }
+    s.fence();
+  }
+};
+
+template <>
+struct DOT<OMP_lambda_view_> {
+  template <class ExecutionSpace, class View>
+  DOT(ExecutionSpace const &s, View x, View y) {
+    using T     = typename View::value_type;
+    int const n = x.size();
+
+    T result = 0.;
+
+    auto f = [=](int i, auto &result) { result += x[i] + y[i]; };
+#pragma omp target teams distribute parallel for reduction(+:result) map(to:f)
+    for (int i = 0; i < n; ++i) {
+      f(i, result);
     }
     s.fence();
   }
@@ -194,23 +270,23 @@ template <>
 struct DOT<SYCL_> {
   template <class ExecutionSpace, class View>
   DOT(ExecutionSpace const &s, View x, View y) {
-      sycl::queue sycl_queue = *s.impl_internal_space_instance()->m_queue;
-      double result = 0.;
-      auto result_ptr = static_cast<double*>(
+    sycl::queue sycl_queue = *s.impl_internal_space_instance()->m_queue;
+    double result          = 0.;
+    auto result_ptr        = static_cast<double *>(
         sycl::malloc(sizeof(result), sycl_queue, sycl::usm::alloc::shared));
-      sycl_queue.submit([&](cl::sycl::handler &cgh) {
-        auto * x_ = x.data();
-        auto * y_ = y.data();  
-        auto reduction = cl::sycl::ONEAPI::reduction(result_ptr, std::plus<>());
-        cgh.parallel_for(
-          cl::sycl::nd_range<1>(x.size(), 128), reduction, [=](cl::sycl::nd_item<1> itemId, auto& sum) {
-            const int i = itemId.get_global_id();
-            sum.combine(x_[i]*y_[i]);
-          });
-      });
-      sycl_queue.wait();
-      sycl_queue.memcpy(&result, result_ptr, sizeof(result));
-      sycl_queue.wait();
+    sycl_queue.submit([&](cl::sycl::handler &cgh) {
+      auto *x_       = x.data();
+      auto *y_       = y.data();
+      auto reduction = cl::sycl::ONEAPI::reduction(result_ptr, std::plus<>());
+      cgh.parallel_for(cl::sycl::nd_range<1>(x.size(), 128), reduction,
+                       [=](cl::sycl::nd_item<1> itemId, auto &sum) {
+                         const int i = itemId.get_global_id();
+                         sum.combine(x_[i] * y_[i]);
+                       });
+    });
+    sycl_queue.wait();
+    sycl_queue.memcpy(&result, result_ptr, sizeof(result));
+    sycl_queue.wait();
   }
 };
 #endif
@@ -256,6 +332,35 @@ void BM_generic(benchmark::State &state) {
       ->RangeMultiplier(8)                          \
       ->Range(1024, 8 << 24)                        \
       ->UseRealTime();
+
+#if defined(KOKKOS_ENABLE_OPENMPTARGET)
+// clang-format off
+BENCHMARK_TEMPLATE(BM_generic, OMP_, AXPY, double)
+    ->Args({1000000})
+    ->Args({1000000000})
+    ->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_ptr_, AXPY, double)
+    ->Args({1000000})
+    ->Args({1000000000})
+    ->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_view_, AXPY, double)
+    ->Args({1000000})
+    ->Args({1000000000})
+    ->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_, DOT, double)
+    ->Args({1000000})
+    ->Args({1000000000})
+    ->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_ptr_, DOT, double)
+    ->Args({1000000})
+    ->Args({1000000000})
+    ->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_view_, DOT, double)
+    ->Args({1000000})
+    ->Args({1000000000})
+    ->UseRealTime();
+// clang-format on
+#endif
 
 REGISTER_BENCHMARK(Kokkos_, AXPY, int);
 REGISTER_BENCHMARK(Kokkos_, AXPY, double);
