@@ -16,6 +16,7 @@ struct CUDA_ {};
 struct OMP_ {};
 struct OMP_lambda_ptr_ {};
 struct OMP_lambda_view_ {};
+struct OMP_member_bnd_ {};
 
 template <class>
 struct AXPY;
@@ -73,6 +74,24 @@ struct AXPY<OMP_> {
 
 #pragma omp target teams distribute parallel for is_device_ptr(xp, yp)
     for (int i = 0; i < n; ++i) {
+      yp[i] = a * xp[i] + yp[i];
+    }
+    s.fence();
+  }
+};
+
+template <>
+struct AXPY<OMP_member_bnd_> {
+  int _n;
+  template <class ExecutionSpace, class View>
+  AXPY(ExecutionSpace const &s, View x, View y) : _n(x.size()) {
+    using T   = typename View::value_type;
+    T const a = 2;
+    auto xp   = x.data();
+    auto yp   = y.data();
+
+#pragma omp target teams distribute parallel for is_device_ptr(xp, yp)
+    for (int i = 0; i < _n; ++i) {
       yp[i] = a * xp[i] + yp[i];
     }
     s.fence();
@@ -333,32 +352,17 @@ void BM_generic(benchmark::State &state) {
       ->Range(1024, 8 << 24)                        \
       ->UseRealTime();
 
+#if defined(KOKKOS_ENABLE_HIP)
+// clang-format off
+BENCHMARK_TEMPLATE(BM_generic, HIP_, AXPY, double)->Args({1000000})->UseRealTime();
+// clang-format on
+#endif
 #if defined(KOKKOS_ENABLE_OPENMPTARGET)
 // clang-format off
-BENCHMARK_TEMPLATE(BM_generic, OMP_, AXPY, double)
-    ->Args({1000000})
-    ->Args({1000000000})
-    ->UseRealTime();
-BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_ptr_, AXPY, double)
-    ->Args({1000000})
-    ->Args({1000000000})
-    ->UseRealTime();
-BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_view_, AXPY, double)
-    ->Args({1000000})
-    ->Args({1000000000})
-    ->UseRealTime();
-BENCHMARK_TEMPLATE(BM_generic, OMP_, DOT, double)
-    ->Args({1000000})
-    ->Args({1000000000})
-    ->UseRealTime();
-BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_ptr_, DOT, double)
-    ->Args({1000000})
-    ->Args({1000000000})
-    ->UseRealTime();
-BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_view_, DOT, double)
-    ->Args({1000000})
-    ->Args({1000000000})
-    ->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_, AXPY, double)->Args({1000000})->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_member_bnd_, AXPY, double)->Args({1000000})->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_ptr_, AXPY, double)->Args({1000000})->UseRealTime();
+BENCHMARK_TEMPLATE(BM_generic, OMP_lambda_view_, AXPY, double)->Args({1000000})->UseRealTime();
 // clang-format on
 #endif
 
