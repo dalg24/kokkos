@@ -289,3 +289,4 @@ IF (HAS_PARENT)
 ENDIF()
 
 add_subdirectory(benchmarks/zero_initialization)
+add_subdirectory(benchmarks/latency)
