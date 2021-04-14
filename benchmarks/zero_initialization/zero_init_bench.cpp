@@ -193,18 +193,18 @@ void BM_generic(benchmark::State &state) {
   Kokkos::View<T *, ExecutionSpace> x("x", n);
   Kokkos::View<T *, ExecutionSpace> y("y", n);
   K<W>(space, x, y);  // warm-up
-  double c = 0;
   for (auto _ : state) {
     K<W>(space, x, y);
-    ++c;
   }
-  state.counters["Bandwidth"] = benchmark::Counter(
-      c * factor<K<W>>::value * sizeof(T) * n, benchmark::Counter::kIsRate);
+  state.counters["Bandwidth"] =
+      benchmark::Counter(factor<K<W>>::value * sizeof(T) * n,
+                         benchmark::Counter::kIsIterationInvariantRate);
 }
 #define REGISTER_BENCHMARK(TAG, KERNEL, TYPE)       \
   BENCHMARK_TEMPLATE(BM_generic, TAG, KERNEL, TYPE) \
       ->RangeMultiplier(8)                          \
-      ->Range(1024, 8 << 24)
+      ->Range(1024, 8 << 24)                        \
+      ->UseRealTime();
 
 REGISTER_BENCHMARK(Kokkos_, AXPY, int);
 REGISTER_BENCHMARK(Kokkos_, AXPY, double);
