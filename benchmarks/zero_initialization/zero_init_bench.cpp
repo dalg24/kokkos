@@ -10,6 +10,7 @@
 
 struct Kokkos_ {};
 struct Thrust_ {};
+struct SYCL_ {};
 struct HIP_ {};
 struct CUDA_ {};
 struct OMP_ {};
@@ -108,6 +109,31 @@ struct AXPY<CUDA_>
 };
 #endif
 
+#if defined(KOKKOS_ENABLE_SYCL)
+template <>
+struct AXPY<SYCL_>
+{
+  static cl::sycl::queue sycl_queue;
+
+  template <class ExecutionSpace, class View>
+  AXPY(ExecutionSpace const &, View x, View y) {
+   // Initialization
+   sycl_queue.submit([&](cl::sycl::handler &cgh) {
+      auto * x_ = x.data();
+      auto * y_ = y.data();
+      typename View::value_type a = 2;
+      cgh.parallel_for(
+        cl::sycl::range<1>(x.size()), [=](cl::sycl::item<1> itemId) {
+          const int i = itemId.get_id();
+          y_[i] = a * x_[i] + y_[i];
+        });
+    });
+    sycl_queue.wait();
+  }
+};
+auto AXPY<SYCL_>::sycl_queue  = cl::sycl::queue(cl::sycl::gpu_selector());
+#endif
+
 template <class>
 struct DOT;
 
@@ -166,6 +192,34 @@ struct DOT<OMP_> {
 };
 #endif
 
+#if defined(KOKKOS_ENABLE_SYCL)
+template <>
+struct DOT<SYCL_> {
+  static cl::sycl::queue sycl_queue;
+
+  template <class ExecutionSpace, class View>
+  DOT(ExecutionSpace const &, View x, View y) {
+      double result = 0.;
+      auto result_ptr = static_cast<double*>(
+        sycl::malloc(sizeof(result), sycl_queue, sycl::usm::alloc::shared));
+      sycl_queue.submit([&](cl::sycl::handler &cgh) {
+        auto * x_ = x.data();
+        auto * y_ = y.data();  
+        auto reduction = cl::sycl::ONEAPI::reduction(result_ptr, std::plus<>());
+        cgh.parallel_for(
+          cl::sycl::nd_range<1>(x.size(), 128), reduction, [=](cl::sycl::nd_item<1> itemId, auto& sum) {
+            const int i = itemId.get_global_id();
+            sum.combine(x_[i]*y_[i]);
+          });
+      });
+      sycl_queue.wait();
+      sycl_queue.memcpy(&result, result_ptr, sizeof(result));
+      sycl_queue.wait();
+  }
+};
+auto DOT<SYCL_>::sycl_queue = cl::sycl::queue(cl::sycl::gpu_selector());
+#endif
+
 template <class>
 struct factor;
 
@@ -187,6 +241,8 @@ void BM_generic(benchmark::State &state) {
   using ExecutionSpace = Kokkos::Cuda;
 #elif defined(KOKKOS_ENABLE_OPENMPTARGET)
   using ExecutionSpace = Kokkos::Experimental::OpenMPTarget;
+#else
+  using ExecutionSpace = Kokkos::Experimental::SYCL;
 #endif
   int n = state.range(0);
   ExecutionSpace space{};
@@ -224,6 +280,10 @@ REGISTER_BENCHMARK(CUDA_, AXPY, double);
 REGISTER_BENCHMARK(OMP_, AXPY, int);
 REGISTER_BENCHMARK(OMP_, AXPY, double);
 #endif
+#ifdef KOKKOS_ENABLE_SYCL
+REGISTER_BENCHMARK(SYCL_, AXPY, int);
+REGISTER_BENCHMARK(SYCL_, AXPY, double);
+#endif
 REGISTER_BENCHMARK(Kokkos_, DOT, int);
 REGISTER_BENCHMARK(Kokkos_, DOT, double);
 #if defined(KOKKOS_ENABLE_HIP) || defined(KOKKOS_ENABLE_CUDA)
@@ -233,6 +293,10 @@ REGISTER_BENCHMARK(Thrust_, DOT, double);
 #if defined(KOKKOS_ENABLE_OPENMPTARGET)
 REGISTER_BENCHMARK(OMP_, DOT, int);
 REGISTER_BENCHMARK(OMP_, DOT, double);
+#endif
+#ifdef KOKKOS_ENABLE_SYCL
+REGISTER_BENCHMARK(SYCL_, DOT, int);
+REGISTER_BENCHMARK(SYCL_, DOT, double);
 #endif
 
 int main(int argc, char **argv) {
