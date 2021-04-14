@@ -113,11 +113,9 @@ struct AXPY<CUDA_>
 template <>
 struct AXPY<SYCL_>
 {
-  static cl::sycl::queue sycl_queue;
-
   template <class ExecutionSpace, class View>
-  AXPY(ExecutionSpace const &, View x, View y) {
-   // Initialization
+  AXPY(ExecutionSpace const &s, View x, View y) {
+   sycl::queue sycl_queue = *s.impl_internal_space_instance()->m_queue;
    sycl_queue.submit([&](cl::sycl::handler &cgh) {
       auto * x_ = x.data();
       auto * y_ = y.data();
@@ -131,7 +129,6 @@ struct AXPY<SYCL_>
     sycl_queue.wait();
   }
 };
-auto AXPY<SYCL_>::sycl_queue  = cl::sycl::queue(cl::sycl::gpu_selector());
 #endif
 
 template <class>
@@ -195,10 +192,9 @@ struct DOT<OMP_> {
 #if defined(KOKKOS_ENABLE_SYCL)
 template <>
 struct DOT<SYCL_> {
-  static cl::sycl::queue sycl_queue;
-
   template <class ExecutionSpace, class View>
-  DOT(ExecutionSpace const &, View x, View y) {
+  DOT(ExecutionSpace const &s, View x, View y) {
+      sycl::queue sycl_queue = *s.impl_internal_space_instance()->m_queue;
       double result = 0.;
       auto result_ptr = static_cast<double*>(
         sycl::malloc(sizeof(result), sycl_queue, sycl::usm::alloc::shared));
@@ -217,7 +213,6 @@ struct DOT<SYCL_> {
       sycl_queue.wait();
   }
 };
-auto DOT<SYCL_>::sycl_queue = cl::sycl::queue(cl::sycl::gpu_selector());
 #endif
 
 template <class>
