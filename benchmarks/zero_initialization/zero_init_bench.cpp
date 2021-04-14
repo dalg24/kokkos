@@ -67,9 +67,7 @@ struct AXPY<OMP_> {
     int const n = x.size();
     T *xp       = x.data();
     T *yp       = y.data();
-#pragma omp target teams distribute parallel for simd is_device_ptr(xp, yp) \
-    map(to                                                                  \
-        : n)
+#pragma omp target teams distribute parallel for is_device_ptr(xp, yp)
     for (int i = 0; i < n; ++i) {
       yp[i] = a * xp[i] + yp[i];
     }
@@ -159,7 +157,7 @@ struct DOT<OMP_> {
 
     double result = 0.;
 #pragma omp target teams distribute parallel for \
-      simd is_device_ptr(xp,yp) map(to: n) reduction(+:result)
+      is_device_ptr(xp,yp) reduction(+:result)
     for (int i = 0; i < n; ++i) {
       result += xp[i] * yp[i];
     }
