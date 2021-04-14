@@ -1,8 +1,10 @@
 #include <Kokkos_Core.hpp>
 
+#if defined(KOKKOS_ENABLE_HIP) || defined(KOKKOS_ENABLE_CUDA)
 #include <thrust/device_ptr.h>
 #include <thrust/inner_product.h>
 #include <thrust/transform.h>
+#endif
 
 #include <benchmark/benchmark.h>
 
@@ -10,6 +12,7 @@ struct Kokkos_ {};
 struct Thrust_ {};
 struct HIP_ {};
 struct CUDA_ {};
+struct OMP_ {};
 
 template <class>
 struct AXPY;
@@ -25,12 +28,13 @@ struct AXPY<Kokkos_> {
   void run(ExecutionSpace const &s, View x, View y) {
     typename View::value_type a = 2;
     Kokkos::parallel_for(
-        Kokkos::RangePolicy<ExecutionSpace>(0, x.size()),
+        Kokkos::RangePolicy<ExecutionSpace>(s, 0, x.size()),
         KOKKOS_LAMBDA(int i) { y[i] = a * x[i] + y[i]; });
     s.fence();
   }
 };
 
+#if defined(KOKKOS_ENABLE_HIP) || defined(KOKKOS_ENABLE_CUDA)
 template <>
 struct AXPY<Thrust_> {
   template <class ExecutionSpace, class View>
@@ -51,6 +55,28 @@ struct AXPY<Thrust_> {
     s.fence();
   }
 };
+#endif
+
+#if defined(KOKKOS_ENABLE_OPENMPTARGET)
+template <>
+struct AXPY<OMP_> {
+  template <class ExecutionSpace, class View>
+  AXPY(ExecutionSpace const &s, View x, View y) {
+    using T     = typename View::value_type;
+    T const a   = 2;
+    int const n = x.size();
+    T *xp       = x.data();
+    T *yp       = y.data();
+#pragma omp target teams distribute parallel for simd is_device_ptr(xp, yp) \
+    map(to                                                                  \
+        : n)
+    for (int i = 0; i < n; ++i) {
+      yp[i] = a * xp[i] + yp[i];
+    }
+    s.fence();
+  }
+};
+#endif
 
 #if defined(KOKKOS_ENABLE_HIP) || defined(KOKKOS_ENABLE_CUDA)
 template <class T>
@@ -99,24 +125,48 @@ struct DOT<Kokkos_> {
     using T = typename View::value_type;
     T r{};
     Kokkos::parallel_reduce(
-        Kokkos::RangePolicy<ExecutionSpace>(0, x.size()),
+        Kokkos::RangePolicy<ExecutionSpace>(s, 0, x.size()),
         KOKKOS_LAMBDA(int i, T &s) { s += x[i] * y[i]; }, r);
+    s.fence();
   }
 };
 
+#if defined(KOKKOS_ENABLE_HIP) || defined(KOKKOS_ENABLE_CUDA)
 template <>
 struct DOT<Thrust_> {
   template <class ExecutionSpace, class View>
   DOT(ExecutionSpace const &s, View x, View y) {
     using T                       = typename View::value_type;
-    T a                           = 2;
     int n                         = x.size();
     thrust::device_ptr<T> x_first = thrust::device_pointer_cast<T>(x.data());
     thrust::device_ptr<T> y_first = thrust::device_pointer_cast<T>(y.data());
     auto r = thrust::inner_product(x_first, x_first + n, y_first, 0);
+    (void)r;
     s.fence();
   }
 };
+#endif
+
+#if defined(KOKKOS_ENABLE_OPENMPTARGET)
+template <>
+struct DOT<OMP_> {
+  template <class ExecutionSpace, class View>
+  DOT(ExecutionSpace const &s, View x, View y) {
+    using T     = typename View::value_type;
+    int const n = x.size();
+    T *xp       = x.data();
+    T *yp       = y.data();
+
+    double result = 0.;
+#pragma omp target teams distribute parallel for \
+      simd is_device_ptr(xp,yp) map(to: n) reduction(+:result)
+    for (int i = 0; i < n; ++i) {
+      result += xp[i] * yp[i];
+    }
+    s.fence();
+  }
+};
+#endif
 
 template <class>
 struct factor;
@@ -133,10 +183,12 @@ struct factor<DOT<Tag>> {
 
 template <class W, template <class> class K, class T>
 void BM_generic(benchmark::State &state) {
-#ifdef KOKKOS_ENABLE_HIP
+#if defined(KOKKOS_ENABLE_HIP)
   using ExecutionSpace = Kokkos::Experimental::HIP;
-#else
+#elif defined(KOKKOS_ENABLE_CUDA)
   using ExecutionSpace = Kokkos::Cuda;
+#elif defined(KOKKOS_ENABLE_OPENMPTARGET)
+  using ExecutionSpace = Kokkos::Experimental::OpenMPTarget;
 #endif
   int n = state.range(0);
   ExecutionSpace space{};
@@ -158,8 +210,10 @@ void BM_generic(benchmark::State &state) {
 
 REGISTER_BENCHMARK(Kokkos_, AXPY, int);
 REGISTER_BENCHMARK(Kokkos_, AXPY, double);
+#if defined(KOKKOS_ENABLE_HIP) || defined(KOKKOS_ENABLE_CUDA)
 REGISTER_BENCHMARK(Thrust_, AXPY, int);
 REGISTER_BENCHMARK(Thrust_, AXPY, double);
+#endif
 #ifdef KOKKOS_ENABLE_HIP
 REGISTER_BENCHMARK(HIP_, AXPY, int);
 REGISTER_BENCHMARK(HIP_, AXPY, double);
@@ -168,10 +222,20 @@ REGISTER_BENCHMARK(HIP_, AXPY, double);
 REGISTER_BENCHMARK(CUDA_, AXPY, int);
 REGISTER_BENCHMARK(CUDA_, AXPY, double);
 #endif
+#if defined(KOKKOS_ENABLE_OPENMPTARGET)
+REGISTER_BENCHMARK(OMP_, AXPY, int);
+REGISTER_BENCHMARK(OMP_, AXPY, double);
+#endif
 REGISTER_BENCHMARK(Kokkos_, DOT, int);
 REGISTER_BENCHMARK(Kokkos_, DOT, double);
+#if defined(KOKKOS_ENABLE_HIP) || defined(KOKKOS_ENABLE_CUDA)
 REGISTER_BENCHMARK(Thrust_, DOT, int);
 REGISTER_BENCHMARK(Thrust_, DOT, double);
+#endif
+#if defined(KOKKOS_ENABLE_OPENMPTARGET)
+REGISTER_BENCHMARK(OMP_, DOT, int);
+REGISTER_BENCHMARK(OMP_, DOT, double);
+#endif
 
 int main(int argc, char **argv) {
   Kokkos::initialize(argc, argv);
