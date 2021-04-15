@@ -357,6 +357,11 @@ void BM_generic(benchmark::State &state) {
 BENCHMARK_TEMPLATE(BM_generic, HIP_, AXPY, double)->Args({1000000})->UseRealTime();
 // clang-format on
 #endif
+#if defined(KOKKOS_ENABLE_CUDA)
+// clang-format off
+BENCHMARK_TEMPLATE(BM_generic, CUDA_, AXPY, double)->Args({1000000})->UseRealTime();
+// clang-format on
+#endif
 #if defined(KOKKOS_ENABLE_OPENMPTARGET)
 // clang-format off
 BENCHMARK_TEMPLATE(BM_generic, OMP_, AXPY, double)->Args({1000000})->UseRealTime();

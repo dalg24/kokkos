@@ -85,15 +85,13 @@ void BM_generic(benchmark::State &state) {
   ExecutionSpace space{};
   Kokkos::View<double *, ExecutionSpace> x("x", n);
   K<W>(space, x, batch_size, work_size);  // warm-up
-  int n_iter = 0;
   for (auto _ : state) {
     K<W>(space, x, batch_size, work_size);
-    ++n_iter;
   }
 
-  state.counters["Time_per_kernel"] =
-      benchmark::Counter(batch_size * n_iter, benchmark::Counter::kIsRate |
-                                                  benchmark::Counter::kInvert);
+  state.counters["Time_per_kernel"] = benchmark::Counter(
+      batch_size, benchmark::Counter::kIsIterationInvariantRate |
+                      benchmark::Counter::kInvert);
 }
 
 #define REGISTER_BENCHMARK(TAG, KERNEL)                     \
