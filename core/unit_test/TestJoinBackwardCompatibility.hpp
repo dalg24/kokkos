@@ -51,11 +51,11 @@ namespace {
 
 struct MyValueType {};
 
-void operator+=(MyValueType &lhs, const MyValueType &rhs) {
+void operator+=(MyValueType &, const MyValueType &) {
   FAIL() << "FunctorAnalysis fell back to operator+=(non-volatile)";
 }
 
-void operator+=(volatile MyValueType &lhs, const volatile MyValueType &rhs) {
+void operator+=(volatile MyValueType &, const volatile MyValueType &) {
   FAIL() << "FunctorAnalysis fell back to operator+=(volatile)";
 }
 
