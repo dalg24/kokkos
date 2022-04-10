@@ -43,10 +43,21 @@
 */
 
 #include <Kokkos_Core.hpp>
+#include <gtest/gtest.h>
+
+namespace Test {
 
 namespace {
 
 struct MyValueType {};
+
+void operator+=(MyValueType &lhs, const MyValueType &rhs) {
+  FAIL() << "FunctorAnalysis fell back to operator+=(non-volatile)";
+}
+
+void operator+=(volatile MyValueType &lhs, const volatile MyValueType &rhs) {
+  FAIL() << "FunctorAnalysis fell back to operator+=(volatile)";
+}
 
 struct ReducerWithJoinThatTakesNonVolatileQualifiedArgs {
   using reducer    = ReducerWithJoinThatTakesNonVolatileQualifiedArgs;
@@ -63,7 +74,9 @@ struct ReducerWithJoinThatTakesBothVolatileAndNonVolatileQualifiedArgs {
   using value_type = MyValueType;
   KOKKOS_FUNCTION void join(MyValueType &, MyValueType const &) const {}
   KOKKOS_FUNCTION void join(MyValueType volatile &,
-                            MyValueType const volatile &) const {}
+                            MyValueType const volatile &) const {
+    FAIL() << "join overload taking non-volatile parameters should be selected";
+  }
   KOKKOS_FUNCTION void operator()(int, MyValueType &) const {}
   KOKKOS_FUNCTION
   ReducerWithJoinThatTakesBothVolatileAndNonVolatileQualifiedArgs() {}
@@ -91,3 +104,9 @@ void test_join_backward_compatibility() {
   Kokkos::parallel_reduce(
       policy, ReducerWithJoinThatTakesNonVolatileQualifiedArgs{}, result);
 }
+
+TEST(TEST_CATEGORY, join_backward_compatibility) {
+  test_join_backward_compatibility();
+}
+
+}  // namespace Test
