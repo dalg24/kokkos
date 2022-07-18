@@ -848,6 +848,9 @@ void Kokkos::Impl::parse_command_line_arguments(
     } else if (check_arg_bool(argv[iarg], "--kokkos-disable-warnings",
                               disable_warnings)) {
       settings.set_disable_warnings(disable_warnings);
+      if (disable_warnings) {
+        g_show_warnings = false;
+      }
     } else if (check_arg_bool(argv[iarg], "--kokkos-tune-internals",
                               tune_internals)) {
       settings.set_tune_internals(tune_internals);
@@ -901,6 +904,13 @@ void Kokkos::Impl::parse_environment_variables(
   }
   combine(settings, tools_init_arguments);
 
+  bool disable_warnings;
+  if (check_env_bool("KOKKOS_DISABLE_WARNINGS", disable_warnings)) {
+    settings.set_disable_warnings(disable_warnings);
+    if (disable_warnings) {
+      g_show_warnings = false;
+    }
+  }
   if (std::getenv("KOKKOS_NUMA")) {
     warn_deprecated_environment_variable("KOKKOS_NUMA");
   }
@@ -955,17 +965,13 @@ void Kokkos::Impl::parse_environment_variables(
       settings.set_skip_device(skip_device);
     }
   }
-  bool disable_warnings;
-  if (check_env_bool("KOKKOS_DISABLE_WARNINGS", disable_warnings)) {
-    settings.set_disable_warnings(disable_warnings);
-  }
   bool tune_internals;
   if (check_env_bool("KOKKOS_TUNE_INTERNALS", tune_internals)) {
     settings.set_tune_internals(tune_internals);
   }
   char const* map_device_id_by = std::getenv("KOKKOS_MAP_DEVICE_ID_BY");
-  if (map_device_id_by != nullptr) {
-    if (std::getenv("KOKKOS_DEVICE_ID")) {
+  if (map_device_id_by) {
+    if (show_warnings() && std::getenv("KOKKOS_DEVICE_ID")) {
       std::cerr << "Warning: environment variable KOKKOS_MAP_DEVICE_ID_BY"
                 << "ignored since KOKKOS_DEVICE_ID is specified." << std::endl;
     }
