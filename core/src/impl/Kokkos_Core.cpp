@@ -1067,9 +1067,9 @@ void Kokkos::print_configuration(std::ostream& os, bool verbose) {
 bool Kokkos::is_initialized() noexcept { return initialized() && !finalized(); }
 #endif
 
-bool Kokkos::initialized() noexcept { return g_initialized; }
+KOKKOS_ATTRIBUTE_NODISCARD bool Kokkos::initialized() noexcept { return g_initialized; }
 
-bool Kokkos::finalized() noexcept { return g_finalized; }
+KOKKOS_ATTRIBUTE_NODISCARD bool Kokkos::finalized() noexcept { return g_finalized; }
 
 bool Kokkos::show_warnings() noexcept { return g_show_warnings; }
 

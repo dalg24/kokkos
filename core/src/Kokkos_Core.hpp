@@ -107,8 +107,8 @@ KOKKOS_DEPRECATED_WITH_COMMENT(
     "Use (Kokkos::initialized() && !Kokkos::finalized()) instead")
 bool is_initialized() noexcept;
 #endif
-bool initialized() noexcept;
-bool finalized() noexcept;
+KOKKOS_ATTRIBUTE_NODISCARD bool initialized() noexcept;
+KOKKOS_ATTRIBUTE_NODISCARD bool finalized() noexcept;
 
 bool show_warnings() noexcept;
 bool tune_internals() noexcept;
