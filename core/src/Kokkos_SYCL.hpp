@@ -61,9 +61,9 @@ KOKKOS_IMPL_WARNING("Including non-public Kokkos header files is not allowed.")
 #include <Kokkos_SYCL_Space.hpp>
 #include <Kokkos_Layout.hpp>
 #include <Kokkos_ScratchSpace.hpp>
-#include <impl/Kokkos_ExecSpaceInitializer.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
 #include <impl/Kokkos_HostSharedPtr.hpp>
+#include <impl/Kokkos_InitializationSettings.hpp>
 
 namespace Kokkos {
 namespace Experimental {
@@ -96,9 +96,9 @@ class SYCL {
     return m_space_instance->impl_get_instance_id();
   }
 
-  sycl::context sycl_context() const noexcept {
-    return m_space_instance->m_queue->get_context();
-  };
+  sycl::queue& sycl_queue() const noexcept {
+    return *m_space_instance->m_queue;
+  }
 
   //@}
   //------------------------------------
@@ -127,32 +127,12 @@ class SYCL {
           "Kokkos::Experimental::SYCL::fence: Unnamed Instance Fence") const;
 
   /// \brief Print configuration information to the given output stream.
-  void print_configuration(std::ostream&, const bool detail = false);
+  void print_configuration(std::ostream& os, bool verbose = false) const;
 
   /// \brief Free any resources being consumed by the device.
   static void impl_finalize();
 
-  /** \brief  Initialize the device.
-   *
-   */
-
-  struct SYCLDevice {
-    SYCLDevice() : SYCLDevice(sycl::default_selector()) {}
-    explicit SYCLDevice(sycl::device d);
-    explicit SYCLDevice(const sycl::device_selector& selector);
-    explicit SYCLDevice(size_t id);
-
-    sycl::device get_device() const;
-
-    friend std::ostream& operator<<(std::ostream& os, const SYCLDevice& that) {
-      return SYCL::impl_sycl_info(os, that.m_device);
-    }
-
-   private:
-    sycl::device m_device;
-  };
-
-  static void impl_initialize(SYCLDevice = SYCLDevice());
+  static void impl_initialize(InitializationSettings const&);
 
   int sycl_device() const;
 
@@ -172,17 +152,6 @@ class SYCL {
   Kokkos::Impl::HostSharedPtr<Impl::SYCLInternal> m_space_instance;
 };
 
-namespace Impl {
-
-class SYCLSpaceInitializer : public Kokkos::Impl::ExecSpaceInitializerBase {
- public:
-  void initialize(const InitializationSettings& settings) final;
-  void finalize(const bool) final;
-  void fence(const std::string&) final;
-  void print_configuration(std::ostream& msg, const bool detail) final;
-};
-
-}  // namespace Impl
 }  // namespace Experimental
 
 namespace Tools {
@@ -207,7 +176,7 @@ std::vector<SYCL> partition_space(const SYCL& sycl_space, Args...) {
       "Kokkos Error: partitioning arguments must be integers or floats");
 #endif
 
-  sycl::context context = sycl_space.sycl_context();
+  sycl::context context = sycl_space.sycl_queue().get_context();
   sycl::device device =
       sycl_space.impl_internal_space_instance()->m_queue->get_device();
   std::vector<SYCL> instances;
@@ -224,7 +193,7 @@ std::vector<SYCL> partition_space(const SYCL& sycl_space,
       std::is_arithmetic<T>::value,
       "Kokkos Error: partitioning arguments must be integers or floats");
 
-  sycl::context context = sycl_space.sycl_context();
+  sycl::context context = sycl_space.sycl_queue().get_context();
   sycl::device device =
       sycl_space.impl_internal_space_instance()->m_queue->get_device();
   std::vector<SYCL> instances;

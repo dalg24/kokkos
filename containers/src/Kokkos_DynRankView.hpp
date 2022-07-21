@@ -481,10 +481,7 @@ class DynRankView : public ViewTraits<DataType, Properties...> {
     return static_cast<int>(m_map.extent(r));
   }
 
-  KOKKOS_INLINE_FUNCTION constexpr typename traits::array_layout layout()
-      const {
-    return m_map.layout();
-  }
+  KOKKOS_INLINE_FUNCTION constexpr typename traits::array_layout layout() const;
 
   //----------------------------------------
   /*  Deprecate all 'dimension' functions in favor of
@@ -1711,7 +1708,8 @@ auto as_view_of_rank_n(DynRankView<T, Args...> v) {
         " to a View of mis-matched rank " + std::to_string(N));
   }
 
-  return View<typename RankDataType<T, N>::type, Args...>(v.data(), v.layout());
+  return View<typename RankDataType<T, N>::type, Args...>(
+      v.data(), v.impl_map().layout());
 }
 
 template <typename Function, typename... Args>
@@ -1733,6 +1731,25 @@ void apply_to_view_of_static_rank(Function&& f, DynRankView<Args...> a) {
 }
 
 }  // namespace Impl
+
+template <typename D, class... P>
+KOKKOS_INLINE_FUNCTION constexpr auto DynRankView<D, P...>::layout() const ->
+    typename traits::array_layout {
+  switch (rank()) {
+    case 0: return Impl::as_view_of_rank_n<0>(*this).layout();
+    case 1: return Impl::as_view_of_rank_n<1>(*this).layout();
+    case 2: return Impl::as_view_of_rank_n<2>(*this).layout();
+    case 3: return Impl::as_view_of_rank_n<3>(*this).layout();
+    case 4: return Impl::as_view_of_rank_n<4>(*this).layout();
+    case 5: return Impl::as_view_of_rank_n<5>(*this).layout();
+    case 6: return Impl::as_view_of_rank_n<6>(*this).layout();
+    case 7: return Impl::as_view_of_rank_n<7>(*this).layout();
+    default:
+      Kokkos::Impl::throw_runtime_exception(
+          "Calling DynRankView::layout on DRV of unexpected rank " +
+          std::to_string(rank()));
+  }
+}
 
 /** \brief  Deep copy a value from Host memory into a view.  */
 template <class ExecSpace, class DT, class... DP>
@@ -2134,8 +2151,28 @@ create_mirror_view(
 
 // Create a mirror view in host space
 template <class T, class... P>
-inline auto create_mirror_view(const DynRankView<T, P...>& src) {
-  return Impl::create_mirror_view(src, Impl::ViewCtorProp<>{});
+inline std::enable_if_t<
+    (std::is_same<
+         typename DynRankView<T, P...>::memory_space,
+         typename DynRankView<T, P...>::HostMirror::memory_space>::value &&
+     std::is_same<typename DynRankView<T, P...>::data_type,
+                  typename DynRankView<T, P...>::HostMirror::data_type>::value),
+    typename DynRankView<T, P...>::HostMirror>
+create_mirror_view(const Kokkos::DynRankView<T, P...>& src) {
+  return src;
+}
+
+template <class T, class... P>
+inline std::enable_if_t<
+    !(std::is_same<
+          typename DynRankView<T, P...>::memory_space,
+          typename DynRankView<T, P...>::HostMirror::memory_space>::value &&
+      std::is_same<
+          typename DynRankView<T, P...>::data_type,
+          typename DynRankView<T, P...>::HostMirror::data_type>::value),
+    typename DynRankView<T, P...>::HostMirror>
+create_mirror_view(const Kokkos::DynRankView<T, P...>& src) {
+  return Kokkos::create_mirror(src);
 }
 
 template <class T, class... P>
@@ -2145,10 +2182,26 @@ inline auto create_mirror_view(Kokkos::Impl::WithoutInitializing_t wi,
 }
 
 // Create a mirror view in a new space
-template <class Space, class T, class... P>
-inline auto create_mirror_view(const Space& space,
-                               const Kokkos::DynRankView<T, P...>& src) {
-  return Impl::create_mirror_view(space, src, Impl::ViewCtorProp<>{});
+// FIXME_C++17 Improve SFINAE here.
+template <class Space, class T, class... P,
+          class Enable = std::enable_if_t<Kokkos::is_space<Space>::value>>
+inline typename Impl::MirrorDRViewType<Space, T, P...>::view_type
+create_mirror_view(
+    const Space&, const Kokkos::DynRankView<T, P...>& src,
+    std::enable_if_t<
+        Impl::MirrorDRViewType<Space, T, P...>::is_same_memspace>* = nullptr) {
+  return src;
+}
+
+// FIXME_C++17 Improve SFINAE here.
+template <class Space, class T, class... P,
+          class Enable = std::enable_if_t<Kokkos::is_space<Space>::value>>
+inline typename Impl::MirrorDRViewType<Space, T, P...>::view_type
+create_mirror_view(
+    const Space& space, const Kokkos::DynRankView<T, P...>& src,
+    std::enable_if_t<
+        !Impl::MirrorDRViewType<Space, T, P...>::is_same_memspace>* = nullptr) {
+  return Kokkos::create_mirror(space, src);
 }
 
 template <class Space, class T, class... P>
