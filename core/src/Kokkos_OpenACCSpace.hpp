@@ -52,84 +52,30 @@ KOKKOS_IMPL_WARNING("Including non-public Kokkos header files is not allowed.")
 #endif
 #endif
 
-#ifndef KOKKOS_OPENACCSPACE_HPP
-#define KOKKOS_OPENACCSPACE_HPP
+#ifndef KOKKOS_OPENACC_SPACE_HPP
+#define KOKKOS_OPENACC_SPACE_HPP
 
-#include <Kokkos_Core_fwd.hpp>
-
-#if defined(KOKKOS_ENABLE_OPENACC)
-
-#include <openacc.h>
-#include <iosfwd>
+#include <Kokkos_Concepts.hpp>
 
 #include <impl/Kokkos_Tools.hpp>
 #include <impl/Kokkos_SharedAlloc.hpp>
 
-/*--------------------------------------------------------------------------*/
+#include <openacc.h>
+#include <iosfwd>
 
-namespace Kokkos {
-namespace Impl {
+namespace Kokkos::Experimental {
 
-//----------------------------------------
+class OpenACC;
 
-template <>
-struct MemorySpaceAccess<Kokkos::HostSpace,
-                         Kokkos::Experimental::OpenACCSpace> {
-  enum : bool { assignable = false };
-  enum : bool { accessible = false };
-  enum : bool { deepcopy = true };
-};
-
-//----------------------------------------
-
-template <>
-struct MemorySpaceAccess<Kokkos::Experimental::OpenACCSpace,
-                         Kokkos::HostSpace> {
-  enum : bool { assignable = false };
-  enum : bool { accessible = false };
-  enum : bool { deepcopy = true };
-};
-
-//----------------------------------------
-
-template <>
-struct MemorySpaceAccess<Kokkos::Experimental::OpenACCSpace,
-                         Kokkos::Experimental::OpenACCSpace> {
-  enum : bool { assignable = true };
-  enum : bool { accessible = true };
-  enum : bool { deepcopy = true };
-};
-}  // namespace Impl
-}  // namespace Kokkos
-
-namespace Kokkos {
-namespace Experimental {
-
-/// \class OpenACCSpace
-/// \brief Memory management for OpenACC-supported device memory.
-///
-/// OpenACCSpace is a memory space that governs OpenACC-supported device memory.
 class OpenACCSpace {
  public:
-  //! Tag this class as a kokkos memory space
   using memory_space = OpenACCSpace;
-  using size_type    = size_t;
-
-  /// \typedef execution_space
-  /// \brief Default execution space for this memory space.
-  ///
-  /// Every memory space has a default execution space.  This is
-  /// useful for things like initializing a View (which happens in
-  /// parallel using the View's default execution space).
-  using execution_space = Kokkos::Experimental::OpenACC;
-
-  //! This memory space preferred device_type
+  using execution_space = OpenACC;
   using device_type = Kokkos::Device<execution_space, memory_space>;
 
-  /*--------------------------------*/
+  using size_type    = size_t;
 
-  /**\brief  Default memory space instance */
-  OpenACCSpace();
+  OpenACCSpace() = default;
 
   /**\brief  Allocate untracked memory in the space */
   void* allocate(const Kokkos::Experimental::OpenACC& exec_space,
@@ -147,7 +93,7 @@ class OpenACCSpace {
                   const size_t arg_alloc_size,
                   const size_t arg_logical_size = 0) const;
 
-  static constexpr const char* name() { return "OpenACCSpace"; }
+  static constexpr char const* name() { return "OpenACCSpace"; }
 
  private:
   void* impl_allocate(const Kokkos::Experimental::OpenACC& exec_space,
@@ -164,17 +110,40 @@ class OpenACCSpace {
                        const size_t arg_logical_size = 0,
                        const Kokkos::Tools::SpaceHandle =
                            Kokkos::Tools::make_space_handle(name())) const;
-  friend class Kokkos::Impl::SharedAllocationRecord<
-      Kokkos::Experimental::OpenACCSpace, void>;
 };
-}  // namespace Experimental
-}  // namespace Kokkos
 
-namespace Kokkos {
-namespace Impl {
+}  // namespace Kokkos::Experimental
+
+/*--------------------------------------------------------------------------*/
 
 template <>
-class SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace, void>
+struct Kokkos::Impl::MemorySpaceAccess<Kokkos::HostSpace,
+                                       Kokkos::Experimental::OpenACCSpace> {
+  enum : bool { assignable = false };
+  enum : bool { accessible = false };
+  enum : bool { deepcopy = true };
+};
+
+template <>
+struct Kokkos::Impl::MemorySpaceAccess<Kokkos::Experimental::OpenACCSpace,
+                                       Kokkos::HostSpace> {
+  enum : bool { assignable = false };
+  enum : bool { accessible = false };
+  enum : bool { deepcopy = true };
+};
+
+template <>
+struct Kokkos::Impl::MemorySpaceAccess<Kokkos::Experimental::OpenACCSpace,
+                                       Kokkos::Experimental::OpenACCSpace> {
+  enum : bool { assignable = true };
+  enum : bool { accessible = true };
+  enum : bool { deepcopy = true };
+};
+/*--------------------------------------------------------------------------*/
+
+template <>
+class Kokkos::Impl::SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace,
+                                           void>
     : public HostInaccessibleSharedAllocationRecordCommon<
           Kokkos::Experimental::OpenACCSpace> {
  private:
@@ -187,7 +156,7 @@ class SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace, void>
       Kokkos::Experimental::OpenACCSpace>;
   using RecordBase = SharedAllocationRecord<void, void>;
 
-  SharedAllocationRecord(const SharedAllocationRecord&) = delete;
+  SharedAllocationRecord(const SharedAllocationRecord&)            = delete;
   SharedAllocationRecord& operator=(const SharedAllocationRecord&) = delete;
 
   /**\brief  Root record for tracked allocations from this OpenACCSpace
@@ -226,14 +195,8 @@ class SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace, void>
   }
 };
 
-}  // namespace Impl
-}  // namespace Kokkos
-
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-
-namespace Kokkos {
-namespace Impl {
 
 // FIXME_OPENACC: Need to update the DeepCopy implementations below to support
 // multiple execution space instances.
@@ -243,8 +206,9 @@ namespace Impl {
 // does not violate the Kokkos execution semantics with the single execution
 // space instance.
 template <class ExecutionSpace>
-struct DeepCopy<Kokkos::Experimental::OpenACCSpace,
-                Kokkos::Experimental::OpenACCSpace, ExecutionSpace> {
+struct Kokkos::Impl::DeepCopy<Kokkos::Experimental::OpenACCSpace,
+                              Kokkos::Experimental::OpenACCSpace,
+                              ExecutionSpace> {
   DeepCopy(void* dst, const void* src, size_t n) {
     // The behavior of acc_memcpy_device when bytes argument is zero is
     // clarified only in the latest OpenACC specification (V3.2), and thus the
@@ -259,7 +223,8 @@ struct DeepCopy<Kokkos::Experimental::OpenACCSpace,
 };
 
 template <class ExecutionSpace>
-struct DeepCopy<Kokkos::Experimental::OpenACCSpace, HostSpace, ExecutionSpace> {
+struct Kokkos::Impl::DeepCopy<Kokkos::Experimental::OpenACCSpace,
+                              Kokkos::HostSpace, ExecutionSpace> {
   DeepCopy(void* dst, const void* src, size_t n) {
     if (n > 0) acc_memcpy_to_device(dst, const_cast<void*>(src), n);
   }
@@ -270,7 +235,8 @@ struct DeepCopy<Kokkos::Experimental::OpenACCSpace, HostSpace, ExecutionSpace> {
 };
 
 template <class ExecutionSpace>
-struct DeepCopy<HostSpace, Kokkos::Experimental::OpenACCSpace, ExecutionSpace> {
+struct Kokkos::Impl::DeepCopy<
+    Kokkos::HostSpace, Kokkos::Experimental::OpenACCSpace, ExecutionSpace> {
   DeepCopy(void* dst, const void* src, size_t n) {
     if (n > 0) acc_memcpy_from_device(dst, const_cast<void*>(src), n);
   }
@@ -280,8 +246,4 @@ struct DeepCopy<HostSpace, Kokkos::Experimental::OpenACCSpace, ExecutionSpace> {
   }
 };
 
-}  // namespace Impl
-}  // namespace Kokkos
-
-#endif /* #if defined(KOKKOS_ENABLE_OPENACC) */
-#endif /* #define KOKKOS_OPENACCSPACE_HPP */
+#endif

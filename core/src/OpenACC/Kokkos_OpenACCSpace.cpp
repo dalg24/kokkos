@@ -42,46 +42,41 @@
 //@HEADER
 */
 
-#ifndef KOKKOS_IMPL_PUBLIC_INCLUDE
 #define KOKKOS_IMPL_PUBLIC_INCLUDE
-#endif
-
-#include <Kokkos_Macros.hpp>
-#if defined KOKKOS_ENABLE_OPENACC
-
-#include <openacc.h>
-
-/*--------------------------------------------------------------------------*/
 
 #include <Kokkos_OpenACC.hpp>
 #include <Kokkos_OpenACCSpace.hpp>
 #include <impl/Kokkos_MemorySpace.hpp>
+#include <impl/Kokkos_Profiling_Interface.hpp>
+
+#include <openacc.h>
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-
-namespace Kokkos {
-namespace Experimental {
-/* Default allocation mechanism */
-OpenACCSpace::OpenACCSpace() = default;
-
-void *OpenACCSpace::allocate(const Kokkos::Experimental::OpenACC &exec_space,
-                             const size_t arg_alloc_size) const {
+void *Kokkos::Experimental::OpenACCSpace::allocate(
+    const Kokkos::Experimental::OpenACC &exec_space,
+    const size_t arg_alloc_size) const {
   return allocate(exec_space, "[unlabeled]", arg_alloc_size);
 }
-void *OpenACCSpace::allocate(const size_t arg_alloc_size) const {
+
+void *Kokkos::Experimental::OpenACCSpace::allocate(
+    const size_t arg_alloc_size) const {
   return allocate("[unlabeled]", arg_alloc_size);
 }
-void *OpenACCSpace::allocate(const Kokkos::Experimental::OpenACC &exec_space,
-                             const char *arg_label, const size_t arg_alloc_size,
-                             const size_t arg_logical_size) const {
+
+void *Kokkos::Experimental::OpenACCSpace::allocate(
+    const Kokkos::Experimental::OpenACC &exec_space, const char *arg_label,
+    const size_t arg_alloc_size, const size_t arg_logical_size) const {
   return impl_allocate(exec_space, arg_label, arg_alloc_size, arg_logical_size);
 }
-void *OpenACCSpace::allocate(const char *arg_label, const size_t arg_alloc_size,
-                             const size_t arg_logical_size) const {
+
+void *Kokkos::Experimental::OpenACCSpace::allocate(
+    const char *arg_label, const size_t arg_alloc_size,
+    const size_t arg_logical_size) const {
   return impl_allocate(arg_label, arg_alloc_size, arg_logical_size);
 }
-void *OpenACCSpace::impl_allocate(
+
+void *Kokkos::Experimental::OpenACCSpace::impl_allocate(
     const Kokkos::Experimental::OpenACC &exec_space, const char *arg_label,
     const size_t arg_alloc_size, const size_t arg_logical_size,
     const Kokkos::Tools::SpaceHandle arg_handle) const {
@@ -104,7 +99,8 @@ void *OpenACCSpace::impl_allocate(
 
   return ptr;
 }
-void *OpenACCSpace::impl_allocate(
+
+void *Kokkos::Experimental::OpenACCSpace::impl_allocate(
     const char *arg_label, const size_t arg_alloc_size,
     const size_t arg_logical_size,
     const Kokkos::Tools::SpaceHandle arg_handle) const {
@@ -137,16 +133,18 @@ void *OpenACCSpace::impl_allocate(
   return ptr;
 }
 
-void OpenACCSpace::deallocate(void *const arg_alloc_ptr,
-                              const size_t arg_alloc_size) const {
+void Kokkos::Experimental::OpenACCSpace::deallocate(
+    void *const arg_alloc_ptr, const size_t arg_alloc_size) const {
   deallocate("[unlabeled]", arg_alloc_ptr, arg_alloc_size);
 }
-void OpenACCSpace::deallocate(const char *arg_label, void *const arg_alloc_ptr,
-                              const size_t arg_alloc_size,
-                              const size_t arg_logical_size) const {
+
+void Kokkos::Experimental::OpenACCSpace::deallocate(
+    const char *arg_label, void *const arg_alloc_ptr,
+    const size_t arg_alloc_size, const size_t arg_logical_size) const {
   impl_deallocate(arg_label, arg_alloc_ptr, arg_alloc_size, arg_logical_size);
 }
-void OpenACCSpace::impl_deallocate(
+
+void Kokkos::Experimental::OpenACCSpace::impl_deallocate(
     const char *arg_label, void *const arg_alloc_ptr,
     const size_t arg_alloc_size, const size_t arg_logical_size,
     const Kokkos::Tools::SpaceHandle arg_handle) const {
@@ -161,21 +159,16 @@ void OpenACCSpace::impl_deallocate(
     acc_free(arg_alloc_ptr);
   }
 }
-}  // namespace Experimental
-}  // namespace Kokkos
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-
-namespace Kokkos {
-namespace Impl {
 
 #ifdef KOKKOS_ENABLE_DEBUG
-SharedAllocationRecord<void, void> SharedAllocationRecord<
+Kokkos::Impl::SharedAllocationRecord<void, void> SharedAllocationRecord<
     Kokkos::Experimental::OpenACCSpace, void>::s_root_record;
 #endif
 
-SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace,
+Kokkos::Impl::SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace,
                        void>::~SharedAllocationRecord() {
   m_space.deallocate(m_label.c_str(),
                      SharedAllocationRecord<void, void>::m_alloc_ptr,
@@ -183,7 +176,7 @@ SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace,
                       sizeof(SharedAllocationHeader)));
 }
 
-SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace, void>::
+Kokkos::Impl::SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace, void>::
     SharedAllocationRecord(
         const Kokkos::Experimental::OpenACCSpace &arg_space,
         const std::string &arg_label, const size_t arg_alloc_size,
@@ -212,30 +205,18 @@ SharedAllocationRecord<Kokkos::Experimental::OpenACCSpace, void>::
       "HostSpace");
 }
 
-//----------------------------------------------------------------------------
-
-}  // namespace Impl
-}  // namespace Kokkos
-
 //==============================================================================
 // <editor-fold desc="Explicit instantiations of CRTP Base classes"> {{{1
 
 #include <impl/Kokkos_SharedAlloc_timpl.hpp>
 
-namespace Kokkos {
-namespace Impl {
-
 // To avoid additional compilation cost for something that's (mostly?) not
-// performance sensitive, we explicity instantiate these CRTP base classes here,
-// where we have access to the associated *_timpl.hpp header files.
-template class HostInaccessibleSharedAllocationRecordCommon<
+// performance sensitive, we explicitly instantiate these CRTP base classes
+// here, where we have access to the associated *_timpl.hpp header files.
+template class Kokkos::Impl::HostInaccessibleSharedAllocationRecordCommon<
     Kokkos::Experimental::OpenACCSpace>;
-template class SharedAllocationRecordCommon<Kokkos::Experimental::OpenACCSpace>;
-
-}  // end namespace Impl
-}  // end namespace Kokkos
+template class Kokkos::Impl::SharedAllocationRecordCommon<
+    Kokkos::Experimental::OpenACCSpace>;
 
 // </editor-fold> end Explicit instantiations of CRTP Base classes }}}1
 //==============================================================================
-
-#endif  // KOKKOS_ENABLE_OPENACC

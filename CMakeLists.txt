@@ -282,7 +282,7 @@ KOKKOS_PACKAGE_POSTPROCESS()
 KOKKOS_CONFIGURE_CORE()
 
 IF (NOT KOKKOS_HAS_TRILINOS AND NOT Kokkos_INSTALL_TESTING)
-  ADD_LIBRARY(kokkos INTERFACE)
+  ADD_LIBRARY(kokkos INTERFACE core/src/OpenACC/Kokkos_OpenACC.cpp)
   #Make sure in-tree projects can reference this as Kokkos::
   #to match the installed target names
   ADD_LIBRARY(Kokkos::kokkos ALIAS kokkos)

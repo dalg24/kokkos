@@ -42,36 +42,57 @@
 //@HEADER
 */
 
-#ifndef KOKKOS_OPENACC_INSTANCE_HPP
-#define KOKKOS_OPENACC_INSTANCE_HPP
+#define KOKKOS_IMPL_PUBLIC_INCLUDE
 
-#include <cstdint>
-#include <iosfwd>
-#include <string>
+#include <Kokkos_OpenACC.hpp>
+#include <OpenACC/Kokkos_OpenACC_Instance.hpp>
+#include <impl/Kokkos_Profiling.hpp>
+#include <impl/Kokkos_ExecSpaceManager.hpp>
 
-namespace Kokkos::Experimental::Impl {
+#include <ostream>
 
-class OpenACCInternal {
-  bool m_is_initialized = false;
+Kokkos::Experimental::OpenACC::OpenACC()
+    : m_space_instance(Impl::OpenACCInternal::singleton()) {}
 
-  OpenACCInternal()                                  = default;
-  OpenACCInternal(const OpenACCInternal&)            = default;
-  OpenACCInternal& operator=(const OpenACCInternal&) = default;
+void Kokkos::Experimental::OpenACC::impl_initialize(
+    InitializationSettings const& /*settings*/) {
+  Impl::OpenACCInternal::singleton()->initialize();
+}
 
- public:
-  static OpenACCInternal* singleton();
+void Kokkos::Experimental::OpenACC::impl_finalize() {
+  Impl::OpenACCInternal::singleton()->finalize();
+}
 
-  void initialize();
-  void finalize();
-  bool is_initialized() const;
+bool Kokkos::Experimental::OpenACC::impl_is_initialized() {
+  return Impl::OpenACCInternal::singleton()->is_initialized();
+}
 
-  void print_configuration(std::ostream& os, bool verbose = false) const;
+void Kokkos::Experimental::OpenACC::print_configuration(std::ostream& os,
+                                                        bool verbose) const {
+  os << "macro KOKKOS_ENABLE_OPENACC is defined\n";  // FIXME_OPENACC
+  m_space_instance->print_configuration(os, verbose);
+}
 
-  void fence(std::string const& name) const;
+void Kokkos::Experimental::OpenACC::fence(std::string const& name) const {
+  Impl::OpenACCInternal::singleton()->fence(name);
+}
 
-  uint32_t instance_id() const noexcept;
-};
+void Kokkos::Experimental::OpenACC::impl_static_fence(std::string const& name) {
+  Kokkos::Tools::Experimental::Impl::profile_fence_event<
+      Kokkos::Experimental::OpenACC>(
+      name,
+      Kokkos::Tools::Experimental::SpecialSynchronizationCases::
+          GlobalDeviceSynchronization,
+      [&]() { acc_wait_all(); });
+}
 
-}  // namespace Kokkos::Experimental::Impl
+uint32_t Kokkos::Experimental::OpenACC::impl_instance_id() const noexcept {
+  return m_space_instance->instance_id();
+}
 
-#endif
+namespace Kokkos {
+namespace Impl {
+int g_openacc_space_factory_initialized =
+    initialize_space_factory<Experimental::OpenACC>("170_OpenACC");
+}  // namespace Impl
+}  // Namespace Kokkos

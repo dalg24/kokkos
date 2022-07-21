@@ -51,99 +51,73 @@ static_assert(false,
 KOKKOS_IMPL_WARNING("Including non-public Kokkos header files is not allowed.")
 #endif
 #endif
+
 #ifndef KOKKOS_OPENACC_HPP
 #define KOKKOS_OPENACC_HPP
 
-#include <Kokkos_Core_fwd.hpp>
-
-#if defined(KOKKOS_ENABLE_OPENACC)
-
+#include <Kokkos_OpenACCSpace.hpp>
+#include <Kokkos_Concepts.hpp>
 #include <Kokkos_Layout.hpp>
 #include <Kokkos_ScratchSpace.hpp>
-#include <Kokkos_OpenACCSpace.hpp>
-/*--------------------------------------------------------------------------*/
+#include <impl/Kokkos_InitializationSettings.hpp>
+#include <impl/Kokkos_Profiling_Interface.hpp>
 
-namespace Kokkos {
-namespace Experimental {
-namespace Impl {
+#include <openacc.h>
+
+#include <iosfwd>
+#include <string>
+
+namespace Kokkos::Experimental::Impl {
 class OpenACCInternal;
 }
 
-/// \class OpenACC
-/// \brief Kokkos execution space that uses OpenACC to run on accelerator
-/// devices.
-class OpenACC {
- public:
-  //------------------------------------
-  //! \name Type declarations that all Kokkos devices must provide.
-  //@{
+namespace Kokkos::Experimental {
 
-  //! Tag this class as a kokkos execution space
+class OpenACC {
+  Impl::OpenACCInternal* m_space_instance = nullptr;
+
+ public:
   using execution_space = OpenACC;
   using memory_space    = OpenACCSpace;
-  //! This execution space preferred device_type
-  using device_type = Kokkos::Device<execution_space, memory_space>;
+  using device_type     = Kokkos::Device<execution_space, memory_space>;
 
   using array_layout = LayoutLeft;
   using size_type    = memory_space::size_type;
 
   using scratch_memory_space = ScratchMemorySpace<OpenACC>;
 
-  static bool in_parallel() { return acc_on_device(acc_device_not_host); }
-
-  void fence(const std::string& name =
-                 "Kokkos::OpenACC::fence(): Unnamed Instance Fence") const;
-
-  static void impl_static_fence(const std::string& name);
-
-  /** \brief  Return the maximum amount of concurrency.  */
-  static int concurrency();
-
-  //! Print configuration information to the given output stream.
-  void print_configuration(std::ostream& os, bool verbose = false) const;
-
-  static const char* name();
-
-  //! Free any resources being consumed by the device.
-  static void impl_finalize();
-
-  //! Has been initialized
-  static int impl_is_initialized();
-
-  //! Initialize, telling the OpenACC run-time library which device to use.
-  static void impl_initialize(InitializationSettings const&);
-
-  Impl::OpenACCInternal* impl_internal_space_instance() const {
-    return m_space_instance;
-  }
-
   OpenACC();
 
+  static void impl_initialize(InitializationSettings const& settings);
+  static void impl_finalize();
+  static bool impl_is_initialized();
+
+  void print_configuration(std::ostream& os, bool verbose = false) const;
+
+  void fence(std::string const& name =
+                 "Kokkos::OpenACC::fence(): Unnamed Instance Fence") const;
+  static void impl_static_fence(std::string const& name);
+
+  static char const* name() { return "OpenACC"; }
+  static int concurrency() { return 256000; }  // FIXME_OPENACC
+  static bool in_parallel() { return acc_on_device(acc_device_not_host); }
   uint32_t impl_instance_id() const noexcept;
-
- private:
-  Impl::OpenACCInternal* m_space_instance;
 };
-}  // namespace Experimental
 
-namespace Tools {
-namespace Experimental {
+}  // namespace Kokkos::Experimental
+
 template <>
-struct DeviceTypeTraits<::Kokkos::Experimental::OpenACC> {
+struct Kokkos::Tools::Experimental::DeviceTypeTraits<
+    ::Kokkos::Experimental::OpenACC> {
   static constexpr DeviceType id =
       ::Kokkos::Profiling::Experimental::DeviceType::OpenACC;
   // FIXME_OPENACC: Need to return the device id from the execution space
   // instance. For now, acc_get_device_num() OpenACC API is used since the
-  // current OpenACC backend implementation does not support multiple execuion
+  // current OpenACC backend implementation does not support multiple execution
   // space instances.
   static int device_id(const Kokkos::Experimental::OpenACC&) {
     return acc_get_device_num(acc_device_default);
   }
 };
-}  // namespace Experimental
-}  // namespace Tools
 
-}  // namespace Kokkos
-
-#endif /* #if defined( KOKKOS_ENABLE_OPENACC ) */
-#endif /* #ifndef KOKKOS_OPENACC_HPP */
+#endif
