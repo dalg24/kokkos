@@ -1129,6 +1129,7 @@ struct TestIsNaN {
       ++e;
       KOKKOS_IMPL_DO_NOT_USE_PRINTF("failed isnan(integral)\n");
     }
+    printf("errors %d\n", e);
     if (isnan(2.f)
 #ifndef KOKKOS_IMPL_WORKAROUND_INTEL_LLVM_DEFAULT_FLOATING_POINT_MODEL
         || !isnan(quiet_NaN<float>::value) ||
@@ -1139,15 +1140,19 @@ struct TestIsNaN {
       ++e;
       KOKKOS_IMPL_DO_NOT_USE_PRINTF("failed isnan(float)\n");
     }
+    printf("errors %d\n", e);
     if (isnan(3.)
 #ifndef KOKKOS_IMPL_WORKAROUND_INTEL_LLVM_DEFAULT_FLOATING_POINT_MODEL
+#ifndef KOKKOS_COMPILER_NVHPC  // FIXME_NVHPC
         || !isnan(quiet_NaN<double>::value) ||
         !isnan(signaling_NaN<double>::value)
+#endif
 #endif
     ) {
       ++e;
       KOKKOS_IMPL_DO_NOT_USE_PRINTF("failed isnan(double)\n");
     }
+    printf("errors %d\n", e);
 #ifdef MATHEMATICAL_FUNCTIONS_HAVE_LONG_DOUBLE_OVERLOADS
     if (isnan(4.l)
 #ifndef KOKKOS_IMPL_WORKAROUND_INTEL_LLVM_DEFAULT_FLOATING_POINT_MODEL
@@ -1169,6 +1174,7 @@ struct TestIsNaN {
       KOKKOS_IMPL_DO_NOT_USE_PRINTF(
           "failed isnan(floating_point) special values\n");
     }
+    printf("errors %d\n", e);
 
     static_assert(std::is_same<decltype(isnan(1)), bool>::value, "");
     static_assert(std::is_same<decltype(isnan(2.f)), bool>::value, "");
