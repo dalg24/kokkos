@@ -90,7 +90,7 @@ class ParallelFor<FunctorType, Kokkos::WorkGraphPolicy<Traits...>,
     // parallel region count here.
     Kokkos::Experimental::HPX::reset_count_on_exit_parallel reset_count_on_exit;
 
-    const int num_worker_threads = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
 
     using hpx::for_loop;
     using hpx::execution::par;

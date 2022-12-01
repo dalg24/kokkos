@@ -57,10 +57,12 @@
 
 namespace Kokkos {
 
-int HIP::concurrency() {
-  auto const& prop = hip_device_prop();
-  return prop.maxThreadsPerMultiProcessor * prop.multiProcessorCount;
-}
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+int HIP::concurrency() { return Impl::HIPInternal::singleton().concurrency(); }
+#else
+int HIP::concurrency() const { return m_space_instance->concurrency(); }
+#endif
+
 int HIP::impl_is_initialized() {
   return Impl::HIPInternal::singleton().is_initialized();
 }

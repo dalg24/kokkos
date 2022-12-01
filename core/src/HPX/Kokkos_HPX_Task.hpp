@@ -98,7 +98,7 @@ class TaskQueueSpecialization<
     using hpx::execution::static_chunk_size;
     using task_base_type = typename scheduler_type::task_base_type;
 
-    const int num_worker_threads = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
 
     thread_buffer &buffer = Kokkos::Experimental::HPX().impl_get_buffer();
     buffer.resize(num_worker_threads, 512);
@@ -172,7 +172,7 @@ class TaskQueueSpecializationConstrained<
     using task_base_type = typename scheduler_type::task_base;
     using queue_type     = typename scheduler_type::queue_type;
 
-    if (1 == Kokkos::Experimental::HPX::concurrency()) {
+    if (1 == Kokkos::Experimental::HPX().concurrency()) {
       task_base_type *const end = (task_base_type *)task_base_type::EndTag;
       task_base_type *task      = end;
 
@@ -228,7 +228,7 @@ class TaskQueueSpecializationConstrained<
     using task_base_type = typename scheduler_type::task_base;
     using queue_type     = typename scheduler_type::queue_type;
 
-    const int num_worker_threads     = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
     static task_base_type *const end = (task_base_type *)task_base_type::EndTag;
     constexpr task_base_type *no_more_tasks_sentinel = nullptr;
 

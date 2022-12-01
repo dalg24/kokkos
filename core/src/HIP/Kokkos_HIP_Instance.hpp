@@ -146,6 +146,8 @@ class HIPInternal {
   void fence() const;
   void fence(const std::string &) const;
 
+  int concurrency() const;
+
   ~HIPInternal();
 
   HIPInternal() = default;

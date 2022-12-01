@@ -822,14 +822,14 @@ class TeamPolicyInternal<Kokkos::Experimental::HPX, Properties...>
         Kokkos::abort("TeamPolicy blocking granularity must be power of two");
     } else {
       int new_chunk_size = 1;
-      while (new_chunk_size * 4 * Kokkos::Experimental::HPX::concurrency() <
+      while (new_chunk_size * 4 * Kokkos::Experimental::HPX().concurrency() <
              m_league_size) {
         new_chunk_size *= 2;
       }
 
       if (new_chunk_size < 128) {
         new_chunk_size = 1;
-        while ((new_chunk_size * Kokkos::Experimental::HPX::concurrency() <
+        while ((new_chunk_size * Kokkos::Experimental::HPX().concurrency() <
                 m_league_size) &&
                (new_chunk_size < 128))
           new_chunk_size *= 2;
@@ -985,7 +985,7 @@ namespace Impl {
 
 template <typename Policy>
 typename Policy::member_type get_hpx_adjusted_chunk_size(Policy const &policy) {
-  const int concurrency = Kokkos::Experimental::HPX::concurrency();
+  const int concurrency = Kokkos::Experimental::HPX().concurrency();
   const typename Policy::member_type n        = policy.end() - policy.begin();
   typename Policy::member_type new_chunk_size = policy.chunk_size();
 
@@ -1344,7 +1344,7 @@ class ParallelReduce<FunctorType, Kokkos::RangePolicy<Traits...>, ReducerType,
 #elif KOKKOS_HPX_IMPLEMENTATION == 1
     using hpx::for_loop_strided;
 
-    const int num_worker_threads = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
 
     thread_buffer &buffer = m_policy.space().impl_get_buffer();
     buffer.resize(num_worker_threads, value_size);
@@ -1451,7 +1451,7 @@ class ParallelReduce<FunctorType, Kokkos::MDRangePolicy<Traits...>, ReducerType,
     Kokkos::Experimental::HPX::reset_on_exit_parallel reset_on_exit(
         m_mdr_policy.space());
 
-    const int num_worker_threads = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
     const std::size_t value_size =
         Analysis::value_size(ReducerConditional::select(m_functor, m_reducer));
 
@@ -1610,7 +1610,7 @@ class ParallelScan<FunctorType, Kokkos::RangePolicy<Traits...>,
     Kokkos::Experimental::HPX::reset_on_exit_parallel reset_on_exit(
         m_policy.space());
 
-    const int num_worker_threads = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
     const int value_count        = Analysis::value_count(m_functor);
     const std::size_t value_size = Analysis::value_size(m_functor);
 
@@ -1721,7 +1721,7 @@ class ParallelScanWithTotal<FunctorType, Kokkos::RangePolicy<Traits...>,
     Kokkos::Experimental::HPX::reset_on_exit_parallel reset_on_exit(
         m_policy.space());
 
-    const int num_worker_threads = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
     const int value_count        = Analysis::value_count(m_functor);
     const std::size_t value_size = Analysis::value_size(m_functor);
 
@@ -1866,7 +1866,7 @@ class ParallelFor<FunctorType, Kokkos::TeamPolicy<Properties...>,
     Kokkos::Experimental::HPX::reset_on_exit_parallel reset_on_exit(
         m_policy.space());
 
-    const int num_worker_threads = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
 
     thread_buffer &buffer = m_policy.space().impl_get_buffer();
     buffer.resize(num_worker_threads, m_shared);
@@ -2006,7 +2006,7 @@ class ParallelReduce<FunctorType, Kokkos::TeamPolicy<Properties...>,
     Kokkos::Experimental::HPX::reset_on_exit_parallel reset_on_exit(
         m_policy.space());
 
-    const int num_worker_threads = Kokkos::Experimental::HPX::concurrency();
+    const int num_worker_threads = Kokkos::Experimental::HPX().concurrency();
     const std::size_t value_size =
         Analysis::value_size(ReducerConditional::select(m_functor, m_reducer));
 

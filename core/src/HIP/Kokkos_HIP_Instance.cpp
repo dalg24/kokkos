@@ -165,6 +165,11 @@ void HIPInternal::fence(const std::string &name) const {
       [&]() { KOKKOS_IMPL_HIP_SAFE_CALL(hipStreamSynchronize(m_stream)); });
 }
 
+void HIPInternal::concurrency() const {
+  auto const &prop = hip_device_prop();
+  return prop.maxThreadsPerMultiProcessor * prop.multiProcessorCount;
+}
+
 void HIPInternal::initialize(hipStream_t stream, bool manage_stream) {
   if (was_finalized)
     Kokkos::abort("Calling HIP::initialize after HIP::finalize is illegal\n");
@@ -203,9 +208,9 @@ void HIPInternal::initialize(hipStream_t stream, bool manage_stream) {
   }
 
   KOKKOS_IMPL_HIP_SAFE_CALL(
-      hipMalloc(&m_scratch_locks, sizeof(int32_t) * HIP::concurrency()));
+      hipMalloc(&m_scratch_locks, sizeof(int32_t) * concurrency()));
   KOKKOS_IMPL_HIP_SAFE_CALL(
-      hipMemset(m_scratch_locks, 0, sizeof(int32_t) * HIP::concurrency()));
+      hipMemset(m_scratch_locks, 0, sizeof(int32_t) * concurrency()));
 }
 
 //----------------------------------------------------------------------------

@@ -111,7 +111,7 @@ class OpenACC {
   static void impl_static_fence(std::string const& name);
 
   static char const* name() { return "OpenACC"; }
-  static int concurrency() { return 256000; }  // FIXME_OPENACC
+  int concurrency() const { return 256000; }  // FIXME_OPENACC
   static bool in_parallel() { return acc_on_device(acc_device_not_host); }
   uint32_t impl_instance_id() const noexcept;
   Impl::OpenACCInternal* impl_internal_space_instance() const {

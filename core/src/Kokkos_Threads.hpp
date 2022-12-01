@@ -118,7 +118,10 @@ class Threads {
                  "Kokkos::Threads::fence: Unnamed Instance Fence") const;
 
   /** \brief  Return the maximum amount of concurrency.  */
-  static int concurrency();
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+  // static
+#endif
+  int concurrency();
 
   /// \brief Free any resources being consumed by the device.
   ///

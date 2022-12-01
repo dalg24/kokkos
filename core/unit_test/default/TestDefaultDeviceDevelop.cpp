@@ -46,11 +46,29 @@
 #include <gtest/gtest.h>
 
 #include <Kokkos_Core.hpp>
+#include <thread>
+#include <sys/types.h>
+#include <sys/sysctl.h>
 
 #include <TestDefaultDeviceType_Category.hpp>
 
 namespace Test {
 
-TEST(defaultdevicetype, development_test) {}
+TEST(defaultdevicetype, development_test) {
+  std::cout << Kokkos::DefaultExecutionSpace::concurrency() << '\n';
+  Kokkos::parallel_for(
+      0, KOKKOS_LAMBDA(int) { printf("poop"); });
+  std::cout << std::thread::hardware_concurrency() << '\n';
+
+  int ncpu;
+  int activecpu;
+  size_t size = sizeof(int);
+  sysctlbyname("hw.ncpu", &ncpu, &size, nullptr, 0);
+  sysctlbyname("hw.activecpu", &activecpu, &size, nullptr, 0);
+  if (ncpu < 1 || activecpu < 1)
+    std::cout << -1 << '\n';
+  else
+    std::cout << activecpu << '\n';
+}
 
 }  // namespace Test
