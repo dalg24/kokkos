@@ -137,9 +137,8 @@ class HIPTeamMember {
       }
       __syncthreads();  // Wait for shared data read until root thread writes
       val = *(reinterpret_cast<ValueType*>(m_team_reduce));
-    } else {               // team <= warp
-      ValueType tmp(val);  // input might not be a register variable
-      in_place_shfl(val, tmp, blockDim.x * thread_id, blockDim.x * blockDim.y);
+    } else {  // team <= warp
+      val = shfl(val, blockDim.x * thread_id, blockDim.x * blockDim.y);
     }
 #else
     (void)val;
@@ -269,7 +268,7 @@ class HIPTeamMember {
     typename ReducerType::value_type tmp2 = tmp;
 
     for (int i = blockDim.x; (i >>= 1);) {
-      in_place_shfl_down(tmp2, tmp, i, blockDim.x);
+      tmp2 = shfl_down(tmp, i, blockDim.x);
       if (static_cast<int>(threadIdx.x) < i) {
         reducer.join(tmp, tmp2);
       }
@@ -280,7 +279,8 @@ class HIPTeamMember {
     // because floating point summation is not associative
     // and thus different threads could have different results.
 
-    in_place_shfl(tmp2, tmp, 0, blockDim.x);
+    tmp2 = shfl(tmp, 0, blockDim.x);
+
     value               = tmp2;
     reducer.reference() = tmp2;
 #else
@@ -776,7 +776,7 @@ parallel_scan(const Impl::ThreadVectorRangeBoundariesStruct<
 
     // First acquire per-lane contributions.
     // This sets i's val to i-1's contribution
-    // to make the latter in_place_shfl_up an
+    // to make the latter shfl_up an
     // exclusive scan -- the final accumulation
     // of i's val will be included in the second
     // closure call later.
@@ -794,8 +794,7 @@ parallel_scan(const Impl::ThreadVectorRangeBoundariesStruct<
     //  and we would not be able to remove the inclusive contribution by
     //  inversion.
     for (int j = 1; j < static_cast<int>(blockDim.x); j <<= 1) {
-      value_type tmp = identity;
-      Impl::in_place_shfl_up(tmp, val, j, blockDim.x);
+      value_type tmp = shfl_up(val, j, blockDim.x);
       if (j <= static_cast<int>(threadIdx.x)) {
         reducer.join(val, tmp);
       }
@@ -807,7 +806,7 @@ parallel_scan(const Impl::ThreadVectorRangeBoundariesStruct<
     // Update i's contribution into the val
     // and add it to accum for next round
     if (i < loop_boundaries.end) closure(i, val, true);
-    Impl::in_place_shfl(accum, val, blockDim.x - 1, blockDim.x);
+    accum = shfl(val, blockDim.x - 1, blockDim.x);
   }
 #else
   (void)loop_boundaries;
@@ -869,7 +868,7 @@ KOKKOS_INLINE_FUNCTION void single(
     const FunctorType& lambda, ValueType& val) {
 #ifdef __HIP_DEVICE_COMPILE__
   if (threadIdx.x == 0) lambda(val);
-  Impl::in_place_shfl(val, val, 0, blockDim.x);
+  val = shfl(val, 0, blockDim.x);
 #else
   (void)lambda;
   (void)val;

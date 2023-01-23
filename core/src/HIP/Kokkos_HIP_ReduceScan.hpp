@@ -51,7 +51,7 @@ struct HIPReductionsFunctor<FunctorType, true> {
       functor.join(&value, &tmp);
     }
 
-    in_place_shfl(result, value, 0, width);
+    result = shfl(value, 0, width);
   }
 
   __device__ static inline void scalar_intra_block_reduction(
