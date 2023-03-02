@@ -262,8 +262,7 @@ KOKKOS_INLINE_FUNCTION
 // Go in this branch if CUDA version is >= 11.0.0 and less than 11.1.0 or if the
 // architecture is not Ampere
 #if CUDA_VERSION >= 11000 && \
-    (CUDA_VERSION < 11010 || \
-     !(defined(KOKKOS_ARCH_AMPERE) || defined(KOKKOS_ARCH_HOPPER)))
+    (CUDA_VERSION < 11010 || !defined(KOKKOS_ARCH_AMPERE))
 KOKKOS_INLINE_FUNCTION
 bhalf_t cast_to_bhalf(bhalf_t val) { return val; }
 
@@ -390,8 +389,7 @@ KOKKOS_INLINE_FUNCTION
 }
 #endif  // CUDA_VERSION >= 11000 && CUDA_VERSION < 11010
 
-#if CUDA_VERSION >= 11010 && \
-    ((defined(KOKKOS_ARCH_AMPERE) || defined(KOKKOS_ARCH_HOPPER)))
+#if CUDA_VERSION >= 11010 && defined(KOKKOS_ARCH_AMPERE)
 KOKKOS_INLINE_FUNCTION
 bhalf_t cast_to_bhalf(bhalf_t val) { return val; }
 KOKKOS_INLINE_FUNCTION
