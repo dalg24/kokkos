@@ -655,7 +655,7 @@ void CudaInternal::finalize() {
 //----------------------------------------------------------------------------
 
 Cuda::size_type cuda_internal_multiprocessor_count() {
-  return CudaInternal::singleton().m_multiProcCount;
+  return CudaInternal::singleton().m_deviceProp.multiProcessorCount;
 }
 
 std::array<Cuda::size_type, 3> cuda_internal_maximum_grid_count() {
@@ -751,9 +751,6 @@ void Cuda::impl_initialize(InitializationSettings const &settings) {
                 << " , this will likely reduce potential performance."
                 << std::endl;
     }
-
-    // number of multiprocessors
-    Impl::CudaInternal::m_multiProcCount = cudaProp.multiProcessorCount;
 
     //----------------------------------
     // Maximum number of blocks:
