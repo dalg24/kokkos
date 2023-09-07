@@ -774,7 +774,6 @@ void Cuda::impl_initialize(InitializationSettings const &settings) {
     Impl::CudaInternal::m_maxShmemPerBlock = cudaProp.sharedMemPerBlock;
     Impl::CudaInternal::m_maxThreadsPerSM =
         cudaProp.maxThreadsPerMultiProcessor;
-    Impl::CudaInternal::m_maxThreadsPerBlock = cudaProp.maxThreadsPerBlock;
 
     //----------------------------------
 
