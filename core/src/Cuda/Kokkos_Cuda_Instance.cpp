@@ -771,7 +771,6 @@ void Cuda::impl_initialize(InitializationSettings const &settings) {
     Impl::CudaInternal::m_maxBlock[1] = cudaProp.maxGridSize[1];
     Impl::CudaInternal::m_maxBlock[2] = cudaProp.maxGridSize[2];
 
-    Impl::CudaInternal::m_shmemPerSM = cudaProp.sharedMemPerMultiprocessor;
     Impl::CudaInternal::m_maxShmemPerBlock = cudaProp.sharedMemPerBlock;
     Impl::CudaInternal::m_maxBlocksPerSM =
         Impl::CudaInternal::m_cudaArch < 500
