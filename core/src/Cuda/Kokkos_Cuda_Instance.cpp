@@ -659,7 +659,8 @@ Cuda::size_type cuda_internal_multiprocessor_count() {
 }
 
 std::array<Cuda::size_type, 3> cuda_internal_maximum_grid_count() {
-  return CudaInternal::singleton().m_maxBlock;
+  auto const &maxGridSize = CudaInternal::singleton().m_deviceProp.maxGridSize;
+  return {maxGridSize[0], maxGridSize[1], maxGridSize[2]};
 }
 
 Cuda::size_type *cuda_internal_scratch_space(const Cuda &instance,
@@ -753,11 +754,6 @@ void Cuda::impl_initialize(InitializationSettings const &settings) {
     }
 
     //----------------------------------
-    // Maximum number of blocks:
-
-    Impl::CudaInternal::m_maxBlock[0] = cudaProp.maxGridSize[0];
-    Impl::CudaInternal::m_maxBlock[1] = cudaProp.maxGridSize[1];
-    Impl::CudaInternal::m_maxBlock[2] = cudaProp.maxGridSize[2];
 
     Impl::CudaInternal::m_maxShmemPerBlock = cudaProp.sharedMemPerBlock;
 
