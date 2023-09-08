@@ -575,10 +575,11 @@ class ParallelFor<FunctorType, Kokkos::TeamPolicy<Properties...>,
                   static_cast<std::int64_t>(m_league_size))));
     }
 
+    const int maxShmemPerBlock =
+        m_policy.space().cuda_device_prop().sharedMemPerBlock;
     const int shmem_size_total = m_shmem_begin + m_shmem_size;
-    if (internal_space_instance->m_maxShmemPerBlock < shmem_size_total) {
-      printf("%i %i\n", internal_space_instance->m_maxShmemPerBlock,
-             shmem_size_total);
+    if (maxShmemPerBlock < shmem_size_total) {
+      printf("%i %i\n", maxShmemPerBlock, shmem_size_total);
       Kokkos::Impl::throw_runtime_exception(std::string(
           "Kokkos::Impl::ParallelFor< Cuda > insufficient shared memory"));
     }
@@ -935,6 +936,8 @@ class ParallelReduce<CombinedFunctorReducerType,
     // Functor's reduce memory, team scan memory, and team shared memory depend
     // upon team size.
 
+    const int maxShmemPerBlock =
+        m_policy.space().cuda_device_prop().sharedMemPerBlock;
     const int shmem_size_total = m_team_begin + m_shmem_begin + m_shmem_size;
 
     if (!Kokkos::Impl::is_integral_power_of_two(m_team_size) &&
@@ -943,7 +946,7 @@ class ParallelReduce<CombinedFunctorReducerType,
           std::string("Kokkos::Impl::ParallelReduce< Cuda > bad team size"));
     }
 
-    if (internal_space_instance->m_maxShmemPerBlock < shmem_size_total) {
+    if (maxShmemPerBlock < shmem_size_total) {
       Kokkos::Impl::throw_runtime_exception(
           std::string("Kokkos::Impl::ParallelReduce< Cuda > requested too much "
                       "L0 scratch memory"));

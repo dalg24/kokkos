@@ -750,10 +750,6 @@ void Cuda::impl_initialize(InitializationSettings const &settings) {
 
     //----------------------------------
 
-    Impl::CudaInternal::m_maxShmemPerBlock = cudaProp.sharedMemPerBlock;
-
-    //----------------------------------
-
     Impl::CudaInternal::m_scratchUnifiedSupported = cudaProp.unifiedAddressing;
 
     if (Kokkos::show_warnings() &&
