@@ -1,0 +1,73 @@
+jobs:
+  # This step builds our artifacts, uploads them to the workflow run, and
+  # outputs their digest.
+  build:
+    outputs:
+      hashes: ${{ steps.hash.outputs.hashes }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build artifacts
+        uses: actions/checkout@v4
+        run: |
+          git archive -o kokkos-X.Y.Z.zip
+          git archive -o kokkos-X.Y.Z.tar.gz
+
+      - name: Generate hashes
+        shell: bash
+        id: hash
+        run: |
+          # sha256sum generates sha256 hash for all artifacts.
+          # base64 -w0 encodes to base64 and outputs on a single line.
+          echo "hashes=$(sha256sum kokkos-X.Y.Z.zip kokkos-X.Y.Z.tar.gz | base64 -w0)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload source code (zip)
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3.1.0
+        with:
+          name: kokkos-X.Y.Z.zip
+          path: kokkos-X.Y.Z.zip
+          if-no-files-found: error
+          retention-days: 5
+
+      - name: Upload source code (tar.gz)
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3.1.0
+        with:
+          name: kokkos-X.Y.Z.tar.gz
+          path: kokkos-X.Y.Z.tar.gz
+          if-no-files-found: error
+          retention-days: 5
+
+  # This step calls the generic workflow to generate provenance.
+  provenance:
+    needs: [build]
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
+    with:
+      base64-subjects: "${{ needs.build.outputs.hashes }}"
+      # Upload provenance to a new release
+      upload-assets: true
+
+  # This step uploads our artifacts to the tagged GitHub release.
+  release:
+    needs: [build, provenance]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download kokkos-X.Y.Z.zip
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
+        with:
+          name: kokkos-X.Y.Z.zip
+
+      - name: Download kokkos-X.Y.Z.tar.gz
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
+        with:
+          name: kokkos-X.Y.Z.tar.gz
+
+      - name: Upload assets
+        uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87 # v2.0.5
+        with:
+          files: |
+            kokkos-X.Y.Z.zip
+            kokkos-X.Y.Z.tar.gz
