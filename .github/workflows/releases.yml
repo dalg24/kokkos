@@ -13,8 +13,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build artifacts
         run: |
-          git archive -o kokkos-X.Y.Z.zip
-          git archive -o kokkos-X.Y.Z.tar.gz
+          git archive -o kokkos-X.Y.Z.zip HEAD
+          git archive -o kokkos-X.Y.Z.tar.gz HEAD
 
       - name: Generate hashes
         shell: bash
