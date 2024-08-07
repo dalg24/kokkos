@@ -6,8 +6,8 @@ jobs:
       hashes: ${{ steps.hash.outputs.hashes }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Build artifacts
-        uses: actions/checkout@v4
         run: |
           git archive -o kokkos-X.Y.Z.zip
           git archive -o kokkos-X.Y.Z.tar.gz
