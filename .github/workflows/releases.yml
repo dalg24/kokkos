@@ -13,8 +13,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build artifacts
         run: |
-          git archive -o kokkos-X.Y.Z.zip HEAD
-          git archive -o kokkos-X.Y.Z.tar.gz HEAD
+          git archive -o kokkos-${{ github.ref_name }}.zip HEAD
+          git archive -o kokkos-${{ github.ref_name }}.tar.gz HEAD
 
       - name: Generate hashes
         shell: bash
@@ -22,21 +22,21 @@ jobs:
         run: |
           # sha256sum generates sha256 hash for all artifacts.
           # base64 -w0 encodes to base64 and outputs on a single line.
-          echo "hashes=$(sha256sum kokkos-X.Y.Z.zip kokkos-X.Y.Z.tar.gz | base64 -w0)" >> "$GITHUB_OUTPUT"
+          echo "hashes=$(sha256sum kokkos-${{ github.ref_name }}.zip kokkos-${{ github.ref_name }}.tar.gz | base64 -w0)" >> "$GITHUB_OUTPUT"
 
       - name: Upload source code (zip)
         uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
-          name: kokkos-X.Y.Z.zip
-          path: kokkos-X.Y.Z.zip
+          name: kokkos-${{ github.ref_name }}.zip
+          path: kokkos-${{ github.ref_name }}.zip
           if-no-files-found: error
           retention-days: 5
 
       - name: Upload source code (tar.gz)
         uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
-          name: kokkos-X.Y.Z.tar.gz
-          path: kokkos-X.Y.Z.tar.gz
+          name: kokkos-${{ github.ref_name }}.tar.gz
+          path: kokkos-${{ github.ref_name }}.tar.gz
           if-no-files-found: error
           retention-days: 5
 
@@ -52,7 +52,7 @@ jobs:
       base64-subjects: "${{ needs.build.outputs.hashes }}"
       # Upload provenance to a new release
       upload-assets: true
-      provenance-name: "kokkos-X.Y.Z.intoto.jsonl"
+      provenance-name: "kokkos-${{ github.ref_name }}.intoto.jsonl"
 
   # This step uploads our artifacts to the tagged GitHub release.
   release:
@@ -62,19 +62,19 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - name: Download kokkos-X.Y.Z.zip
+      - name: Download kokkos-${{ github.ref_name }}.zip
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          name: kokkos-X.Y.Z.zip
+          name: kokkos-${{ github.ref_name }}.zip
 
-      - name: Download kokkos-X.Y.Z.tar.gz
+      - name: Download kokkos-${{ github.ref_name }}.tar.gz
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          name: kokkos-X.Y.Z.tar.gz
+          name: kokkos-${{ github.ref_name }}.tar.gz
 
       - name: Upload assets
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
         with:
           files: |
-            kokkos-X.Y.Z.zip
-            kokkos-X.Y.Z.tar.gz
+            kokkos-${{ github.ref_name }}.zip
+            kokkos-${{ github.ref_name }}.tar.gz
