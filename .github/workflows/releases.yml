@@ -69,9 +69,15 @@ jobs:
         with:
           name: kokkos-${{ github.ref_name }}.tar.gz
 
+      - name: Download kokkos-${{ github.ref_name }}-SHA-256.txt
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: kokkos-${{ github.ref_name }}-SHA-256.txt
+
       - name: Upload assets
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
         with:
           files: |
             kokkos-${{ github.ref_name }}.zip
             kokkos-${{ github.ref_name }}.tar.gz
+            kokkos-${{ github.ref_name }}-SHA-256.txt
