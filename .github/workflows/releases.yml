@@ -62,7 +62,7 @@ jobs:
       - name: Download kokkos-${{ github.ref_name }}.zip
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          name: kokkos-${{ github.ref_name }}.zip
+          name: release-artifacts/kokkos-${{ github.ref_name }}.zip
 
       - name: Download kokkos-${{ github.ref_name }}.tar.gz
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
