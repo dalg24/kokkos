@@ -139,7 +139,7 @@ class SYCLInternal {
                     sizeof(T));
         m_copy_event = m_q->memcpy(m_data, m_staging.get(), sizeof(T));
       } else
-        std::memcpy(m_data, std::addressof(t), sizeof(T));
+        std::memcpy(static_cast<void*>(m_data), std::addressof(t), sizeof(T));
       return *reinterpret_cast<T*>(m_data);
     }
 
