@@ -392,4 +392,42 @@ TEST_F(ExecutionEnvironmentNonInitializedOrFinalized_DeathTest, parallel_scan) {
       "parallel_scan\\(\\) \\*\\*after\\*\\* Kokkos::finalize\\(\\) was "
       "called. Concerns scan_workcnt_ret_float with exec policy RangePolicy.");
 }
+
+template <class ExecutionSpace>
+void test_execution_space() {
+  EXPECT_DEATH(
+      { ExecutionSpace exec; },
+      "Kokkos execution space is being constructed before Kokkos::initialize")
+      << ExecutionSpace::name();
+
+  EXPECT_DEATH(
+      {
+        Kokkos::initialize();
+        Kokkos::finalize();
+        ExecutionSpace exec;
+      },
+      "Kokkos execution space is being constructed after Kokkos::finalize")
+      << ExecutionSpace::name();
+
+  EXPECT_DEATH(
+      {
+        Kokkos::initialize();
+        ExecutionSpace exec;
+        Kokkos::finalize();
+      },
+      "Kokkos execution space is being destructed after Kokkos::finalize")
+      << ExecutionSpace::name();
+}
+
+TEST_F(ExecutionEnvironmentNonInitializedOrFinalized_DeathTest,
+       execution_space) {
+  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+
+  test_execution_space<Kokkos::DefaultExecutionSpace>();
+  if (!std::is_same_v<Kokkos::DefaultExecutionSpace,
+                      Kokkos::DefaultHostExecutionSpace>) {
+    test_execution_space<Kokkos::DefaultHostExecutionSpace>();
+  }
+}
+
 }  // namespace
