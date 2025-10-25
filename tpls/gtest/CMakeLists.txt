@@ -14,4 +14,3 @@ find_package(Threads QUIET)
 if(TARGET Threads::Threads)
   target_link_libraries(gtest PUBLIC Threads::Threads)
 endif()
-
