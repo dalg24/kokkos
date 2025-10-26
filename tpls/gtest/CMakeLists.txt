@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(Kokkos_GoogleTest CXX)
-add_library(gtest gtest/gtest-all.cc)
+add_library(gtest STATIC gtest/gtest-all.cc)
 add_library(GTest::gtest ALIAS gtest)
 target_include_directories(gtest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(gtest PROPERTIES CXX_STANDARD ${KOKKOS_CXX_STANDARD})
