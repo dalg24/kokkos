@@ -18,6 +18,7 @@ import kokkos.core;
 #include <impl/Kokkos_Error.hpp>
 #include <impl/Kokkos_DeviceManagement.hpp>
 #include <impl/Kokkos_ExecSpaceManager.hpp>
+#include <impl/Kokkos_InitializeFinalize.hpp>
 
 namespace {
 template <typename C>
@@ -38,24 +39,43 @@ struct Container {
 }  // namespace
 
 namespace Kokkos {
-SYCL::SYCL()
-    : m_space_instance(&Impl::SYCLInternal::singleton(),
-                       [](Impl::SYCLInternal*) {}) {
-  Impl::SYCLInternal::singleton().verify_is_initialized(
-      "SYCL instance constructor");
+SYCL::~SYCL() {
+  if (Kokkos::is_finalized()) {
+    abort(
+        "Kokkos ERROR: SYCL execution space is being destructed after "
+        "finalize() has been called");
+  }
 }
 
+static void do_not_repeat_myself() {
+  if (Kokkos::is_finalized()) {
+    abort(
+        "Kokkos ERROR: SYCL execution space is being constructed after "
+        "finalize() has been called");
+  }
+  if (!Kokkos::is_initialized()) {
+    abort(
+        "Kokkos ERROR: SYCL execution space is being constructed "
+        "before initialize() has been called");
+  }
+}
+
+SYCL::SYCL()
+    : m_space_instance((do_not_repeat_myself(),
+                        Impl::HostSharedPtr(&Impl::SYCLInternal::singleton(),
+                                            [](Impl::SYCLInternal*) {}))) {}
+
 SYCL::SYCL(const sycl::queue& stream)
-    : m_space_instance(new Impl::SYCLInternal, [](Impl::SYCLInternal* ptr) {
-        ptr->finalize();
-        delete ptr;
-      }) {
+    : m_space_instance((do_not_repeat_myself(),
+                        Impl::HostSharedPtr(new Impl::SYCLInternal,
+                                            [](Impl::SYCLInternal* ptr) {
+                                              ptr->finalize();
+                                              delete ptr;
+                                            }))) {
 #ifdef KOKKOS_IMPL_SYCL_USE_IN_ORDER_QUEUES
   if (!stream.is_in_order())
     Kokkos::abort("User provided sycl::queues must be in-order!");
 #endif
-  Impl::SYCLInternal::singleton().verify_is_initialized(
-      "SYCL instance constructor");
   m_space_instance->initialize(stream);
 }
 

@@ -9,6 +9,7 @@
 #include <impl/Kokkos_Profiling.hpp>
 #include <impl/Kokkos_ExecSpaceManager.hpp>
 #include <impl/Kokkos_DeviceManagement.hpp>
+#include <impl/Kokkos_InitializeFinalize.hpp>
 
 #if defined(KOKKOS_IMPL_ARCH_NVIDIA_GPU)
 #include <cuda_runtime.h>
@@ -24,22 +25,43 @@
 #include <iostream>
 #include <sstream>
 
+Kokkos::Experimental::OpenACC::~OpenACC() {
+  if (Kokkos::is_finalized()) {
+    abort(
+        "Kokkos ERROR: OpenACC execution space is being destructed after "
+        "finalize() has been called");
+  }
+}
+
+static void do_not_repeat_myself() {
+  if (Kokkos::is_finalized()) {
+    abort(
+        "Kokkos ERROR: OpenACC execution space is being constructed after "
+        "finalize() has been called");
+  }
+  if (!Kokkos::is_initialized()) {
+    abort(
+        "Kokkos ERROR: OpenACC execution space is being constructed "
+        "before initialize() has been called");
+  }
+}
+
 Kokkos::Experimental::OpenACC::OpenACC()
     : m_space_instance(
-          &Kokkos::Experimental::Impl::OpenACCInternal::singleton(),
-          [](Impl::OpenACCInternal*) {}) {
-  Impl::OpenACCInternal::singleton().verify_is_initialized(
-      "OpenACC instance constructor");
+          ((do_not_repeat_myself(),
+           Kokkos::Impl::HostSharedPtr(
+               &Kokkos::Experimental::Impl::OpenACCInternal::singleton(),
+               [](Impl::OpenACCInternal*) {}))) {
 }
 
 Kokkos::Experimental::OpenACC::OpenACC(int async_arg)
-    : m_space_instance(new Kokkos::Experimental::Impl::OpenACCInternal,
-                       [](Impl::OpenACCInternal* ptr) {
-                         ptr->finalize();
-                         delete ptr;
-                       }) {
-  Impl::OpenACCInternal::singleton().verify_is_initialized(
-      "OpenACC instance constructor");
+    : m_space_instance((
+          do_not_repeat_myself(),
+          Kokkos::Impl::HostSharedPtr(new Kokkos::Experimental::Impl::OpenACCInternal,
+                                [](Impl::OpenACCInternal* ptr) {
+  ptr->finalize();
+  delete ptr;
+                                }))) {
   m_space_instance->initialize(async_arg);
 }
 
@@ -154,8 +176,8 @@ int Kokkos::Experimental::OpenACC::acc_device_number() const {
 }
 
 namespace Kokkos {
-namespace Impl {
-int g_openacc_space_factory_initialized =
-    initialize_space_factory<Experimental::OpenACC>("170_OpenACC");
-}  // namespace Impl
+  namespace Impl {
+  int g_openacc_space_factory_initialized =
+      initialize_space_factory<Experimental::OpenACC>("170_OpenACC");
+  }  // namespace Impl
 }  // Namespace Kokkos

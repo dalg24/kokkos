@@ -22,6 +22,7 @@ static_assert(false,
 #include <Kokkos_MemoryTraits.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
 #include <impl/Kokkos_InitializationSettings.hpp>
+#include <impl/Kokkos_InitializeFinalize.hpp>
 
 /*--------------------------------------------------------------------------*/
 
@@ -109,6 +110,26 @@ class Threads {
   }
 
   uint32_t impl_instance_id() const noexcept { return 1; }
+
+  Threads() {
+    if (Kokkos::is_finalized()) {
+      Kokkos::abort(
+          "Kokkos ERROR: Threads execution space is being constructed after "
+          "finalize() has been called");
+    }
+    if (!Kokkos::is_initialized()) {
+      Kokkos::abort(
+          "Kokkos ERROR: Threads execution space is being constructed before "
+          "initialize() has been called");
+    }
+  }
+  ~Threads() {
+    if (Kokkos::is_finalized()) {
+      Kokkos::abort(
+          "Kokkos ERROR: Threads execution space is being destructed after "
+          "finalize() has been called");
+    }
+  }
 
   static const char* name();
   //@}

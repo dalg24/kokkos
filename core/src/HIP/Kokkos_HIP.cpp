@@ -17,6 +17,7 @@ import kokkos.core;
 
 #include <impl/Kokkos_DeviceManagement.hpp>
 #include <impl/Kokkos_ExecSpaceManager.hpp>
+#include <impl/Kokkos_InitializeFinalize.hpp>
 
 #include <hip/hip_runtime_api.h>
 
@@ -124,24 +125,43 @@ void HIP::impl_finalize() {
       hipStreamDestroy(Impl::HIPInternal::singleton().m_stream));
 }
 
-HIP::HIP()
-    : m_space_instance(&Impl::HIPInternal::singleton(),
-                       [](Impl::HIPInternal*) {}) {
-  Impl::HIPInternal::singleton().verify_is_initialized(
-      "HIP instance constructor");
+HIP::~HIP() {
+  if (Kokkos::is_finalized()) {
+    abort(
+        "Kokkos ERROR: HIP execution space is being destructed after "
+        "finalize() has been called");
+  }
 }
+
+static void do_not_repeat_myself() {
+  if (Kokkos::is_finalized()) {
+    abort(
+        "Kokkos ERROR: HIP execution space is being constructed after "
+        "finalize() has been called");
+  }
+  if (!Kokkos::is_initialized()) {
+    abort(
+        "Kokkos ERROR: HIP execution space is being constructed "
+        "before initialize() has been called");
+  }
+}
+
+HIP::HIP()
+    : m_space_instance((do_not_repeat_myself(),
+                        Impl::HostSharedPtr(&Impl::HIPInternal::singleton(),
+                                            [](Impl::HIPInternal*) {}))) {}
 
 HIP::HIP(hipStream_t const stream, Impl::ManageStream manage_stream)
     : m_space_instance(
-          new Impl::HIPInternal, [manage_stream](Impl::HIPInternal* ptr) {
-            ptr->finalize();
-            if (static_cast<bool>(manage_stream)) {
-              KOKKOS_IMPL_HIP_SAFE_CALL(hipStreamDestroy(ptr->m_stream));
-            }
-            delete ptr;
-          }) {
-  Impl::HIPInternal::singleton().verify_is_initialized(
-      "HIP instance constructor");
+          (do_not_repeat_myself(),
+           Impl::HostSharedPtr(
+               new Impl::HIPInternal, [manage_stream](Impl::HIPInternal* ptr) {
+                 ptr->finalize();
+                 if (static_cast<bool>(manage_stream)) {
+                   KOKKOS_IMPL_HIP_SAFE_CALL(hipStreamDestroy(ptr->m_stream));
+                 }
+                 delete ptr;
+               }))) {
   m_space_instance->initialize(stream);
 }
 

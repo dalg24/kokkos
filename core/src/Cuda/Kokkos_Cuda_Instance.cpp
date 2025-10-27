@@ -655,28 +655,47 @@ void Cuda::impl_finalize() {
       cudaStreamDestroy(Impl::CudaInternal::singleton().m_stream));
 }
 
-Cuda::Cuda()
-    : m_space_instance(&Impl::CudaInternal::singleton(),
-                       [](Impl::CudaInternal *) {}) {
-  Impl::CudaInternal::singleton().verify_is_initialized(
-      "Cuda instance constructor");
+Cuda::~Cuda() {
+  if (Kokkos::is_finalized()) {
+    Kokkos::abort(
+        "Kokkos ERROR: Cuda execution space is being destructed after "
+        "finalize() has been called");
+  }
 }
+
+static void do_not_repeat_myself() {
+  if (Kokkos::is_finalized()) {
+    Kokkos::abort(
+        "Kokkos ERROR: Cuda execution space is being constructed after "
+        "finalize() has been called");
+  }
+  if (!Kokkos::is_initialized()) {
+    Kokkos::abort(
+        "Kokkos ERROR: Cuda execution space is being constructed before "
+        "initialize() has been called");
+  }
+}
+
+Cuda::Cuda()
+    : m_space_instance((do_not_repeat_myself(),
+                        Impl::HostSharedPtr(&Impl::CudaInternal::singleton(),
+                                            [](Impl::CudaInternal *) {}))) {}
 
 KOKKOS_DEPRECATED Cuda::Cuda(cudaStream_t stream, bool manage_stream)
     : Cuda(stream,
            manage_stream ? Impl::ManageStream::yes : Impl::ManageStream::no) {}
 
 Cuda::Cuda(cudaStream_t stream, Impl::ManageStream manage_stream)
-    : m_space_instance(
-          new Impl::CudaInternal, [manage_stream](Impl::CudaInternal *ptr) {
-            ptr->finalize();
-            if (static_cast<bool>(manage_stream)) {
-              KOKKOS_IMPL_CUDA_SAFE_CALL(cudaStreamDestroy(ptr->m_stream));
-            }
-            delete ptr;
-          }) {
-  Impl::CudaInternal::singleton().verify_is_initialized(
-      "Cuda instance constructor");
+    : m_space_instance((
+          do_not_repeat_myself(),
+          Impl::HostSharedPtr(
+              new Impl::CudaInternal, [manage_stream](Impl::CudaInternal *ptr) {
+                ptr->finalize();
+                if (static_cast<bool>(manage_stream)) {
+                  KOKKOS_IMPL_CUDA_SAFE_CALL(cudaStreamDestroy(ptr->m_stream));
+                }
+                delete ptr;
+              }))) {
   m_space_instance->initialize(stream);
 }
 

@@ -30,8 +30,6 @@ class OpenACCInternal {
 
   static OpenACCInternal& singleton();
 
-  bool verify_is_initialized(const char* const label) const;
-
   void initialize(int async_arg = acc_async_noval);
   void finalize();
   bool is_initialized() const;

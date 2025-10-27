@@ -23,16 +23,6 @@ Kokkos::Experimental::Impl::OpenACCInternal::singleton() {
   return self;
 }
 
-bool Kokkos::Experimental::Impl::OpenACCInternal::verify_is_initialized(
-    const char* const label) const {
-  if (!m_is_initialized) {
-    Kokkos::abort((std::string("Kokkos::Experimental::OpenACC::") + label +
-                   " : ERROR device not initialized\n")
-                      .c_str());
-  }
-  return m_is_initialized;
-}
-
 void Kokkos::Experimental::Impl::OpenACCInternal::initialize(int async_arg) {
   if ((async_arg < 0) && (async_arg != acc_async_sync) &&
       (async_arg != acc_async_noval)) {

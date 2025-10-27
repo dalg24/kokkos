@@ -11,25 +11,43 @@
 #include <OpenMP/Kokkos_OpenMP_Instance.hpp>
 
 #include <impl/Kokkos_ExecSpaceManager.hpp>
+#include <impl/Kokkos_InitializeFinalize.hpp>
 
 namespace Kokkos {
 
-OpenMP::OpenMP()
-    : m_space_instance(&Impl::OpenMPInternal::singleton(),
-                       [](Impl::OpenMPInternal *) {}) {
-  Impl::OpenMPInternal::singleton().verify_is_initialized(
-      "OpenMP instance constructor");
+OpenMP::~OpenMP() {
+  if (Kokkos::is_finalized()) {
+    Kokkos::abort(
+        "Kokkos ERROR: OpenMP execution space is being destructed after "
+        "finalize() has been called");
+  }
 }
 
-OpenMP::OpenMP(int pool_size)
-    : m_space_instance(new Impl::OpenMPInternal(pool_size),
-                       [](Impl::OpenMPInternal *ptr) {
-                         ptr->finalize();
-                         delete ptr;
-                       }) {
-  Impl::OpenMPInternal::singleton().verify_is_initialized(
-      "OpenMP instance constructor");
+static void do_not_repeat_myself() {
+  if (Kokkos::is_finalized()) {
+    Kokkos::abort(
+        "Kokkos ERROR: OpenMP execution space is being constructed after "
+        "finalize() has been called");
+  }
+  if (!Kokkos::is_initialized()) {
+    Kokkos::abort(
+        "Kokkos ERROR: OpenMP execution space is being constructed before "
+        "initialize() has been called");
+  }
 }
+
+OpenMP::OpenMP()
+    : m_space_instance((do_not_repeat_myself(),
+                        Impl::HostSharedPtr(&Impl::OpenMPInternal::singleton(),
+                                            [](Impl::OpenMPInternal *) {}))) {}
+
+OpenMP::OpenMP(int pool_size)
+    : m_space_instance((do_not_repeat_myself(),
+                        Impl::HostSharedPtr(new Impl::OpenMPInternal(pool_size),
+                                            [](Impl::OpenMPInternal *ptr) {
+                                              ptr->finalize();
+                                              delete ptr;
+                                            }))) {}
 
 int OpenMP::impl_get_current_max_threads() noexcept {
   return Impl::OpenMPInternal::get_current_max_threads();

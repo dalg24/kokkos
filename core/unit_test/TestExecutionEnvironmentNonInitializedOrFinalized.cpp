@@ -385,7 +385,7 @@ template <class ExecutionSpace>
 void test_execution_space() {
   EXPECT_DEATH(
       { ExecutionSpace exec; },
-      "Kokkos execution space is being constructed before Kokkos::initialize")
+      "execution space is being constructed before initialize")
       << ExecutionSpace::name();
 
   EXPECT_DEATH(
@@ -394,7 +394,7 @@ void test_execution_space() {
         Kokkos::finalize();
         ExecutionSpace exec;
       },
-      "Kokkos execution space is being constructed after Kokkos::finalize")
+      "execution space is being constructed after finalize")
       << ExecutionSpace::name();
 
   EXPECT_DEATH(
@@ -403,7 +403,7 @@ void test_execution_space() {
         ExecutionSpace exec;
         Kokkos::finalize();
       },
-      "Kokkos execution space is being destructed after Kokkos::finalize")
+      "execution space is being destructed after finalize")
       << ExecutionSpace::name();
 }
 
