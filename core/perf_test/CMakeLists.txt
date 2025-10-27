@@ -22,20 +22,21 @@ if(NOT Kokkos_ENABLE_BENCHMARKS)
 endif()
 
 # Find or download google/benchmark library
-find_package(benchmark QUIET 1.5.6)
+find_package(benchmark QUIET 1.8.3)
 if(benchmark_FOUND)
   message(STATUS "Using google benchmark found in ${benchmark_DIR}")
 else()
   message(STATUS "No installed google benchmark found, fetching from GitHub")
   include(FetchContent)
   set(BENCHMARK_ENABLE_TESTING OFF)
+  set(BENCHMARK_ENABLE_INSTALL OFF)
 
   list(APPEND CMAKE_MESSAGE_INDENT "[benchmark] ")
   FetchContent_Declare(
     googlebenchmark
     DOWNLOAD_EXTRACT_TIMESTAMP FALSE
-    URL https://github.com/google/benchmark/archive/refs/tags/v1.7.1.tar.gz
-    URL_HASH MD5=0459a6c530df9851bee6504c3e37c2e7
+    URL https://github.com/google/benchmark/archive/refs/tags/v1.8.3.tar.gz
+    URL_HASH MD5=7b93dd03670665684f1b2e9b70ad17fe
   )
   FetchContent_MakeAvailable(googlebenchmark)
   list(POP_BACK CMAKE_MESSAGE_INDENT)
@@ -79,6 +80,7 @@ set(BENCHMARK_SOURCES
     PerfTest_Gemv.cpp
     PerfTestHexGrad.cpp
     PerfTest_MallocFree.cpp
+    PerfTest_Stream.cpp
     PerfTest_ViewAllocate.cpp
     PerfTest_ViewCopy_a123.cpp
     PerfTest_ViewCopy_b123.cpp

@@ -43,8 +43,6 @@ struct HIPTraits {
 
 //----------------------------------------------------------------------------
 
-HIP::size_type hip_internal_multiprocessor_count();
-
 HIP::size_type *hip_internal_scratch_space(const HIP &instance,
                                            const std::size_t size);
 HIP::size_type *hip_internal_scratch_flags(const HIP &instance,

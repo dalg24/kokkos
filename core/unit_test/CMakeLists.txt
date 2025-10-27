@@ -95,6 +95,7 @@ set(COMPILE_ONLY_SOURCES
     view/TestBasicViewMDSpanConversion.cpp
     view/TestViewCustomization.cpp
     view/TestExtentsDatatypeConversion.cpp
+    view/TestConversionFromPointer.cpp
 )
 
 if(NOT Kokkos_ENABLE_IMPL_MDSPAN OR KOKKOS_CXX_COMPILER_ID STREQUAL "Intel")
@@ -288,11 +289,6 @@ foreach(Tag Threads;Serial;OpenMP;Cuda;HPX;OpenMPTarget;OpenACC;HIP;SYCL)
     # See issue: https://github.com/kokkos/kokkos/issues/7084
     if(KOKKOS_CXX_COMPILER_ID STREQUAL Intel)
       list(REMOVE_ITEM ${Tag}_TESTNAMES2A ViewCopy_c)
-    endif()
-    # FIXME: we will eventually likely remove ViewHooks entirely, but for now
-    # ViewHooks are not compatible
-    if(NOT Kokkos_ENABLE_IMPL_VIEW_LEGACY)
-      list(REMOVE_ITEM ${Tag}_TESTNAMES2A ViewHooks)
     endif()
     foreach(Name IN LISTS ${Tag}_TESTNAMES2A)
       set(file ${dir}/Test${Tag}_${Name}.cpp)
@@ -586,9 +582,7 @@ if(KOKKOS_ENABLE_OPENACC AND KOKKOS_CXX_COMPILER_ID STREQUAL NVHPC)
     ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_NumericTraits.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_RangePolicy.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_RangePolicyRequire.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_Reducers_a.cpp #fails if NVHPC V22.5 or lower.
     ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_Reducers_d.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_Reductions.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_Reductions_DeviceView.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_TeamBasic.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/openacc/TestOpenACC_TeamScratch.cpp

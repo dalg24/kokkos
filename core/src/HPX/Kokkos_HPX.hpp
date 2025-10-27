@@ -259,7 +259,6 @@ class HPX {
   int concurrency() const;
 #endif
   static void impl_initialize(InitializationSettings const &);
-  static bool impl_is_initialized() noexcept;
   static void impl_finalize();
   static int impl_thread_pool_size() noexcept;
   static int impl_thread_pool_rank() noexcept;
@@ -926,6 +925,12 @@ class TeamPolicyInternal<Kokkos::Experimental::HPX, Properties...>
         m_thread_scratch_size{0, 0},
         m_chunk_size(0) {
     init(league_size_request, 1);
+  }
+
+  TeamPolicyInternal(const PolicyUpdate, const TeamPolicyInternal &other,
+                     typename traits::execution_space space)
+      : TeamPolicyInternal(other) {
+    this->m_space = std::move(space);
   }
 
   inline int chunk_size() const { return m_chunk_size; }
