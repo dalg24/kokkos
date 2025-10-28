@@ -383,9 +383,8 @@ TEST_F(ExecutionEnvironmentNonInitializedOrFinalized_DeathTest, parallel_scan) {
 
 template <class ExecutionSpace>
 void test_execution_space() {
-  EXPECT_DEATH(
-      { ExecutionSpace exec; },
-      "execution space is being constructed before initialize")
+  EXPECT_DEATH({ ExecutionSpace exec; },
+               "execution space is being constructed before initialize")
       << ExecutionSpace::name();
 
   EXPECT_DEATH(
