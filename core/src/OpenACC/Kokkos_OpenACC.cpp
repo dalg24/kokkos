@@ -48,20 +48,19 @@ static void do_not_repeat_myself() {
 
 Kokkos::Experimental::OpenACC::OpenACC()
     : m_space_instance(
-          ((do_not_repeat_myself(),
+          (do_not_repeat_myself(),
            Kokkos::Impl::HostSharedPtr(
                &Kokkos::Experimental::Impl::OpenACCInternal::singleton(),
-               [](Impl::OpenACCInternal*) {}))) {
-}
+               [](Impl::OpenACCInternal*) {}))) {}
 
 Kokkos::Experimental::OpenACC::OpenACC(int async_arg)
-    : m_space_instance((
-          do_not_repeat_myself(),
-          Kokkos::Impl::HostSharedPtr(new Kokkos::Experimental::Impl::OpenACCInternal,
-                                [](Impl::OpenACCInternal* ptr) {
-  ptr->finalize();
-  delete ptr;
-                                }))) {
+    : m_space_instance((do_not_repeat_myself(),
+                        Kokkos::Impl::HostSharedPtr(
+                            new Kokkos::Experimental::Impl::OpenACCInternal,
+                            [](Impl::OpenACCInternal* ptr) {
+                              ptr->finalize();
+                              delete ptr;
+                            }))) {
   m_space_instance->initialize(async_arg);
 }
 
@@ -176,8 +175,8 @@ int Kokkos::Experimental::OpenACC::acc_device_number() const {
 }
 
 namespace Kokkos {
-  namespace Impl {
-  int g_openacc_space_factory_initialized =
-      initialize_space_factory<Experimental::OpenACC>("170_OpenACC");
-  }  // namespace Impl
+namespace Impl {
+int g_openacc_space_factory_initialized =
+    initialize_space_factory<Experimental::OpenACC>("170_OpenACC");
+}  // namespace Impl
 }  // Namespace Kokkos
