@@ -42,6 +42,7 @@ static_assert(false,
 #include <iosfwd>
 #include <functional>
 #include <memory>
+#include <new>
 #include <type_traits>
 #include <vector>
 

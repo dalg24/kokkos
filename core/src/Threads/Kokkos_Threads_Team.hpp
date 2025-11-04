@@ -7,6 +7,7 @@
 #include <Kokkos_Macros.hpp>
 
 #include <cstdio>
+#include <new>
 
 #include <utility>
 #include <impl/Kokkos_HostThreadTeam.hpp>

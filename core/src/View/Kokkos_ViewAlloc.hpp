@@ -11,6 +11,7 @@ static_assert(false,
 #define KOKKOS_VIEW_ALLOC_HPP
 
 #include <cstring>
+#include <new>
 #include <type_traits>
 #include <string>
 #include <optional>

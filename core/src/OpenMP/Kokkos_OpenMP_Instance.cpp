@@ -21,6 +21,7 @@ import kokkos.core;
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <new>
 #include <sstream>
 #include <thread>
 
