@@ -27,7 +27,7 @@
 
 Kokkos::Experimental::OpenACC::~OpenACC() {
   if (Kokkos::is_finalized()) {
-    abort(
+    Kokkos::abort(
         "Kokkos ERROR: OpenACC execution space is being destructed after "
         "finalize() has been called");
   }
@@ -35,12 +35,12 @@ Kokkos::Experimental::OpenACC::~OpenACC() {
 
 static void do_not_repeat_myself() {
   if (Kokkos::is_finalized()) {
-    abort(
+    Kokkos::abort(
         "Kokkos ERROR: OpenACC execution space is being constructed after "
         "finalize() has been called");
   }
   if (!Kokkos::is_initialized()) {
-    abort(
+    Kokkos::abort(
         "Kokkos ERROR: OpenACC execution space is being constructed "
         "before initialize() has been called");
   }
