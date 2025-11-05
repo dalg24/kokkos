@@ -7,7 +7,7 @@ include(GNUInstallDirs)
 message(STATUS "The project name is: ${PROJECT_NAME}")
 
 if(Kokkos_ENABLE_TESTS OR Kokkos_INSTALL_TESTING)
-  find_package(GTest QUIET)
+  find_package(GTest QUIET 1.14.0)
   if(GTest_FOUND)
     message(STATUS "Found external GoogleTest: ${GTest_DIR} (version \"${GTest_VERSION}\")")
   else()
