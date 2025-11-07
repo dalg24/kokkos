@@ -13,7 +13,6 @@ static_assert(false,
 #define KOKKOS_PARALLEL_HPP
 
 #include <Kokkos_Core_fwd.hpp>
-#include <Kokkos_CheckUsage.hpp>
 #include <Kokkos_DetectionIdiom.hpp>
 #include <Kokkos_ExecPolicy.hpp>
 #include <Kokkos_View.hpp>
@@ -21,8 +20,9 @@ static_assert(false,
 #include <impl/Kokkos_Tools.hpp>
 #include <impl/Kokkos_Tools_Generic.hpp>
 
-#include <impl/Kokkos_Traits.hpp>
+#include <impl/Kokkos_CheckUsage.hpp>
 #include <impl/Kokkos_FunctorAnalysis.hpp>
+#include <impl/Kokkos_Traits.hpp>
 
 #include <cstddef>
 #include <type_traits>

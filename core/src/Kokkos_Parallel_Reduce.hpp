@@ -10,7 +10,7 @@ static_assert(false,
 #define KOKKOS_PARALLEL_REDUCE_HPP
 
 #include <impl/Kokkos_BuiltinReducers.hpp>
-#include <Kokkos_CheckUsage.hpp>
+#include <impl/Kokkos_CheckUsage.hpp>
 #include <Kokkos_ExecPolicy.hpp>
 #include <Kokkos_View.hpp>
 #include <impl/Kokkos_FunctorAnalysis.hpp>

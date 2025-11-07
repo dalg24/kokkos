@@ -4,20 +4,18 @@
 #ifndef KOKKOS_CHECK_USAGE_HPP
 #define KOKKOS_CHECK_USAGE_HPP
 
-#include <sstream>
-#include <type_traits>
-
 #include <Kokkos_Abort.hpp>
 #include <Kokkos_Macros.hpp>
+#include <impl/Kokkos_InitializeFinalize.hpp>
 #include <impl/Kokkos_Utilities.hpp>
+
+#include <sstream>
+#include <type_traits>
 
 // FIXME: Obtain file and line number information via std::source_location
 // (since C++20) which requires GCC 11 etc.
 
 namespace Kokkos {
-
-[[nodiscard]] bool is_initialized() noexcept;
-[[nodiscard]] bool is_finalized() noexcept;
 
 template <typename... Args>
 class RangePolicy;
