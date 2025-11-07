@@ -112,6 +112,7 @@ inline void check_execution_space_constructor_precondition(
     err << "Kokkos ERROR: " << name
         << " execution space is being constructed"
            " before initialize() has been called";
+    Kokkos::abort(err.str().c_str());
   }
 }
 
