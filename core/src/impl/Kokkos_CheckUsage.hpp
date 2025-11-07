@@ -98,6 +98,34 @@ struct CheckUsage<UsageRequires::insideExecEnv> {
   }
 };
 
+inline void check_execution_space_constructor_precondition(
+    char const* name) noexcept {
+  if (Kokkos::is_finalized()) {
+    std::stringstream err;
+    err << "Kokkos ERROR: " << name
+        << " execution space is being constructed"
+           " after finalize() has been called";
+    Kokkos::abort(err.str().c_str());
+  }
+  if (!Kokkos::is_initialized()) {
+    std::stringstream err;
+    err << "Kokkos ERROR: " << name
+        << " execution space is being constructed"
+           " before initialize() has been called";
+  }
+}
+
+inline void check_execution_space_destructor_precondition(
+    char const* name) noexcept {
+  if (Kokkos::is_finalized()) {
+    std::stringstream err;
+    err << "Kokkos ERROR: " << name
+        << " execution space is being destructed"
+           " after finalize() has been called";
+    Kokkos::abort(err.str().c_str());
+  }
+}
+
 }  // namespace Impl
 }  // namespace Kokkos
 

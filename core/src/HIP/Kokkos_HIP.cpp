@@ -15,9 +15,9 @@ import kokkos.core;
 #include <HIP/Kokkos_HIP_Instance.hpp>
 #include <HIP/Kokkos_HIP_IsXnack.hpp>
 
+#include <impl/Kokkos_CheckUsage.hpp>
 #include <impl/Kokkos_DeviceManagement.hpp>
 #include <impl/Kokkos_ExecSpaceManager.hpp>
-#include <impl/Kokkos_InitializeFinalize.hpp>
 
 #include <hip/hip_runtime_api.h>
 
@@ -125,35 +125,17 @@ void HIP::impl_finalize() {
       hipStreamDestroy(Impl::HIPInternal::singleton().m_stream));
 }
 
-HIP::~HIP() {
-  if (Kokkos::is_finalized()) {
-    abort(
-        "Kokkos ERROR: HIP execution space is being destructed after "
-        "finalize() has been called");
-  }
-}
-
-static void do_not_repeat_myself() {
-  if (Kokkos::is_finalized()) {
-    abort(
-        "Kokkos ERROR: HIP execution space is being constructed after "
-        "finalize() has been called");
-  }
-  if (!Kokkos::is_initialized()) {
-    abort(
-        "Kokkos ERROR: HIP execution space is being constructed "
-        "before initialize() has been called");
-  }
-}
+HIP::~HIP() { Impl::check_execution_space_destructor_precondition(name()); }
 
 HIP::HIP()
-    : m_space_instance((do_not_repeat_myself(),
-                        Impl::HostSharedPtr(&Impl::HIPInternal::singleton(),
-                                            [](Impl::HIPInternal*) {}))) {}
+    : m_space_instance(
+          (Impl::check_execution_space_constructor_precondition(name()),
+           Impl::HostSharedPtr(&Impl::HIPInternal::singleton(),
+                               [](Impl::HIPInternal*) {}))) {}
 
 HIP::HIP(hipStream_t const stream, Impl::ManageStream manage_stream)
     : m_space_instance(
-          (do_not_repeat_myself(),
+          (Impl::check_execution_space_constructor_precondition(name()),
            Impl::HostSharedPtr(
                new Impl::HIPInternal, [manage_stream](Impl::HIPInternal* ptr) {
                  ptr->finalize();

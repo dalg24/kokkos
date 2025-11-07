@@ -25,6 +25,7 @@ import kokkos.core;
 #include <impl/Kokkos_Error.hpp>
 #include <impl/Kokkos_Tools.hpp>
 #include <impl/Kokkos_CheckedIntegerOps.hpp>
+#include <impl/Kokkos_CheckUsage.hpp>
 #include <impl/Kokkos_DeviceManagement.hpp>
 #include <impl/Kokkos_ExecSpaceManager.hpp>
 
@@ -652,31 +653,13 @@ void Cuda::impl_finalize() {
       cudaStreamDestroy(Impl::CudaInternal::singleton().m_stream));
 }
 
-Cuda::~Cuda() {
-  if (Kokkos::is_finalized()) {
-    Kokkos::abort(
-        "Kokkos ERROR: Cuda execution space is being destructed after "
-        "finalize() has been called");
-  }
-}
-
-static void do_not_repeat_myself() {
-  if (Kokkos::is_finalized()) {
-    Kokkos::abort(
-        "Kokkos ERROR: Cuda execution space is being constructed after "
-        "finalize() has been called");
-  }
-  if (!Kokkos::is_initialized()) {
-    Kokkos::abort(
-        "Kokkos ERROR: Cuda execution space is being constructed before "
-        "initialize() has been called");
-  }
-}
+Cuda::~Cuda() { Impl::check_execution_space_destructor_precondition(name()); }
 
 Cuda::Cuda()
-    : m_space_instance((do_not_repeat_myself(),
-                        Impl::HostSharedPtr(&Impl::CudaInternal::singleton(),
-                                            [](Impl::CudaInternal *) {}))) {}
+    : m_space_instance(
+          (Impl::check_execution_space_constructor_precondition(name()),
+           Impl::HostSharedPtr(&Impl::CudaInternal::singleton(),
+                               [](Impl::CudaInternal *) {}))) {}
 
 KOKKOS_DEPRECATED Cuda::Cuda(cudaStream_t stream, bool manage_stream)
     : Cuda(stream,
@@ -684,7 +667,7 @@ KOKKOS_DEPRECATED Cuda::Cuda(cudaStream_t stream, bool manage_stream)
 
 Cuda::Cuda(cudaStream_t stream, Impl::ManageStream manage_stream)
     : m_space_instance((
-          do_not_repeat_myself(),
+          Impl::check_execution_space_constructor_precondition(name()),
           Impl::HostSharedPtr(
               new Impl::CudaInternal, [manage_stream](Impl::CudaInternal *ptr) {
                 ptr->finalize();

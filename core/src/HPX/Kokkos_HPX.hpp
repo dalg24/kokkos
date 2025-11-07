@@ -20,11 +20,11 @@ static_assert(false,
 #include <Kokkos_MemoryTraits.hpp>
 #include <Kokkos_Parallel.hpp>
 #include <Kokkos_ScratchSpace.hpp>
+#include <impl/Kokkos_CheckUsage.hpp>
 #include <impl/Kokkos_ConcurrentBitset.hpp>
 #include <impl/Kokkos_FunctorAnalysis.hpp>
 #include <impl/Kokkos_HostSharedPtr.hpp>
 #include <impl/Kokkos_InitializationSettings.hpp>
-#include <impl/Kokkos_InitializeFinalize.hpp>
 #include <impl/Kokkos_Tools.hpp>
 
 #include <KokkosExp_MDRangePolicy.hpp>
@@ -144,19 +144,6 @@ class HPX {
   static instance_data m_default_instance_data;
   Kokkos::Impl::HostSharedPtr<instance_data> m_instance_data;
 
-  static void do_not_repeat_myself() {
-    if (Kokkos::is_finalized()) {
-      abort(
-          "Kokkos ERROR: HPX execution space is being constructed after "
-          "finalize() has been called");
-    }
-    if (!Kokkos::is_initialized()) {
-      abort(
-          "Kokkos ERROR: HPX execution space is being constructed "
-          "before initialize() has been called");
-    }
-  }
-
  public:
   using execution_space      = HPX;
   using memory_space         = HostSpace;
@@ -172,22 +159,20 @@ class HPX {
 
   HPX()
       : m_instance_data(
-            (do_not_repeat_myself(),
+            (Kokkos::Impl::check_execution_space_constructor_precondition(
+                 name()),
              Kokkos::Impl::HostSharedPtr<instance_data>(
                  &m_default_instance_data, &default_instance_deleter))) {}
 
 #pragma GCC diagnostic pop
 
   ~HPX() {
-    if (Kokkos::is_finalized()) {
-      abort(
-          "Kokkos ERROR: HPX execution space is being destructed after "
-          "finalize() has been called");
-    }
+    Kokkos::Impl::check_execution_space_destructor_precondition(name());
   }
   explicit HPX(instance_mode mode)
       : m_instance_data(
-            (do_not_repeat_myself(),
+            (Kokkos::Impl::check_execution_space_constructor_precondition(
+                 name()),
              mode == instance_mode::independent
                  ? (Kokkos::Impl::HostSharedPtr<instance_data>(
                        new instance_data(m_next_instance_id++)))
@@ -195,7 +180,8 @@ class HPX {
                        &m_default_instance_data, &default_instance_deleter))) {}
   explicit HPX(hpx::execution::experimental::unique_any_sender<> &&sender)
       : m_instance_data(
-            (do_not_repeat_myself(),
+            (Kokkos::Impl::check_execution_space_constructor_precondition(
+                 name()),
              Kokkos::Impl::HostSharedPtr<instance_data>(new instance_data(
                  m_next_instance_id++, std::move(sender))))) {}
 
