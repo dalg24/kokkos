@@ -17,6 +17,7 @@ import kokkos.core;
 #endif
 
 #include <impl/Kokkos_CheckUsage.hpp>
+#include <impl/Kokkos_DeviceManagement.hpp>
 #include <impl/Kokkos_Error.hpp>
 #include <impl/Kokkos_ExecSpaceManager.hpp>
 
