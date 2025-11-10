@@ -185,6 +185,7 @@ pipeline {
                         }
                     }
                     environment {
+                        CTEST_OUTPUT_ON_FAILURE = 1
                         OMP_NUM_THREADS = 8
                         // Nested OpenMP does not work for this configuration,
                         // so disabling it

@@ -12,6 +12,11 @@ import kokkos.simd;
 #endif
 #include <SIMDTesting_Utilities.hpp>
 
+// FIXME GCC <= 11.2
+#if defined(KOKKOS_COMPILER_GNU) && (KOKKOS_COMPILER_GNU < 1130)
+#include <limits>
+#endif
+
 template <class Abi, class Loader, bool is_compound_op, class BinaryOp, class T>
 void host_check_bitwise_op_one_loader(BinaryOp binary_op, std::size_t n,
                                       T const* first_args,
@@ -122,8 +127,20 @@ inline void host_check_bitwise_ops() {
     constexpr int half_shift   = (CHAR_BIT * sizeof(DataType)) / 2;
     constexpr DataType zero    = static_cast<DataType>(0);
     constexpr DataType all_set = ~zero;
-    constexpr DataType hi_set  = all_set << half_shift;
-    constexpr DataType lo_set  = ~hi_set;
+
+    // FIXME GCC <= 11.2, GCC warns about left shift of negative values even
+    // though it is well defined in C++20, see
+    // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103826
+#if defined(KOKKOS_COMPILER_GNU) && (KOKKOS_COMPILER_GNU < 1130)
+    constexpr int signed_half_shift =
+        std::is_signed_v<DataType> ? half_shift - 1 : half_shift;
+    constexpr DataType lo_set =
+        std::numeric_limits<DataType>::max() >> signed_half_shift;
+    constexpr DataType hi_set = ~lo_set;
+#else
+    constexpr DataType hi_set = all_set << half_shift;
+    constexpr DataType lo_set = ~hi_set;
+#endif
 
     alignas(alignment) DataType const first_args[] = {
         0,         0,          1,        all_set,  all_set,   all_set,
@@ -262,8 +279,20 @@ KOKKOS_INLINE_FUNCTION void device_check_bitwise_ops() {
     constexpr int half_shift   = (CHAR_BIT * sizeof(DataType)) / 2;
     constexpr DataType zero    = static_cast<DataType>(0);
     constexpr DataType all_set = ~zero;
-    constexpr DataType hi_set  = all_set << half_shift;
-    constexpr DataType lo_set  = ~hi_set;
+
+    // FIXME GCC <= 11.2, GCC warns about left shift of negative values even
+    // though it is well defined in C++20, see
+    // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103826
+#if defined(KOKKOS_COMPILER_GNU) && (KOKKOS_COMPILER_GNU < 1130)
+    constexpr int signed_half_shift =
+        std::is_signed_v<DataType> ? half_shift - 1 : half_shift;
+    constexpr DataType lo_set =
+        std::numeric_limits<DataType>::max() >> signed_half_shift;
+    constexpr DataType hi_set = ~lo_set;
+#else
+    constexpr DataType hi_set = all_set << half_shift;
+    constexpr DataType lo_set = ~hi_set;
+#endif
 
     alignas(alignment) DataType const first_args[] = {
         0,         0,          1,        all_set,  all_set,   all_set,
