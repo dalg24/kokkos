@@ -425,7 +425,7 @@ Kokkos::DefaultExecutionSpace replace_static_execution_space() {
     return true;
   }();
   KOKKOS_ASSERT(exec.has_value());
-  return *exec;
+  return *exec;  // NOLINT(bugprone-unchecked-optional-access)
 }
 
 void compute_stuff(Kokkos::DefaultExecutionSpace exec) {
