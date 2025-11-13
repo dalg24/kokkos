@@ -428,6 +428,18 @@ Kokkos::DefaultExecutionSpace replace_static_execution_space() {
   return *exec;
 }
 
+void compute_stuff(Kokkos::DefaultExecutionSpace exec) {
+  int const N = 10;
+  Kokkos::View<int*> v("v", N);
+  Kokkos::parallel_for(
+      Kokkos::RangePolicy(exec, 0, N), KOKKOS_LAMBDA(int i) { v(i) = i + 1; });
+  int sum;
+  Kokkos::parallel_reduce(
+      Kokkos::RangePolicy(exec, 0, N),
+      KOKKOS_LAMBDA(int i, int& partial_sum) { partial_sum += v(i); }, sum);
+  KOKKOS_ASSERT(sum == (N + 1) * N / 2);
+}
+
 TEST_F(ExecutionEnvironmentNonInitializedOrFinalized_DeathTest,
        static_execution_space) {
   ::testing::FLAGS_gtest_death_test_style = "threadsafe";
@@ -437,18 +449,7 @@ TEST_F(ExecutionEnvironmentNonInitializedOrFinalized_DeathTest,
         Kokkos::initialize();
         {
           auto exec = replace_static_execution_space();
-
-          int const N = 10;
-          Kokkos::View<int*> v("v", N);
-          Kokkos::parallel_for(
-              Kokkos::RangePolicy(exec, 0, N),
-              KOKKOS_LAMBDA(int i) { v(i) = i + 1; });
-          int sum;
-          Kokkos::parallel_reduce(
-              Kokkos::RangePolicy(exec, 0, N),
-              KOKKOS_LAMBDA(int i, int& partial_sum) { partial_sum += v(i); },
-              sum);
-          KOKKOS_ASSERT(sum == (N + 1) * N / 2);
+          compute_stuff(exec);
         }
         Kokkos::finalize();
         std::exit(EXIT_SUCCESS);
