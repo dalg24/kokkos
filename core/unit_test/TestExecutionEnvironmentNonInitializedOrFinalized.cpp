@@ -417,4 +417,43 @@ TEST_F(ExecutionEnvironmentNonInitializedOrFinalized_DeathTest,
   }
 }
 
+Kokkos::DefaultExecutionSpace replace_static_execution_space() {
+  static std::optional<Kokkos::DefaultExecutionSpace> exec;
+  [[maybe_unused]] static bool once = [] {
+    exec = Kokkos::DefaultExecutionSpace();
+    Kokkos::push_finalize_hook([] { exec.reset(); });
+    return true;
+  }();
+  KOKKOS_ASSERT(exec.has_value());
+  return *exec;
+}
+
+TEST_F(ExecutionEnvironmentNonInitializedOrFinalized_DeathTest,
+       static_execution_space) {
+  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+
+  EXPECT_EXIT(
+      {
+        Kokkos::initialize();
+        {
+          auto exec = replace_static_execution_space();
+
+          int const N = 10;
+          Kokkos::View<int*> v("v", N);
+          Kokkos::parallel_for(
+              Kokkos::RangePolicy(exec, 0, N),
+              KOKKOS_LAMBDA(int i) { v(i) = i + 1; });
+          int sum;
+          Kokkos::parallel_reduce(
+              Kokkos::RangePolicy(exec, 0, N),
+              KOKKOS_LAMBDA(int i, int& partial_sum) { partial_sum += v(i); },
+              sum);
+          KOKKOS_ASSERT(sum == (N + 1) * N / 2);
+        }
+        Kokkos::finalize();
+        std::exit(EXIT_SUCCESS);
+      },
+      ::testing::ExitedWithCode(EXIT_SUCCESS), "");
+}
+
 }  // namespace
