@@ -2253,10 +2253,12 @@ struct TestIsNormal {
     }
 #endif
     // special values
-    if (isnormal(INFINITY) || isnormal(NAN) || !isnormal(FLT_MIN) ||
-        !isnormal(DBL_MIN) || !isnormal(LDBL_MIN) || !isnormal(FLT_MAX) ||
-        !isnormal(DBL_MAX) || !isnormal(LDBL_MAX) || isnormal(FLT_TRUE_MIN) ||
-        isnormal(DBL_TRUE_MIN) || isnormal(LDBL_TRUE_MIN)) {
+    if (isnormal(INFINITY) || isnormal(NAN) ||
+#ifdef MATHEMATICAL_FUNCTIONS_HAVE_LONG_DOUBLE_OVERLOADS
+        !isnormal(LDBL_MAX) || !isnormal(LDBL_MIN) || isnormal(LDBL_TRUE_MIN) ||
+#endif
+        !isnormal(FLT_MAX) || !isnormal(FLT_MIN) || isnormal(FLT_TRUE_MIN) ||
+        !isnormal(DBL_MAX) || !isnormal(DBL_MIN) || isnormal(DBL_TRUE_MIN)) {
       ++e;
       Kokkos::printf("failed isnormal(floating_point) special values\n");
     }
