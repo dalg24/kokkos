@@ -525,7 +525,18 @@ KOKKOS_IMPL_MATH_BINARY_FUNCTION(copysign)
 KOKKOS_IMPL_MATH_UNARY_PREDICATE(isfinite)
 KOKKOS_IMPL_MATH_UNARY_PREDICATE(isinf)
 KOKKOS_IMPL_MATH_UNARY_PREDICATE(isnan)
+#if defined(KOKKOS_ENABLE_CUDA)
+KOKKOS_INLINE_FUNCTION bool isnormal(float x) { return __builtin_isnormal(x); }
+KOKKOS_INLINE_FUNCTION bool isnormal(double x) { return __builtin_isnormal(x); }
+inline bool isnormal(long double x) { return __builtin_isnormal(x); }
+template <class T>
+KOKKOS_INLINE_FUNCTION std::enable_if_t<std::is_integral_v<T>, bool> isnormal(
+    T x) {
+  return __builtin_isnormal(static_cast<double>(x));
+}
+#else
 KOKKOS_IMPL_MATH_UNARY_PREDICATE(isnormal)
+#endif
 KOKKOS_IMPL_MATH_UNARY_PREDICATE(signbit)
 // isgreater
 // isgreaterequal
