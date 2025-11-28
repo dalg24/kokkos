@@ -494,6 +494,7 @@ export {
   using ::Kokkos::isfinite;
   using ::Kokkos::isinf;
   using ::Kokkos::isnan;
+  using ::Kokkos::isnormal;
   using ::Kokkos::lgamma;
   using ::Kokkos::lgammaf;
   using ::Kokkos::lgammal;
