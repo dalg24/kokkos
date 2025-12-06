@@ -532,7 +532,7 @@ inline bool isnormal(long double x) { return __builtin_isnormal(x); }
 template <class T>
 KOKKOS_INLINE_FUNCTION std::enable_if_t<std::is_integral_v<T>, bool> isnormal(
     T x) {
-  return __builtin_isnormal(static_cast<double>(x));
+  return x != T(0);
 }
 #else
 KOKKOS_IMPL_MATH_UNARY_PREDICATE(isnormal)
