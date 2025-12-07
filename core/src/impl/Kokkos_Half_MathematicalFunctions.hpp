@@ -429,7 +429,18 @@ KOKKOS_INLINE_FUNCTION Kokkos::Experimental::bhalf_t nextafter(Kokkos::Experimen
 #endif
 #endif  // !(defined(KOKKOS_ENABLE_CUDA) && defined(KOKKOS_COMPILER_MSVC))
 
-// isnormal
+KOKKOS_INLINE_FUNCTION bool isnormal(Kokkos::Experimental::half_t x) {
+  const Kokkos::Experimental::half_t abs = Kokkos::abs(x);
+  return (abs >= Kokkos::Experimental::norm_min_v<Kokkos::Experimental::half_t>)&&(
+      abs <= Kokkos::Experimental::finite_max_v<Kokkos::Experimental::half_t>);
+}
+
+KOKKOS_INLINE_FUNCTION bool isnormal(Kokkos::Experimental::bhalf_t x) {
+  const Kokkos::Experimental::bhalf_t abs = Kokkos::abs(x);
+  return (abs >= Kokkos::Experimental::norm_min_v<Kokkos::Experimental::bhalf_t>)&&(
+      abs <= Kokkos::Experimental::finite_max_v<Kokkos::Experimental::bhalf_t>);
+}
+
 KOKKOS_IMPL_MATH_HALF_FUNC_WRAPPER(KOKKOS_IMPL_MATH_UNARY_PREDICATE_HALF, signbit)
 // isgreater
 // isgreaterequal

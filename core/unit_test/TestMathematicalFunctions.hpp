@@ -2212,8 +2212,6 @@ struct TestIsNormal {
       ++e;
       Kokkos::printf("failed isnormal(float)\n");
     }
-#if !defined(KOKKOS_ENABLE_CUDA) && !defined(KOKKOS_ENABLE_HIP) && \
-    !defined(KOKKOS_ENABLE_SYCL)  // FIXME
     if (isnormal(static_cast<KE::half_t>(0.f)) ||
         !isnormal(static_cast<KE::half_t>(2.f)) ||
         !isnormal(static_cast<KE::half_t>(-2.f)) ||
@@ -2236,7 +2234,6 @@ struct TestIsNormal {
       ++e;
       Kokkos::printf("failed isnormal(KE::bhalf_t)\n");
     }
-#endif
     if (isnormal(0.) || !isnormal(3.) || !isnormal(-3.) ||
         isnormal(quiet_NaN<double>::value) ||
         isnormal(signaling_NaN<double>::value) ||
