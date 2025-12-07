@@ -2203,7 +2203,8 @@ struct TestIsNormal {
       ++e;
       Kokkos::printf("failed isnormal(integral)\n");
     }
-    if (isnormal(0.f) || !isnormal(2.f) || isnormal(quiet_NaN<float>::value) ||
+    if (isnormal(0.f) || !isnormal(2.f) || !isnormal(-3.f) ||
+        isnormal(quiet_NaN<float>::value) ||
         isnormal(signaling_NaN<float>::value) ||
         isnormal(infinity<float>::value) ||
         isnormal(denorm_min<float>::value) ||
@@ -2215,6 +2216,7 @@ struct TestIsNormal {
     !defined(KOKKOS_ENABLE_SYCL)  // FIXME
     if (isnormal(static_cast<KE::half_t>(0.f)) ||
         !isnormal(static_cast<KE::half_t>(2.f)) ||
+        !isnormal(static_cast<KE::half_t>(-2.f)) ||
         isnormal(quiet_NaN<KE::half_t>::value) ||
         isnormal(signaling_NaN<KE::half_t>::value) ||
         isnormal(infinity<KE::half_t>::value) ||
@@ -2225,6 +2227,7 @@ struct TestIsNormal {
     }
     if (isnormal(static_cast<KE::bhalf_t>(0.f)) ||
         !isnormal(static_cast<KE::bhalf_t>(2.f)) ||
+        !isnormal(static_cast<KE::bhalf_t>(-2.f)) ||
         isnormal(quiet_NaN<KE::bhalf_t>::value) ||
         isnormal(signaling_NaN<KE::bhalf_t>::value) ||
         isnormal(infinity<KE::bhalf_t>::value) ||
@@ -2234,7 +2237,8 @@ struct TestIsNormal {
       Kokkos::printf("failed isnormal(KE::bhalf_t)\n");
     }
 #endif
-    if (isnormal(0.) || !isnormal(3.) || isnormal(quiet_NaN<double>::value) ||
+    if (isnormal(0.) || !isnormal(3.) || !isnormal(-3.) ||
+        isnormal(quiet_NaN<double>::value) ||
         isnormal(signaling_NaN<double>::value) ||
         isnormal(infinity<double>::value) ||
         isnormal(denorm_min<double>::value) ||
@@ -2243,7 +2247,7 @@ struct TestIsNormal {
       Kokkos::printf("failed isnormal(double)\n");
     }
 #ifdef MATHEMATICAL_FUNCTIONS_HAVE_LONG_DOUBLE_OVERLOADS
-    if (isnormal(0.l) || !isnormal(4.l) ||
+    if (isnormal(0.l) || !isnormal(4.l) || !isnormal(-4.l) ||
         isnormal(quiet_NaN<long double>::value) ||
         isnormal(signaling_NaN<long double>::value) ||
         isnormal(infinity<long double>::value) ||
