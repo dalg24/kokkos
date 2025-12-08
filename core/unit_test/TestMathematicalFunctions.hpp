@@ -2184,6 +2184,12 @@ TEST(TEST_CATEGORY, mathematical_functions_isnan) {
   TestIsNaN<TEST_EXECSPACE>();
 }
 
+#define DEVICE_ASSERT(CALL)                          \
+  if (!(CALL)) {                                     \
+    printf(KOKKOS_IMPL_STRINGIFY(CALL) " failed\n"); \
+    ++e;                                             \
+  }
+
 template <class Space>
 struct TestIsNormal {
   TestIsNormal() { run(); }
@@ -2212,17 +2218,15 @@ struct TestIsNormal {
       ++e;
       Kokkos::printf("failed isnormal(float)\n");
     }
-    if (isnormal(static_cast<KE::half_t>(0.f)) ||
-        !isnormal(static_cast<KE::half_t>(2.f)) ||
-        !isnormal(static_cast<KE::half_t>(-2.f)) ||
-        isnormal(quiet_NaN<KE::half_t>::value) ||
-        isnormal(signaling_NaN<KE::half_t>::value) ||
-        isnormal(infinity<KE::half_t>::value) ||
-        isnormal(denorm_min<KE::half_t>::value) ||
-        !isnormal(norm_min<KE::half_t>::value)) {
-      ++e;
-      Kokkos::printf("failed isnormal(KE::half_t)\n");
-    }
+    DEVICE_ASSERT(!isnormal(static_cast<KE::half_t>(0.f)))
+    DEVICE_ASSERT(isnormal(static_cast<KE::half_t>(2.f)))
+    DEVICE_ASSERT(isnormal(static_cast<KE::half_t>(-2.f)))
+    DEVICE_ASSERT(!isnormal(quiet_NaN<KE::half_t>::value))
+    DEVICE_ASSERT(!isnormal(signaling_NaN<KE::half_t>::value))
+    DEVICE_ASSERT(!isnormal(infinity<KE::half_t>::value))
+    DEVICE_ASSERT(!isnormal(denorm_min<KE::half_t>::value))
+    DEVICE_ASSERT(isnormal(norm_min<KE::half_t>::value))
+
     if (isnormal(static_cast<KE::bhalf_t>(0.f)) ||
         !isnormal(static_cast<KE::bhalf_t>(2.f)) ||
         !isnormal(static_cast<KE::bhalf_t>(-2.f)) ||
