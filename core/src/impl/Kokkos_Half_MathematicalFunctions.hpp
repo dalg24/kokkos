@@ -435,8 +435,12 @@ KOKKOS_INLINE_FUNCTION bool isnormal(Kokkos::Experimental::half_t x) {
     // Workaround for NaN with HIP
     if (x != x) { return false; }
 #endif
-  const Kokkos::Experimental::half_t abs = Kokkos::abs(x);
-  return (abs >= Kokkos::Experimental::norm_min_v<Kokkos::Experimental::half_t>)&&(
+#if defined(KOKKOS_ENABLE_CUDA) && defined(KOKKOS_COMPILER_MSVC)
+    auto abs = x >= 0 ? x : -x;
+#else
+    auto abs = Kokkos::abs(x);
+#endif
+    return (abs >= Kokkos::Experimental::norm_min_v<Kokkos::Experimental::half_t>)&&(
       abs <= Kokkos::Experimental::finite_max_v<Kokkos::Experimental::half_t>);
 }
 #endif
@@ -447,8 +451,12 @@ KOKKOS_INLINE_FUNCTION bool isnormal(Kokkos::Experimental::bhalf_t x) {
     // Workaround for NaN with HIP
     if (x != x) { return false; }
 #endif
-  const Kokkos::Experimental::bhalf_t abs = Kokkos::abs(x);
-  return (abs >= Kokkos::Experimental::norm_min_v<Kokkos::Experimental::bhalf_t>)&&(
+#if defined(KOKKOS_ENABLE_CUDA) && defined(KOKKOS_COMPILER_MSVC)
+    auto abs = x >= 0 ? x : -x;
+#else
+    auto abs = Kokkos::abs(x);
+#endif
+    return (abs >= Kokkos::Experimental::norm_min_v<Kokkos::Experimental::bhalf_t>)&&(
       abs <= Kokkos::Experimental::finite_max_v<Kokkos::Experimental::bhalf_t>);
 }
 #endif
