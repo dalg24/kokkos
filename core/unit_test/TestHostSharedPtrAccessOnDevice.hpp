@@ -243,4 +243,3 @@ TEST(TEST_CATEGORY, host_shared_ptr_tracking) {
   }
 #endif
 }
-
