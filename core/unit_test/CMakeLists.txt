@@ -371,7 +371,6 @@ foreach(PairDeviceSpace HIP-HostPinned;HIP-Managed;Cuda-HostPinned;Cuda-UVM;SYCL
   endif()
 endforeach()
 
-
 if(Kokkos_ENABLE_OPENACC)
   list(
     REMOVE_ITEM
