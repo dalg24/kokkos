@@ -1680,7 +1680,6 @@ struct TestReducers {
     test_minmaxfirstlastloc_loc_init(3);
     test_minfirstloc_loc_init(3);
     test_maxfirstloc_loc_init(3);
-#endif
     test_BAnd(35);
     test_BOr(35);
     test_LAnd(35);
