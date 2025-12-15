@@ -30,7 +30,7 @@ struct TestRange {
   struct VerifyOffsetTag {};
 
   int N;
-  int offset;
+  static const int offset = 13;
   TestRange(const size_t N_)
       : m_flags(Kokkos::view_alloc(Kokkos::WithoutInitializing, "flags"), N_),
         result_view(Kokkos::view_alloc(Kokkos::WithoutInitializing, "results"),
