@@ -431,10 +431,6 @@ KOKKOS_INLINE_FUNCTION Kokkos::Experimental::bhalf_t nextafter(Kokkos::Experimen
 
 #if defined(KOKKOS_HALF_T_IS_FLOAT) && !KOKKOS_HALF_T_IS_FLOAT
 KOKKOS_INLINE_FUNCTION bool isnormal(Kokkos::Experimental::half_t x) {
-#if defined(KOKKOS_ENABLE_CUDA) && defined(KOKKOS_COMPILER_MSVC)
-    // FIXME: alternative not working on windows + cuda
-    return Kokkos::isnormal(static_cast<float>(x));
-#else
 #if defined(KOKKOS_ENABLE_HIP)
     // Workaround for NaN with HIP
     if (x != x) { return false; }
@@ -442,16 +438,11 @@ KOKKOS_INLINE_FUNCTION bool isnormal(Kokkos::Experimental::half_t x) {
     auto abs = Kokkos::abs(x);
     return (abs >= Kokkos::Experimental::norm_min_v<Kokkos::Experimental::half_t>)&&(
       abs <= Kokkos::Experimental::finite_max_v<Kokkos::Experimental::half_t>);
-#endif
 }
 #endif
 
 #if defined(KOKKOS_BHALF_T_IS_FLOAT) && !KOKKOS_BHALF_T_IS_FLOAT
 KOKKOS_INLINE_FUNCTION bool isnormal(Kokkos::Experimental::bhalf_t x) {
-#if defined(KOKKOS_ENABLE_CUDA) && defined(KOKKOS_COMPILER_MSVC)
-    // FIXME: alternative not working on windows + cuda
-    return Kokkos::isnormal(static_cast<float>(x));
-#else
 #if defined(KOKKOS_ENABLE_HIP)
     // Workaround for NaN with HIP
     if (x != x) { return false; }
@@ -459,7 +450,6 @@ KOKKOS_INLINE_FUNCTION bool isnormal(Kokkos::Experimental::bhalf_t x) {
     auto abs = Kokkos::abs(x);
     return (abs >= Kokkos::Experimental::norm_min_v<Kokkos::Experimental::bhalf_t>)&&(
       abs <= Kokkos::Experimental::finite_max_v<Kokkos::Experimental::bhalf_t>);
-#endif
 }
 #endif
 
