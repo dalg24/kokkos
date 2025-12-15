@@ -180,7 +180,7 @@ struct TestNumericTraits<
 #elif defined(KOKKOS_ENABLE_SYCL)
     Kokkos::SYCL,
 #else
-#error logic error
+#error "logic error"
 #endif
     long double, Tag> {
   template <class T>

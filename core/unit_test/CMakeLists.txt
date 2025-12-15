@@ -485,7 +485,7 @@ if(KOKKOS_ENABLE_OPENACC AND KOKKOS_CXX_COMPILER_ID STREQUAL Clang)
   # clang-linker-wrapper to hang for a long time while building the unit tests.
   # In some cases, including them caused the build not to complete after an hour,
   # but excluding them permitted the build to finish in 1.5 mins or less.
-  if(KOKKOS_AMDGPU_ARCH)
+  if(KOKKOS_ARCH_VEGA) # FIXME_OPENACC
     list(
       REMOVE_ITEM
       OpenACC_SOURCES
