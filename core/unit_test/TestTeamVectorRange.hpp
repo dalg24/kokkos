@@ -354,18 +354,6 @@ bool test_scalar(int nteams, int team_size, int test) {
   Kokkos::deep_copy(d_flag, h_flag);
 
   Kokkos::TeamPolicy<ExecutionSpace> policy(nteams, team_size, 8);
-  using scratch_t = Kokkos::View<Scalar*, ExecutionSpace,
-                                 Kokkos::MemoryTraits<Kokkos::Unmanaged> >;
-
-  int scratch_size = 0;
-  if (test == 0) {
-    scratch_size = scratch_t::shmem_size(131);
-  } else {
-    policy       = Kokkos::TeamPolicy<ExecutionSpace>(1, team_size, 8);
-    scratch_size = scratch_t::shmem_size(1);
-  }
-
-  policy.set_scratch_size(0, Kokkos::PerTeam(scratch_size));
 
   if (test == 0) {
     Kokkos::parallel_for(
