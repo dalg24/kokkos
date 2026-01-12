@@ -2221,12 +2221,18 @@ struct TestIsNormal {
 #if !(defined(KOKKOS_ENABLE_CUDA) && defined(KOKKOS_COMPILER_MSVC))
     if (isnormal(static_cast<KE::half_t>(0.f)) ||
         !isnormal(static_cast<KE::half_t>(2.f)) ||
-        !isnormal(static_cast<KE::half_t>(-2.f)) ||
-        isnormal(quiet_NaN<KE::half_t>::value) ||
+        !isnormal(static_cast<KE::half_t>(-2.f))
+#if !(defined(KOKKOS_ENABLE_CUDA) &&                         \
+      defined(KOKKOS_ENABLE_CUDA_RELOCATABLE_DEVICE_CODE) && \
+      defined(KOKKOS_COMPILER_CLANG))
+        // FIXME internal compiler error for Clang+Cuda and RDC
+        || isnormal(quiet_NaN<KE::half_t>::value) ||
         isnormal(signaling_NaN<KE::half_t>::value) ||
         isnormal(infinity<KE::half_t>::value) ||
         isnormal(denorm_min<KE::half_t>::value) ||
-        !isnormal(norm_min<KE::half_t>::value)) {
+        !isnormal(norm_min<KE::half_t>::value)
+#endif
+    ) {
       ++e;
       Kokkos::printf("failed isnormal(KE::half_t)\n");
     }
