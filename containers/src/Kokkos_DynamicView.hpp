@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_DYNAMIC_VIEW_HPP
 #define KOKKOS_DYNAMIC_VIEW_HPP
@@ -23,8 +10,16 @@
 
 #include <cstdio>
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+import kokkos.core_impl;
+#else
 #include <Kokkos_Core.hpp>
+#endif
 #include <impl/Kokkos_Error.hpp>
+
+#include <cstdint>
 
 namespace Kokkos {
 namespace Experimental {
@@ -267,10 +262,15 @@ class DynamicView : public Kokkos::ViewTraits<DataType, P...> {
 
  public:
   //----------------------------------------------------------------------
-
-  /** \brief  Compatible view of array of scalar types */
-  using array_type =
+  /** \brief  Compatible view of data type */
+  using uniform_type =
       DynamicView<typename traits::data_type, typename traits::device_type>;
+
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_5
+  /** \brief  Compatible view of array of scalar types */
+  using array_type KOKKOS_DEPRECATED_WITH_COMMENT("Use uniform_type instead.") =
+      uniform_type;
+#endif
 
   /** \brief  Compatible view of const data type */
   using const_type = DynamicView<typename traits::const_data_type,
@@ -283,13 +283,18 @@ class DynamicView : public Kokkos::ViewTraits<DataType, P...> {
   /** \brief  Must be accessible everywhere */
   using host_mirror_type = DynamicView;
 
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+  /** \brief  Compatible HostMirror view */
+  using HostMirror KOKKOS_DEPRECATED_WITH_COMMENT(
+      "Use host_mirror_type instead.") = host_mirror_type;
+#endif
+
   /** \brief Unified types */
   using uniform_device =
       Kokkos::Device<typename traits::device_type::execution_space,
                      Kokkos::AnonymousSpace>;
-  using uniform_type               = array_type;
   using uniform_const_type         = const_type;
-  using uniform_runtime_type       = array_type;
+  using uniform_runtime_type       = uniform_type;
   using uniform_runtime_const_type = const_type;
   using uniform_nomemspace_type =
       DynamicView<typename traits::data_type, uniform_device>;
@@ -629,10 +634,6 @@ inline auto create_mirror(const Kokkos::Experimental::DynamicView<T, P...>& src,
 
     return ret;
   }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-  __builtin_unreachable();
-#endif
 }
 
 }  // namespace Impl
@@ -727,10 +728,6 @@ inline auto create_mirror_view(
       return Kokkos::Impl::choose_create_mirror(src, arg_prop);
     }
   }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-  __builtin_unreachable();
-#endif
 }
 
 }  // namespace Impl
@@ -996,10 +993,6 @@ auto create_mirror_view_and_copy(
       deep_copy(mirror, src);
     return mirror;
   }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-  __builtin_unreachable();
-#endif
 }
 
 template <class Space, class T, class... P,

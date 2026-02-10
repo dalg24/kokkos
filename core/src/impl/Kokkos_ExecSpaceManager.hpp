@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_EXEC_SPACE_MANAGER_HPP
 #define KOKKOS_EXEC_SPACE_MANAGER_HPP
@@ -21,6 +8,7 @@
 #include <Kokkos_DetectionIdiom.hpp>
 #include <Kokkos_Concepts.hpp>
 
+#include <concepts>
 #include <iosfwd>
 #include <map>
 #include <string>
@@ -34,7 +22,7 @@ using public_member_types_t = std::enable_if_t<
     Kokkos::is_memory_space_v<typename T::memory_space> &&
     Kokkos::is_device_v<typename T::device_type> &&
     Kokkos::is_array_layout_v<typename T::array_layout> &&
-    std::is_integral_v<typename T::size_type> &&
+    std::unsigned_integral<typename T::size_type> &&
     Kokkos::is_memory_space_v<typename T::scratch_memory_space>>;
 
 template <class T>

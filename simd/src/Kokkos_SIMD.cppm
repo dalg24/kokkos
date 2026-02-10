@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 module;
 
@@ -75,7 +62,10 @@ export {
   using ::Kokkos::Experimental::simd_flag_aligned;
   using ::Kokkos::Experimental::simd_flag_default;
   using ::Kokkos::Experimental::simd_mask;
-  using ::Kokkos::Experimental::where;
+  using ::Kokkos::Experimental::simd_partial_load;
+  using ::Kokkos::Experimental::simd_partial_store;
+  using ::Kokkos::Experimental::simd_unchecked_load;
+  using ::Kokkos::Experimental::simd_unchecked_store;
 
   using ::Kokkos::Experimental::operator+=;
   using ::Kokkos::Experimental::operator*=;
@@ -85,6 +75,9 @@ export {
   using ::Kokkos::Experimental::operator*;
   using ::Kokkos::Experimental::operator-;
   using ::Kokkos::Experimental::operator/;
+  using ::Kokkos::Experimental::operator&=;
+  using ::Kokkos::Experimental::operator|=;
+  using ::Kokkos::Experimental::operator^=;
   using ::Kokkos::Experimental::operator>>=;
   using ::Kokkos::Experimental::operator<<=;
 
@@ -103,19 +96,5 @@ export {
   using ::Kokkos::Experimental::simd_abi::sve_fixed_size;
 #endif
   }  // namespace simd_abi
-
-  namespace simd_abi::Impl {  // FIXME
-  using ::Kokkos::Experimental::simd_abi::Impl::native_abi;
-  using ::Kokkos::Experimental::simd_abi::Impl::native_fixed_abi;
-  }  // namespace simd_abi::Impl
-
-  namespace Impl {  // FIXME
-  using ::Kokkos::Experimental::Impl::abi_set;
-  using ::Kokkos::Experimental::Impl::data_type_set;
-  using ::Kokkos::Experimental::Impl::data_types;
-  using ::Kokkos::Experimental::Impl::device_abi_set;
-  using ::Kokkos::Experimental::Impl::host_abi_set;
-  using ::Kokkos::Experimental::Impl::Identity;
-  }  // namespace Impl
   }  // namespace Kokkos::Experimental
 }

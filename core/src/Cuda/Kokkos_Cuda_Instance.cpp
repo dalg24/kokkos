@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 /*--------------------------------------------------------------------------*/
 /* Kokkos interfaces */
@@ -24,7 +11,12 @@
 #include <Kokkos_Macros.hpp>
 #ifdef KOKKOS_ENABLE_CUDA
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+#else
 #include <Kokkos_Core.hpp>
+#endif
 
 // #include <Cuda/Kokkos_Cuda_Error.hpp>
 // #include <Cuda/Kokkos_Cuda_BlockSize_Deduction.hpp>
@@ -33,6 +25,7 @@
 #include <impl/Kokkos_Error.hpp>
 #include <impl/Kokkos_Tools.hpp>
 #include <impl/Kokkos_CheckedIntegerOps.hpp>
+#include <impl/Kokkos_CheckUsage.hpp>
 #include <impl/Kokkos_DeviceManagement.hpp>
 #include <impl/Kokkos_ExecSpaceManager.hpp>
 
@@ -538,10 +531,6 @@ int Cuda::concurrency() const {
   return Impl::CudaInternal::concurrency();
 }
 
-int Cuda::impl_is_initialized() {
-  return Impl::CudaInternal::singleton().is_initialized();
-}
-
 void Cuda::impl_initialize(InitializationSettings const &settings) {
   const std::vector<int> &visible_devices = Impl::get_visible_devices();
   const int cuda_device_id =
@@ -656,9 +645,6 @@ void Cuda::impl_finalize() {
         Kokkos::Impl::CudaInternal::constantMemReusablePerDevice[cuda_device]));
   }
 
-  auto &deep_copy_space = Impl::cuda_get_deep_copy_space(/*initialize*/ false);
-  if (deep_copy_space)
-    deep_copy_space->impl_internal_space_instance()->finalize();
   KOKKOS_IMPL_CUDA_SAFE_CALL(
       cudaStreamDestroy(Impl::cuda_get_deep_copy_stream()));
 
@@ -667,28 +653,29 @@ void Cuda::impl_finalize() {
       cudaStreamDestroy(Impl::CudaInternal::singleton().m_stream));
 }
 
+Cuda::~Cuda() { Impl::check_execution_space_destructor_precondition(name()); }
+
 Cuda::Cuda()
-    : m_space_instance(&Impl::CudaInternal::singleton(),
-                       [](Impl::CudaInternal *) {}) {
-  Impl::CudaInternal::singleton().verify_is_initialized(
-      "Cuda instance constructor");
-}
+    : m_space_instance(
+          (Impl::check_execution_space_constructor_precondition(name()),
+           Impl::HostSharedPtr(&Impl::CudaInternal::singleton(),
+                               [](Impl::CudaInternal *) {}))) {}
 
 KOKKOS_DEPRECATED Cuda::Cuda(cudaStream_t stream, bool manage_stream)
     : Cuda(stream,
            manage_stream ? Impl::ManageStream::yes : Impl::ManageStream::no) {}
 
 Cuda::Cuda(cudaStream_t stream, Impl::ManageStream manage_stream)
-    : m_space_instance(
-          new Impl::CudaInternal, [manage_stream](Impl::CudaInternal *ptr) {
-            ptr->finalize();
-            if (static_cast<bool>(manage_stream)) {
-              KOKKOS_IMPL_CUDA_SAFE_CALL(cudaStreamDestroy(ptr->m_stream));
-            }
-            delete ptr;
-          }) {
-  Impl::CudaInternal::singleton().verify_is_initialized(
-      "Cuda instance constructor");
+    : m_space_instance((
+          Impl::check_execution_space_constructor_precondition(name()),
+          Impl::HostSharedPtr(
+              new Impl::CudaInternal, [manage_stream](Impl::CudaInternal *ptr) {
+                ptr->finalize();
+                if (static_cast<bool>(manage_stream)) {
+                  KOKKOS_IMPL_CUDA_SAFE_CALL(cudaStreamDestroy(ptr->m_stream));
+                }
+                delete ptr;
+              }))) {
   m_space_instance->initialize(stream);
 }
 
@@ -750,12 +737,14 @@ int g_cuda_space_factory_initialized =
     initialize_space_factory<Cuda>("150_Cuda");
 
 int CudaInternal::m_cudaArch = -1;
-cudaDeviceProp CudaInternal::m_deviceProp;
+KOKKOS_IMPL_EXPORT cudaDeviceProp CudaInternal::m_deviceProp;
 std::set<int> CudaInternal::cuda_devices = {};
-std::map<int, unsigned long *> CudaInternal::constantMemHostStagingPerDevice =
-    {};
-std::map<int, cudaEvent_t> CudaInternal::constantMemReusablePerDevice = {};
-std::map<int, std::mutex> CudaInternal::constantMemMutexPerDevice     = {};
+KOKKOS_IMPL_EXPORT std::map<int, unsigned long *>
+    CudaInternal::constantMemHostStagingPerDevice = {};
+KOKKOS_IMPL_EXPORT std::map<int, cudaEvent_t>
+    CudaInternal::constantMemReusablePerDevice = {};
+KOKKOS_IMPL_EXPORT std::map<int, std::mutex>
+    CudaInternal::constantMemMutexPerDevice = {};
 
 }  // namespace Impl
 

@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_TEST_SIMD_CONVERSIONS_HPP
 #define KOKKOS_TEST_SIMD_CONVERSIONS_HPP
@@ -20,6 +7,7 @@
 #include <Kokkos_Macros.hpp>
 #ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
 import kokkos.simd;
+import kokkos.simd_impl;
 #else
 #include <Kokkos_SIMD.hpp>
 #endif
@@ -141,8 +129,8 @@ TEST(simd, host_conversions) {
 }
 
 TEST(simd, device_conversions) {
-  Kokkos::parallel_for(Kokkos::RangePolicy<Kokkos::IndexType<int>>(0, 1),
-                       simd_device_conversions_functor());
+  Kokkos::parallel_for(1, simd_device_conversions_functor());
+  Kokkos::fence();
 }
 
 #endif

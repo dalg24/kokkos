@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_SIMD_SVE_HPP
 #define KOKKOS_SIMD_SVE_HPP
@@ -91,7 +78,7 @@ namespace Experimental {
 
 namespace simd_abi {
 
-template <int N>
+template <Impl::simd_size_t N>
 class sve_fixed_size {};
 
 }  // namespace simd_abi
@@ -103,7 +90,7 @@ class sve_mask;
 
 template <int nbits>
 KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static vls_bool_t get_pred(
-    std::size_t lane) noexcept {
+    simd_size_t lane) noexcept {
   if constexpr (nbits == 8) {
     return svwhilele_b8(0, static_cast<std::int32_t>(lane));
   } else if constexpr (nbits == 16) {
@@ -128,47 +115,45 @@ class sve_mask<Derived, 64> {
   using value_type = bool;
   using abi_type   = simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_DOUBLES_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<simd_size_t, SVE_DOUBLES_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION sve_mask() noexcept = default;
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit sve_mask(
       value_type value) noexcept
       : m_value(svdup_b64(value)) {}
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit sve_mask(
       G&& gen) noexcept {
     // https://dougallj.github.io/asil/doc/zip1_p_pp_64.html
 #if SVE_DOUBLES_IN_VECTOR == 2
     m_value = svdupq_b64(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 0>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 1>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 0>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 1>())));
 #elif SVE_DOUBLES_IN_VECTOR == 4
     vls_bool_t b02 = svdupq_b64(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 0>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 2>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 0>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 2>())));
     vls_bool_t b13 = svdupq_b64(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 1>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 3>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 1>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 3>())));
     m_value          = svzip1_b64(b02, b13);
 #elif SVE_DOUBLES_IN_VECTOR == 8
     vls_bool_t b04 = svdupq_b64(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 0>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 4>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 0>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 4>())));
     vls_bool_t b26 = svdupq_b64(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 2>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 6>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 2>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 6>())));
     vls_bool_t b15 = svdupq_b64(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 1>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 5>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 1>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 5>())));
     vls_bool_t b37 = svdupq_b64(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 3>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 7>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 3>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 7>())));
     vls_bool_t b0246 = svzip1_b64(b04, b26);
     vls_bool_t b1357 = svzip1_b64(b15, b37);
     m_value          = svzip1_b64(b0246, b1357);
@@ -189,24 +174,41 @@ class sve_mask<Derived, 64> {
   }
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type
-  operator[](std::size_t i) const {
+  operator[](simd_size_t i) const {
     return svptest_last(Impl::get_pred<64>(i), m_value);
   }
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Derived operator!() const noexcept {
+    return operator~();
+  }
+
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Derived operator~() const noexcept {
     return Derived(
         static_cast<implementation_type>(svnot_z(svptrue_b64(), m_value)));
   }
 
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator&&(
+      sve_mask const& lhs, sve_mask const& rhs) noexcept {
+    return lhs & rhs;
+  }
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator||(
+      sve_mask const& lhs, sve_mask const& rhs) noexcept {
+    return lhs | rhs;
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator&(
+      sve_mask const& lhs, sve_mask const& rhs) noexcept {
+    return Derived(static_cast<implementation_type>(
+        svand_z(svptrue_b64(), lhs.m_value, rhs.m_value)));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator|(
       sve_mask const& lhs, sve_mask const& rhs) noexcept {
     return Derived(static_cast<implementation_type>(
         svorr_z(svptrue_b64(), lhs.m_value, rhs.m_value)));
   }
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator&&(
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator^(
       sve_mask const& lhs, sve_mask const& rhs) noexcept {
     return Derived(static_cast<implementation_type>(
-        svand_z(svptrue_b64(), lhs.m_value, rhs.m_value)));
+        sveor_z(svptrue_b64(), lhs.m_value, rhs.m_value)));
   }
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator!=(
       sve_mask const& lhs, sve_mask const& rhs) noexcept {
@@ -230,61 +232,59 @@ class sve_mask<Derived, 32> {
   using value_type = bool;
   using abi_type   = simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_WORDS_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<simd_size_t, SVE_WORDS_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION sve_mask() noexcept = default;
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit sve_mask(
       value_type value) noexcept
       : m_value(svdup_b32(value)) {}
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit sve_mask(
       G&& gen) noexcept {
     // https://dougallj.github.io/asil/doc/zip1_p_pp_32.html
 #if SVE_WORDS_IN_VECTOR == 4
     m_value = svdupq_b32(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 0>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 1>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 2>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 3>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 0>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 1>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 2>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 3>())));
 #elif SVE_WORDS_IN_VECTOR == 8
     vls_bool_t b0246 = svdupq_b32(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 0>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 2>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 4>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 6>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 0>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 2>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 4>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 6>())));
     vls_bool_t b1357 = svdupq_b32(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 1>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 3>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 5>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 7>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 1>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 3>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 5>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 7>())));
     m_value = svzip1_b32(b0246, b1357);
 #elif SVE_WORDS_IN_VECTOR == 16
     vls_bool_t b048c = svdupq_b32(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 0>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 4>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 8>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 12>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 0>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 4>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 8>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 12>())));
     vls_bool_t b26ae = svdupq_b32(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 2>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 6>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 10>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 14>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 2>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 6>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 10>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 14>())));
     vls_bool_t b159d = svdupq_b32(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 1>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 5>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 9>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 13>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 1>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 5>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 9>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 13>())));
     vls_bool_t b37bf = svdupq_b32(
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 3>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 7>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 11>())),
-        static_cast<bool>(gen(std::integral_constant<std::size_t, 15>())));
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 3>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 7>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 11>())),
+        static_cast<bool>(gen(std::integral_constant<simd_size_t, 15>())));
     vls_bool_t b02468ace = svzip1_b32(b048c, b26ae);
     vls_bool_t b13579bdf = svzip1_b32(b159d, b37bf);
     m_value              = svzip1_b32(b02468ace, b13579bdf);
@@ -305,24 +305,41 @@ class sve_mask<Derived, 32> {
   }
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type
-  operator[](std::size_t i) const {
+  operator[](simd_size_t i) const {
     return svptest_last(Impl::get_pred<32>(i), m_value);
   }
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Derived operator!() const noexcept {
+    return operator~();
+  }
+
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Derived operator~() const noexcept {
     return Derived(
         static_cast<implementation_type>(svnot_z(svptrue_b32(), m_value)));
   }
 
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator&&(
+      sve_mask const& lhs, sve_mask const& rhs) noexcept {
+    return lhs & rhs;
+  }
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator||(
+      sve_mask const& lhs, sve_mask const& rhs) noexcept {
+    return lhs | rhs;
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator&(
+      sve_mask const& lhs, sve_mask const& rhs) noexcept {
+    return Derived(static_cast<implementation_type>(
+        svand_z(svptrue_b32(), lhs.m_value, rhs.m_value)));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator|(
       sve_mask const& lhs, sve_mask const& rhs) noexcept {
     return Derived(static_cast<implementation_type>(
         svorr_z(svptrue_b32(), lhs.m_value, rhs.m_value)));
   }
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator&&(
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator^(
       sve_mask const& lhs, sve_mask const& rhs) noexcept {
     return Derived(static_cast<implementation_type>(
-        svand_z(svptrue_b32(), lhs.m_value, rhs.m_value)));
+        sveor_z(svptrue_b32(), lhs.m_value, rhs.m_value)));
   }
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend Derived operator!=(
       sve_mask const& lhs, sve_mask const& rhs) noexcept {
@@ -337,38 +354,39 @@ class sve_mask<Derived, 32> {
 
 }  // namespace Impl
 
-#define INSTANTIATE_SIMD_MASK_SVE(T, SVE_T_IN_VECTOR)                         \
-  template <>                                                                 \
-  class basic_simd_mask<T, simd_abi::sve_fixed_size<SVE_T_IN_VECTOR>>         \
-      : public Impl::sve_mask<                                                \
-            basic_simd_mask<T, simd_abi::sve_fixed_size<SVE_T_IN_VECTOR>>,    \
-            sizeof(T) * 8> {                                                  \
-    using base_type = Impl::sve_mask<                                         \
-        basic_simd_mask<T, simd_abi::sve_fixed_size<SVE_T_IN_VECTOR>>,        \
-        sizeof(T) * 8>;                                                       \
-                                                                              \
-   public:                                                                    \
-    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd_mask() noexcept =        \
-        default;                                                              \
-    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd_mask(           \
-        bool value) noexcept                                                  \
-        : base_type(value) {}                                                 \
-    template <class U>                                                        \
-    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd_mask(                    \
-        basic_simd_mask<U, simd_abi::sve_fixed_size<SVE_T_IN_VECTOR>> const&  \
-            other) noexcept                                                   \
-        : base_type(static_cast<base_type::implementation_type>(other)) {}    \
-    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd_mask( \
-        vls_bool_t const& value_in) noexcept                                  \
-        : base_type(value_in) {}                                              \
-    template <class G,                                                        \
-              std::enable_if_t<std::is_invocable_r_v<                         \
-                                   typename base_type::value_type, G,         \
-                                   std::integral_constant<std::size_t, 0>>,   \
-                               bool> = false>                                 \
-    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd_mask( \
-        G&& gen) noexcept                                                     \
-        : base_type(gen) {}                                                   \
+#define INSTANTIATE_SIMD_MASK_SVE(T, SVE_T_IN_VECTOR)                          \
+  template <>                                                                  \
+  class basic_simd_mask<T, simd_abi::sve_fixed_size<SVE_T_IN_VECTOR>>          \
+      : public Impl::sve_mask<                                                 \
+            basic_simd_mask<T, simd_abi::sve_fixed_size<SVE_T_IN_VECTOR>>,     \
+            sizeof(T) * 8> {                                                   \
+    using base_type = Impl::sve_mask<                                          \
+        basic_simd_mask<T, simd_abi::sve_fixed_size<SVE_T_IN_VECTOR>>,         \
+        sizeof(T) * 8>;                                                        \
+                                                                               \
+   public:                                                                     \
+    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd_mask() noexcept =         \
+        default;                                                               \
+    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd_mask(            \
+        bool value) noexcept                                                   \
+        : base_type(value) {}                                                  \
+    template <class U>                                                         \
+    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd_mask(                     \
+        basic_simd_mask<U, simd_abi::sve_fixed_size<SVE_T_IN_VECTOR>> const&   \
+            other) noexcept                                                    \
+        : base_type(static_cast<base_type::implementation_type>(other)) {}     \
+    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd_mask(  \
+        vls_bool_t const& value_in) noexcept                                   \
+        : base_type(value_in) {}                                               \
+    template <class G>                                                         \
+      requires Impl::InvocableWithReturnType<                                  \
+          G, value_type,                                                       \
+          std::integral_constant<                                              \
+              Impl::simd_size_t,                                               \
+              0>> /* NOLINTNEXTLINE(bugprone-forwarding-reference-overload) */ \
+    KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd_mask(  \
+        G&& gen) noexcept                                                      \
+        : base_type(gen) {}                                                    \
   }
 
 INSTANTIATE_SIMD_MASK_SVE(std::int32_t, SVE_WORDS_IN_VECTOR);
@@ -392,61 +410,59 @@ class basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> {
   using abi_type   = simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>;
   using mask_type  = basic_simd_mask<value_type, abi_type>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_DOUBLES_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<Impl::simd_size_t,
+                                          SVE_DOUBLES_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd() noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd const&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd&&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd const&) noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd&&) noexcept = default;
 
-  template <class U, std::enable_if_t<std::is_convertible_v<U, value_type>,
-                                      bool> = false>
+  template <class U>
+    requires std::convertible_to<U, value_type>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(U&& value) noexcept
       : m_value(svdup_f64(value_type(value))) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       vls_float64_t const& value_in) noexcept
       : m_value(value_in) {}
   template <typename U>
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit
-#ifdef KOKKOS_ENABLE_CXX20
-      (Impl::needs_explicit_conversion_v<U, value_type>)
-#endif
-          basic_simd(basic_simd<U, abi_type> const& other) noexcept
-      : m_value(basic_simd(
-            [&](std::size_t i) { return static_cast<value_type>(other[i]); })) {
-  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit(
+      Impl::needs_explicit_conversion_v<U, value_type>)
+      basic_simd(basic_simd<U, abi_type> const& other) noexcept
+      : m_value(basic_simd([&](Impl::simd_size_t i) {
+          return static_cast<value_type>(other[i]);
+        })) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::int64_t, abi_type> const& other) noexcept;
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::uint64_t, abi_type> const& other) noexcept;
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<Impl::simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       G&& gen) noexcept {
     // TODO: use set-lane instead of load
     value_type temp[] = {
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 0>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 1>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 0>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 1>()))
 #if SVE_DOUBLES_IN_VECTOR > 2
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 2>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 3>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 2>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 3>()))
 #if SVE_DOUBLES_IN_VECTOR > 4
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 4>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 5>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 6>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 7>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 4>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 5>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 6>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 7>()))
 #endif
 #endif
     };
@@ -454,102 +470,119 @@ class basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> {
     m_value = svld1(svptrue_b64(), temp);
   }
 
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      value_type const* ptr, FlagType) noexcept {
+    m_value = svld1(svptrue_b64(), ptr);
+  }
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      const value_type* ptr, mask_type const& mask, FlagType) noexcept {
+    m_value = svld1(static_cast<vls_bool_t>(mask), ptr);
+  }
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type
-  operator[](std::size_t i) const {
+  operator[](Impl::simd_size_t i) const {
     return svlastb(Impl::get_pred<64>(i), m_value);
   }
 
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        element_aligned_tag) {
     m_value = svld1(svptrue_b64(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        vector_aligned_tag) {
     m_value = svld1(svptrue_b64(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(
       value_type* ptr, element_aligned_tag) const {
     svst1(svptrue_b64(), ptr, m_value);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(value_type* ptr,
                                                      vector_aligned_tag) const {
     svst1(svptrue_b64(), ptr, m_value);
   }
+#endif
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit
   operator vls_float64_t() const noexcept {
     return m_value;
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd
-  operator-() const noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator-() const noexcept {
     return basic_simd(static_cast<implementation_type>(
         svneg_m(m_value, svptrue_b64(), m_value)));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator*(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator*(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svmul_m(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator/(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator/(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svdiv_m(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator+(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator+(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svadd_m(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator-(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator-(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svsub_m(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmplt(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpgt(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmple(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpge(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator==(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator==(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpeq(svptrue_b64(), static_cast<vls_float64_t>(lhs),
                 static_cast<vls_float64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator!=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator!=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return !(operator==(lhs, rhs));
   }
 };
 
 }  // namespace Experimental
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 abs(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                          SVE_DOUBLES_IN_VECTOR>> const& a) {
@@ -559,7 +592,7 @@ abs(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float64_t>(svabs_m(aa, svptrue_b64(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 floor(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                            SVE_DOUBLES_IN_VECTOR>> const& a) {
@@ -569,7 +602,7 @@ floor(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float64_t>(svrintm_m(aa, svptrue_b64(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 ceil(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                           SVE_DOUBLES_IN_VECTOR>> const& a) {
@@ -579,7 +612,7 @@ ceil(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float64_t>(svrintp_m(aa, svptrue_b64(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 round(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                            SVE_DOUBLES_IN_VECTOR>> const& a) {
@@ -589,7 +622,7 @@ round(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float64_t>(svrintx_m(aa, svptrue_b64(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 trunc(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                            SVE_DOUBLES_IN_VECTOR>> const& a) {
@@ -599,7 +632,7 @@ trunc(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float64_t>(svrintz_m(aa, svptrue_b64(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 copysign(
     Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
@@ -618,7 +651,7 @@ copysign(
                       (to_sve_vla<double>)static_cast<vls_float64_t>(b)))))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 sqrt(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                           SVE_DOUBLES_IN_VECTOR>> const& a) {
@@ -628,7 +661,7 @@ sqrt(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float64_t>(svsqrt_m(aa, svptrue_b64(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 fma(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                          SVE_DOUBLES_IN_VECTOR>> const& a,
@@ -643,7 +676,7 @@ fma(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
           static_cast<vls_float64_t>(b), static_cast<vls_float64_t>(c))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 max(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                          SVE_DOUBLES_IN_VECTOR>> const& a,
@@ -656,7 +689,7 @@ max(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                          static_cast<vls_float64_t>(b))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     double, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 min(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
                                          SVE_DOUBLES_IN_VECTOR>> const& a,
@@ -671,7 +704,104 @@ min(Experimental::basic_simd<double, Experimental::simd_abi::sve_fixed_size<
 
 namespace Experimental {
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(const double* ptr,
+                        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      ptr, flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(
+        const double* ptr,
+        basic_simd_mask<double,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      ptr, mask, flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(
+        const double* ptr,
+        basic_simd_mask<double,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      ptr, mask, flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_partial_load(
+        const double* ptr,
+        basic_simd_mask<double,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      ptr, mask, flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_partial_load(
+        const double* ptr,
+        basic_simd_mask<double,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      ptr, mask, flag);
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        simd,
+    double* ptr, [[maybe_unused]] FlagType flag = simd_flag_default) {
+  svst1(svptrue_b64(), ptr, static_cast<vls_float64_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        simd,
+    double* ptr,
+    basic_simd_mask<
+        double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_float64_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_partial_store(
+    basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        simd,
+    double* ptr,
+    basic_simd_mask<
+        double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_float64_t>(simd));
+}
+
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
     double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 condition(
     basic_simd_mask<double,
@@ -698,68 +828,74 @@ class basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> {
   using abi_type   = simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>;
   using mask_type  = basic_simd_mask<value_type, abi_type>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_WORDS_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<Impl::simd_size_t,
+                                          SVE_WORDS_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd() noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd const&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd&&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd const&) noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd&&) noexcept = default;
-  template <class U, std::enable_if_t<std::is_convertible_v<U, value_type>,
-                                      bool> = false>
+  template <class U>
+    requires std::convertible_to<U, value_type>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(U&& value) noexcept
       : m_value(svdup_f32(value_type(value))) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       vls_float32_t const& value_in) noexcept
       : m_value(value_in) {}
   template <typename U>
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit
-#ifdef KOKKOS_ENABLE_CXX20
-      (Impl::needs_explicit_conversion_v<U, value_type>)
-#endif
-          basic_simd(basic_simd<U, abi_type> const& other) noexcept
-      : m_value(basic_simd(
-            [&](std::size_t i) { return static_cast<value_type>(other[i]); })) {
-  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit(
+      Impl::needs_explicit_conversion_v<U, value_type>)
+      basic_simd(basic_simd<U, abi_type> const& other) noexcept
+      : m_value(basic_simd([&](Impl::simd_size_t i) {
+          return static_cast<value_type>(other[i]);
+        })) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::int32_t, abi_type> const& other) noexcept;
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::uint32_t, abi_type> const& other) noexcept;
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<Impl::simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       G&& gen) noexcept {
     // TODO: use set-lane instead of load
     value_type temp[] = {
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 0>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 1>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 2>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 3>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 0>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 1>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 2>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 3>()))
 #if SVE_WORDS_IN_VECTOR > 4
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 4>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 5>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 6>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 7>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 4>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 5>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 6>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 7>()))
 #if SVE_WORDS_IN_VECTOR > 8
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 8>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 9>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 10>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 11>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 12>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 13>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 14>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 15>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 8>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 9>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 10>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 11>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 12>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 13>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 14>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 15>()))
 #endif
 #endif
     };
@@ -767,102 +903,119 @@ class basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> {
     m_value = svld1(svptrue_b32(), temp);
   }
 
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      value_type const* ptr, FlagType) noexcept {
+    m_value = svld1(svptrue_b32(), ptr);
+  }
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      const value_type* ptr, mask_type const& mask, FlagType) noexcept {
+    m_value = svld1(static_cast<vls_bool_t>(mask), ptr);
+  }
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type
-  operator[](std::size_t i) const {
+  operator[](Impl::simd_size_t i) const {
     return svlastb(Impl::get_pred<32>(i), m_value);
   }
 
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        element_aligned_tag) {
     m_value = svld1(svptrue_b32(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        vector_aligned_tag) {
     m_value = svld1(svptrue_b32(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(
       value_type* ptr, element_aligned_tag) const {
     svst1(svptrue_b32(), ptr, m_value);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(value_type* ptr,
                                                      vector_aligned_tag) const {
     svst1(svptrue_b32(), ptr, m_value);
   }
+#endif
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit
   operator vls_float32_t() const noexcept {
     return m_value;
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd
-  operator-() const noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator-() const noexcept {
     return basic_simd(static_cast<implementation_type>(
         svneg_m(m_value, svptrue_b32(), m_value)));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator*(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator*(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svmul_m(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator/(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator/(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svdiv_m(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator+(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator+(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svadd_m(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator-(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator-(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svsub_m(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmplt(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpgt(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmple(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpge(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator==(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator==(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpeq(svptrue_b32(), static_cast<vls_float32_t>(lhs),
                 static_cast<vls_float32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator!=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator!=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return !(operator==(lhs, rhs));
   }
 };
 
 }  // namespace Experimental
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 abs(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                         SVE_WORDS_IN_VECTOR>> const& a) {
@@ -872,7 +1025,7 @@ abs(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float32_t>(svabs_m(aa, svptrue_b32(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 floor(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                           SVE_WORDS_IN_VECTOR>> const& a) {
@@ -882,7 +1035,7 @@ floor(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float32_t>(svrintm_m(aa, svptrue_b32(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 ceil(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                          SVE_WORDS_IN_VECTOR>> const& a) {
@@ -892,7 +1045,7 @@ ceil(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float32_t>(svrintp_m(aa, svptrue_b32(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 round(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                           SVE_WORDS_IN_VECTOR>> const& a) {
@@ -902,7 +1055,7 @@ round(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float32_t>(svrintx_m(aa, svptrue_b32(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 trunc(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                           SVE_WORDS_IN_VECTOR>> const& a) {
@@ -912,7 +1065,7 @@ trunc(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float32_t>(svrintz_m(aa, svptrue_b32(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 copysign(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                              SVE_WORDS_IN_VECTOR>> const& a,
@@ -930,7 +1083,7 @@ copysign(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                       (to_sve_vla<float>)static_cast<vls_float32_t>(b)))))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 sqrt(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                          SVE_WORDS_IN_VECTOR>> const& a) {
@@ -940,7 +1093,7 @@ sqrt(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
       static_cast<vls_float32_t>(svsqrt_m(aa, svptrue_b32(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 fma(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                         SVE_WORDS_IN_VECTOR>> const& a,
@@ -955,7 +1108,7 @@ fma(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
           static_cast<vls_float32_t>(b), static_cast<vls_float32_t>(c))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 max(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                         SVE_WORDS_IN_VECTOR>> const& a,
@@ -968,7 +1121,7 @@ max(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                          static_cast<vls_float32_t>(b))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     float, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 min(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
                                         SVE_WORDS_IN_VECTOR>> const& a,
@@ -983,7 +1136,100 @@ min(Experimental::basic_simd<float, Experimental::simd_abi::sve_fixed_size<
 
 namespace Experimental {
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+    simd_unchecked_load(const float* ptr,
+                        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr,
+                                                                          flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_unchecked_load(
+    const float* ptr,
+    basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(
+      ptr, mask, flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_unchecked_load(
+    const float* ptr,
+    basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(
+      ptr, mask, flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_partial_load(
+    const float* ptr,
+    basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(
+      ptr, mask, flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_partial_load(
+    const float* ptr,
+    basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(
+      ptr, mask, flag);
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        simd,
+    float* ptr, [[maybe_unused]] FlagType flag = simd_flag_default) {
+  svst1(svptrue_b32(), ptr, static_cast<vls_float32_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        simd,
+    float* ptr,
+    basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_float32_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_partial_store(
+    basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        simd,
+    float* ptr,
+    basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
+        mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_float32_t>(simd));
+}
+
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
     float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 condition(
     basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const&
@@ -1008,68 +1254,74 @@ class basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> {
   using abi_type   = simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>;
   using mask_type  = basic_simd_mask<value_type, abi_type>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_WORDS_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<Impl::simd_size_t,
+                                          SVE_WORDS_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd() noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd const&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd&&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd const&) noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd&&) noexcept = default;
-  template <class U, std::enable_if_t<std::is_convertible_v<U, value_type>,
-                                      bool> = false>
+  template <class U>
+    requires std::convertible_to<U, value_type>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(U&& value) noexcept
       : m_value(svdup_s32(value_type(value))) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       vls_int32_t const& value_in) noexcept
       : m_value(value_in) {}
   template <typename U>
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit
-#ifdef KOKKOS_ENABLE_CXX20
-      (Impl::needs_explicit_conversion_v<U, value_type>)
-#endif
-          basic_simd(basic_simd<U, abi_type> const& other) noexcept
-      : m_value(basic_simd(
-            [&](std::size_t i) { return static_cast<value_type>(other[i]); })) {
-  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit(
+      Impl::needs_explicit_conversion_v<U, value_type>)
+      basic_simd(basic_simd<U, abi_type> const& other) noexcept
+      : m_value(basic_simd([&](Impl::simd_size_t i) {
+          return static_cast<value_type>(other[i]);
+        })) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<float, abi_type> const& other) noexcept;
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::uint32_t, abi_type> const& other) noexcept;
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<Impl::simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       G&& gen) noexcept {
     // TODO: use set-lane instead of load
     value_type temp[] = {
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 0>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 1>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 2>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 3>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 0>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 1>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 2>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 3>()))
 #if SVE_WORDS_IN_VECTOR > 4
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 4>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 5>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 6>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 7>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 4>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 5>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 6>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 7>()))
 #if SVE_WORDS_IN_VECTOR > 8
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 8>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 9>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 10>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 11>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 12>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 13>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 14>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 15>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 8>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 9>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 10>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 11>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 12>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 13>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 14>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 15>()))
 #endif
 #endif
     };
@@ -1077,119 +1329,159 @@ class basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> {
     m_value = svld1(svptrue_b32(), temp);
   }
 
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      value_type const* ptr, FlagType) noexcept {
+    m_value = svld1(svptrue_b32(), ptr);
+  }
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      const value_type* ptr, mask_type const& mask, FlagType) noexcept {
+    m_value = svld1(static_cast<vls_bool_t>(mask), ptr);
+  }
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type
-  operator[](std::size_t i) const {
+  operator[](Impl::simd_size_t i) const {
     return svlastb(Impl::get_pred<32>(i), m_value);
   }
 
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        element_aligned_tag) {
     m_value = svld1(svptrue_b32(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        vector_aligned_tag) {
     m_value = svld1(svptrue_b32(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(
       value_type* ptr, element_aligned_tag) const {
     svst1(svptrue_b32(), ptr, m_value);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(value_type* ptr,
                                                      vector_aligned_tag) const {
     svst1(svptrue_b32(), ptr, m_value);
   }
+#endif
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit
   operator vls_int32_t() const noexcept {
     return m_value;
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd
-  operator-() const noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator-() const noexcept {
     return basic_simd(static_cast<implementation_type>(
         svneg_m(m_value, svptrue_b32(), m_value)));
   }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator~() const noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svnot_m(m_value, svptrue_b32(), m_value)));
+  }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator*(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator*(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svmul_m(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator/(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator/(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svdiv_m(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator+(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator+(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svadd_m(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator-(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator-(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svsub_m(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator&(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svand_m(svptrue_b32(), static_cast<vls_int32_t>(lhs),
+                static_cast<vls_int32_t>(rhs))));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator|(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svorr_m(svptrue_b32(), static_cast<vls_int32_t>(lhs),
+                static_cast<vls_int32_t>(rhs))));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator^(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        sveor_m(svptrue_b32(), static_cast<vls_int32_t>(lhs),
+                static_cast<vls_int32_t>(rhs))));
+  }
+
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmplt(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpgt(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmple(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpge(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator==(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator==(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpeq(svptrue_b32(), static_cast<vls_int32_t>(lhs),
                 static_cast<vls_int32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator!=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator!=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return !(operator==(lhs, rhs));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator>>(basic_simd const& lhs, int rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator>>(
+      basic_simd const& lhs, Impl::simd_size_t rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svasr_m(svptrue_b32(), static_cast<implementation_type>(lhs),
                 std::uint32_t(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator>>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator>>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(svasr_m(
         svptrue_b32(), static_cast<implementation_type>(lhs),
         svreinterpret_u32(
             (to_sve_vla<value_type>)static_cast<implementation_type>(rhs)))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator<<(basic_simd const& lhs, int rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator<<(
+      basic_simd const& lhs, Impl::simd_size_t rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svlsl_m(svptrue_b32(), static_cast<implementation_type>(lhs),
                 std::uint32_t(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator<<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator<<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(svlsl_m(
         svptrue_b32(), static_cast<implementation_type>(lhs),
         svreinterpret_u32(
@@ -1199,7 +1491,7 @@ class basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> {
 
 }  // namespace Experimental
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 abs(Experimental::basic_simd<
     std::int32_t,
@@ -1211,7 +1503,7 @@ abs(Experimental::basic_simd<
       static_cast<vls_int32_t>(svabs_m(aa, svptrue_b32(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 floor(Experimental::basic_simd<
       std::int32_t,
@@ -1222,7 +1514,7 @@ floor(Experimental::basic_simd<
       static_cast<vls_int32_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 ceil(Experimental::basic_simd<
      std::int32_t,
@@ -1233,7 +1525,7 @@ ceil(Experimental::basic_simd<
       static_cast<vls_int32_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 round(Experimental::basic_simd<
       std::int32_t,
@@ -1244,7 +1536,7 @@ round(Experimental::basic_simd<
       static_cast<vls_int32_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 trunc(Experimental::basic_simd<
       std::int32_t,
@@ -1255,7 +1547,7 @@ trunc(Experimental::basic_simd<
       static_cast<vls_int32_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 copysign(
     Experimental::basic_simd<
@@ -1274,7 +1566,7 @@ copysign(
           svmul_m(svptrue_b32(), static_cast<vls_int32_t>(abs(a)), sign_b)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 fma(Experimental::basic_simd<
         std::int32_t,
@@ -1293,7 +1585,7 @@ fma(Experimental::basic_simd<
                   static_cast<vls_int32_t>(b), static_cast<vls_int32_t>(c))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 max(Experimental::basic_simd<
         std::int32_t,
@@ -1309,7 +1601,7 @@ max(Experimental::basic_simd<
                                        static_cast<vls_int32_t>(b))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 min(Experimental::basic_simd<
         std::int32_t,
@@ -1327,15 +1619,112 @@ min(Experimental::basic_simd<
 
 namespace Experimental {
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
     basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
-    condition(
-        basic_simd_mask<std::int32_t,
-                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& a,
-        basic_simd<std::int32_t,
-                   simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& b,
-        basic_simd<std::int32_t,
-                   simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& c) {
+    simd_unchecked_load(const std::int32_t* ptr,
+                        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_unchecked_load(
+    const std::int32_t* ptr,
+    basic_simd_mask<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, mask,
+                                                                   flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_unchecked_load(
+    const std::int32_t* ptr,
+    basic_simd_mask<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, mask,
+                                                                   flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_partial_load(
+    const std::int32_t* ptr,
+    basic_simd_mask<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, mask,
+                                                                   flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_partial_load(
+    const std::int32_t* ptr,
+    basic_simd_mask<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, mask,
+                                                                   flag);
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& simd,
+    std::int32_t* ptr, [[maybe_unused]] FlagType flag = simd_flag_default) {
+  svst1(svptrue_b32(), ptr, static_cast<vls_int32_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& simd,
+    std::int32_t* ptr,
+    basic_simd_mask<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_int32_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_partial_store(
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& simd,
+    std::int32_t* ptr,
+    basic_simd_mask<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_int32_t>(simd));
+}
+
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+condition(
+    basic_simd_mask<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& a,
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& b,
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& c) {
   return basic_simd<std::int32_t,
                     simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(
       static_cast<vls_int32_t>(svsel(static_cast<vls_bool_t>(a),
@@ -1355,68 +1744,74 @@ class basic_simd<std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> {
   using abi_type   = simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>;
   using mask_type  = basic_simd_mask<value_type, abi_type>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_WORDS_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<Impl::simd_size_t,
+                                          SVE_WORDS_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd() noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd const&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd&&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd const&) noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd&&) noexcept = default;
-  template <class U, std::enable_if_t<std::is_convertible_v<U, value_type>,
-                                      bool> = false>
+  template <class U>
+    requires std::convertible_to<U, value_type>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(U&& value) noexcept
       : m_value(svdup_u32(value_type(value))) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       vls_uint32_t const& value_in) noexcept
       : m_value(value_in) {}
   template <typename U>
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit
-#ifdef KOKKOS_ENABLE_CXX20
-      (Impl::needs_explicit_conversion_v<U, value_type>)
-#endif
-          basic_simd(basic_simd<U, abi_type> const& other) noexcept
-      : m_value(basic_simd(
-            [&](std::size_t i) { return static_cast<value_type>(other[i]); })) {
-  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit(
+      Impl::needs_explicit_conversion_v<U, value_type>)
+      basic_simd(basic_simd<U, abi_type> const& other) noexcept
+      : m_value(basic_simd([&](Impl::simd_size_t i) {
+          return static_cast<value_type>(other[i]);
+        })) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<float, abi_type> const& other) noexcept;
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::int32_t, abi_type> const& other) noexcept;
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<Impl::simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       G&& gen) noexcept {
     // TODO: use set-lane instead of load
     value_type temp[] = {
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 0>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 1>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 2>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 3>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 0>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 1>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 2>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 3>()))
 #if SVE_WORDS_IN_VECTOR > 4
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 4>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 5>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 6>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 7>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 4>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 5>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 6>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 7>()))
 #if SVE_WORDS_IN_VECTOR > 8
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 8>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 9>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 10>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 11>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 12>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 13>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 14>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 15>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 8>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 9>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 10>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 11>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 12>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 13>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 14>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 15>()))
 #endif
 #endif
     };
@@ -1424,118 +1819,158 @@ class basic_simd<std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> {
     m_value = svld1(svptrue_b32(), temp);
   }
 
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      value_type const* ptr, FlagType) noexcept {
+    m_value = svld1(svptrue_b32(), ptr);
+  }
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      const value_type* ptr, mask_type const& mask, FlagType) noexcept {
+    m_value = svld1(static_cast<vls_bool_t>(mask), ptr);
+  }
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type
-  operator[](std::size_t i) const {
+  operator[](Impl::simd_size_t i) const {
     return svlastb(Impl::get_pred<32>(i), m_value);
   }
 
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        element_aligned_tag) {
     m_value = svld1(svptrue_b32(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        vector_aligned_tag) {
     m_value = svld1(svptrue_b32(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(
       value_type* ptr, element_aligned_tag) const {
     svst1(svptrue_b32(), ptr, m_value);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(value_type* ptr,
                                                      vector_aligned_tag) const {
     svst1(svptrue_b32(), ptr, m_value);
   }
+#endif
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit
   operator vls_uint32_t() const noexcept {
     return m_value;
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd
-  operator-() const noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator-() const noexcept {
     return basic_simd(static_cast<implementation_type>(svundef_u32()));
   }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator~() const noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svnot_m(m_value, svptrue_b32(), m_value)));
+  }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator*(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator*(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svmul_m(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator/(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator/(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svdiv_m(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator+(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator+(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svadd_m(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator-(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator-(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svsub_m(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator&(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svand_m(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
+                static_cast<vls_uint32_t>(rhs))));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator|(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svorr_m(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
+                static_cast<vls_uint32_t>(rhs))));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator^(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        sveor_m(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
+                static_cast<vls_uint32_t>(rhs))));
+  }
+
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmplt(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpgt(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmple(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpge(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator==(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator==(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpeq(svptrue_b32(), static_cast<vls_uint32_t>(lhs),
                 static_cast<vls_uint32_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator!=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator!=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return !(operator==(lhs, rhs));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator>>(basic_simd const& lhs, int rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator>>(
+      basic_simd const& lhs, Impl::simd_size_t rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svlsr_m(svptrue_b32(), static_cast<implementation_type>(lhs),
                 std::uint32_t(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator>>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator>>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(svlsr_m(
         svptrue_b32(), static_cast<implementation_type>(lhs),
         svreinterpret_u32(
             (to_sve_vla<value_type>)static_cast<implementation_type>(rhs)))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator<<(basic_simd const& lhs, int rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator<<(
+      basic_simd const& lhs, Impl::simd_size_t rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svlsl_m(svptrue_b32(), static_cast<implementation_type>(lhs),
                 std::uint32_t(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator<<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator<<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(svlsl_m(
         svptrue_b32(), static_cast<implementation_type>(lhs),
         svreinterpret_u32(
@@ -1545,7 +1980,7 @@ class basic_simd<std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> {
 
 }  // namespace Experimental
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 abs(Experimental::basic_simd<
     std::uint32_t,
@@ -1553,7 +1988,7 @@ abs(Experimental::basic_simd<
   return a;
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 floor(Experimental::basic_simd<
       std::uint32_t,
@@ -1564,7 +1999,7 @@ floor(Experimental::basic_simd<
       static_cast<vls_uint32_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 ceil(Experimental::basic_simd<
      std::uint32_t,
@@ -1575,7 +2010,7 @@ ceil(Experimental::basic_simd<
       static_cast<vls_uint32_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 round(Experimental::basic_simd<
       std::uint32_t,
@@ -1586,7 +2021,7 @@ round(Experimental::basic_simd<
       static_cast<vls_uint32_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 trunc(Experimental::basic_simd<
       std::uint32_t,
@@ -1597,7 +2032,7 @@ trunc(Experimental::basic_simd<
       static_cast<vls_uint32_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 copysign(
     Experimental::basic_simd<
@@ -1610,7 +2045,7 @@ copysign(
   return a;
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 fma(Experimental::basic_simd<
         std::uint32_t,
@@ -1629,7 +2064,7 @@ fma(Experimental::basic_simd<
                   static_cast<vls_uint32_t>(b), static_cast<vls_uint32_t>(c))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 max(Experimental::basic_simd<
         std::uint32_t,
@@ -1645,7 +2080,7 @@ max(Experimental::basic_simd<
                                         static_cast<vls_uint32_t>(b))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint32_t, Experimental::simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
 min(Experimental::basic_simd<
         std::uint32_t,
@@ -1663,15 +2098,112 @@ min(Experimental::basic_simd<
 
 namespace Experimental {
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
     basic_simd<std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
-    condition(
-        basic_simd_mask<std::uint32_t,
-                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& a,
-        basic_simd<std::uint32_t,
-                   simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& b,
-        basic_simd<std::uint32_t,
-                   simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& c) {
+    simd_unchecked_load(const std::uint32_t* ptr,
+                        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_unchecked_load(
+    const std::uint32_t* ptr,
+    basic_simd_mask<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, mask,
+                                                                   flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_unchecked_load(
+    const std::uint32_t* ptr,
+    basic_simd_mask<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, mask,
+                                                                   flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_partial_load(
+    const std::uint32_t* ptr,
+    basic_simd_mask<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, mask,
+                                                                   flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+simd_partial_load(
+    const std::uint32_t* ptr,
+    basic_simd_mask<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(ptr, mask,
+                                                                   flag);
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::uint32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& simd,
+    std::uint32_t* ptr, [[maybe_unused]] FlagType flag = simd_flag_default) {
+  svst1(svptrue_b32(), ptr, static_cast<vls_uint32_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::uint32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& simd,
+    std::uint32_t* ptr,
+    basic_simd_mask<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_uint32_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_partial_store(
+    basic_simd<std::uint32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& simd,
+    std::uint32_t* ptr,
+    basic_simd_mask<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_uint32_t>(simd));
+}
+
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+basic_simd<std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>
+condition(
+    basic_simd_mask<std::uint32_t,
+                    simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& a,
+    basic_simd<std::uint32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& b,
+    basic_simd<std::uint32_t,
+               simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>> const& c) {
   return basic_simd<std::uint32_t,
                     simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>(
       static_cast<vls_uint32_t>(svsel(static_cast<vls_bool_t>(a),
@@ -1692,60 +2224,58 @@ class basic_simd<std::int64_t,
   using abi_type   = simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>;
   using mask_type  = basic_simd_mask<value_type, abi_type>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_DOUBLES_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<Impl::simd_size_t,
+                                          SVE_DOUBLES_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd() noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd const&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd&&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd const&) noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd&&) noexcept = default;
-  template <class U, std::enable_if_t<std::is_convertible_v<U, value_type>,
-                                      bool> = false>
+  template <class U>
+    requires std::convertible_to<U, value_type>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(U&& value) noexcept
       : m_value(svdup_s64(value_type(value))) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       vls_int64_t const& value_in) noexcept
       : m_value(value_in) {}
   template <typename U>
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit
-#ifdef KOKKOS_ENABLE_CXX20
-      (Impl::needs_explicit_conversion_v<U, value_type>)
-#endif
-          basic_simd(basic_simd<U, abi_type> const& other) noexcept
-      : m_value(basic_simd(
-            [&](std::size_t i) { return static_cast<value_type>(other[i]); })) {
-  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit(
+      Impl::needs_explicit_conversion_v<U, value_type>)
+      basic_simd(basic_simd<U, abi_type> const& other) noexcept
+      : m_value(basic_simd([&](Impl::simd_size_t i) {
+          return static_cast<value_type>(other[i]);
+        })) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<double, abi_type> const& other) noexcept;
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::uint64_t, abi_type> const& other) noexcept;
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<Impl::simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       G&& gen) noexcept {
     // TODO: use set-lane instead of load
     value_type temp[] = {
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 0>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 1>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 0>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 1>()))
 #if SVE_DOUBLES_IN_VECTOR > 2
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 2>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 3>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 2>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 3>()))
 #if SVE_DOUBLES_IN_VECTOR > 4
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 4>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 5>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 6>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 7>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 4>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 5>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 6>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 7>()))
 #endif
 #endif
     };
@@ -1753,119 +2283,159 @@ class basic_simd<std::int64_t,
     m_value = svld1(svptrue_b64(), temp);
   }
 
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      value_type const* ptr, FlagType) noexcept {
+    m_value = svld1(svptrue_b64(), ptr);
+  }
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      const value_type* ptr, mask_type const& mask, FlagType) noexcept {
+    m_value = svld1(static_cast<vls_bool_t>(mask), ptr);
+  }
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type
-  operator[](std::size_t i) const {
+  operator[](Impl::simd_size_t i) const {
     return svlastb(Impl::get_pred<64>(i), m_value);
   }
 
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        element_aligned_tag) {
     m_value = svld1(svptrue_b64(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        vector_aligned_tag) {
     m_value = svld1(svptrue_b64(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(
       value_type* ptr, element_aligned_tag) const {
     svst1(svptrue_b64(), ptr, m_value);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(value_type* ptr,
                                                      vector_aligned_tag) const {
     svst1(svptrue_b64(), ptr, m_value);
   }
+#endif
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit
   operator vls_int64_t() const noexcept {
     return m_value;
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd
-  operator-() const noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator-() const noexcept {
     return basic_simd(static_cast<implementation_type>(
         svneg_m(m_value, svptrue_b64(), m_value)));
   }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator~() const noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svnot_m(m_value, svptrue_b64(), m_value)));
+  }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator*(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator*(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svmul_m(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator/(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator/(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svdiv_m(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator+(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator+(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svadd_m(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator-(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator-(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svsub_m(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator&(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svand_m(svptrue_b64(), static_cast<vls_int64_t>(lhs),
+                static_cast<vls_int64_t>(rhs))));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator|(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svorr_m(svptrue_b64(), static_cast<vls_int64_t>(lhs),
+                static_cast<vls_int64_t>(rhs))));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator^(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        sveor_m(svptrue_b64(), static_cast<vls_int64_t>(lhs),
+                static_cast<vls_int64_t>(rhs))));
+  }
+
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmplt(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpgt(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmple(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpge(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator==(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator==(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpeq(svptrue_b64(), static_cast<vls_int64_t>(lhs),
                 static_cast<vls_int64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator!=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator!=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return !(operator==(lhs, rhs));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator>>(basic_simd const& lhs, int rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator>>(
+      basic_simd const& lhs, Impl::simd_size_t rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svasr_m(svptrue_b64(), static_cast<implementation_type>(lhs),
                 std::uint64_t(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator>>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator>>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(svasr_m(
         svptrue_b64(), static_cast<implementation_type>(lhs),
         svreinterpret_u64(
             (to_sve_vla<value_type>)static_cast<implementation_type>(rhs)))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator<<(basic_simd const& lhs, int rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator<<(
+      basic_simd const& lhs, Impl::simd_size_t rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svlsl_m(svptrue_b64(), static_cast<implementation_type>(lhs),
                 std::uint64_t(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator<<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator<<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(svlsl_m(
         svptrue_b64(), static_cast<implementation_type>(lhs),
         svreinterpret_u64(
@@ -1875,7 +2445,7 @@ class basic_simd<std::int64_t,
 
 }  // namespace Experimental
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 abs(Experimental::basic_simd<
     std::int64_t,
@@ -1887,7 +2457,7 @@ abs(Experimental::basic_simd<
       static_cast<vls_int64_t>(svabs_m(aa, svptrue_b64(), aa)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 floor(Experimental::basic_simd<
       std::int64_t,
@@ -1898,7 +2468,7 @@ floor(Experimental::basic_simd<
       static_cast<vls_int64_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 ceil(Experimental::basic_simd<
      std::int64_t,
@@ -1909,7 +2479,7 @@ ceil(Experimental::basic_simd<
       static_cast<vls_int64_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 round(Experimental::basic_simd<
       std::int64_t,
@@ -1920,7 +2490,7 @@ round(Experimental::basic_simd<
       static_cast<vls_int64_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 trunc(Experimental::basic_simd<
       std::int64_t,
@@ -1931,7 +2501,7 @@ trunc(Experimental::basic_simd<
       static_cast<vls_int64_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 copysign(
     Experimental::basic_simd<
@@ -1951,7 +2521,7 @@ copysign(
           svmul_m(svptrue_b64(), static_cast<vls_int64_t>(abs(a)), sign_b)));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 fma(Experimental::basic_simd<
         std::int64_t,
@@ -1971,7 +2541,7 @@ fma(Experimental::basic_simd<
                   static_cast<vls_int64_t>(b), static_cast<vls_int64_t>(c))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 max(Experimental::basic_simd<
         std::int64_t,
@@ -1988,7 +2558,7 @@ max(Experimental::basic_simd<
                                        static_cast<vls_int64_t>(b))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::int64_t, Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 min(Experimental::basic_simd<
         std::int64_t,
@@ -2007,7 +2577,110 @@ min(Experimental::basic_simd<
 
 namespace Experimental {
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(const std::int64_t* ptr,
+                        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(
+        const std::int64_t* ptr,
+        basic_simd_mask<std::int64_t,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, mask,
+                                                                     flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(
+        const std::int64_t* ptr,
+        basic_simd_mask<std::int64_t,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, mask,
+                                                                     flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_partial_load(
+        const std::int64_t* ptr,
+        basic_simd_mask<std::int64_t,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, mask,
+                                                                     flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_partial_load(
+        const std::int64_t* ptr,
+        basic_simd_mask<std::int64_t,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, mask,
+                                                                     flag);
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::int64_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::int64_t* ptr, [[maybe_unused]] FlagType flag = simd_flag_default) {
+  svst1(svptrue_b32(), ptr, static_cast<vls_int64_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::int64_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::int64_t* ptr,
+    basic_simd_mask<std::int64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_int64_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_partial_store(
+    basic_simd<std::int64_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::int64_t* ptr,
+    basic_simd_mask<std::int64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_int64_t>(simd));
+}
+
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
     std::int64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 condition(
     basic_simd_mask<std::int64_t,
@@ -2036,21 +2709,14 @@ class basic_simd<std::uint64_t,
   using abi_type   = simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>;
   using mask_type  = basic_simd_mask<value_type, abi_type>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_DOUBLES_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<Impl::simd_size_t,
+                                          SVE_DOUBLES_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd() noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd const&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd&&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd const&) noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd&&) noexcept = default;
-  template <class U, std::enable_if_t<std::is_convertible_v<U, value_type>,
-                                      bool> = false>
+  template <class U>
+    requires std::convertible_to<U, value_type>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(U&& value) noexcept
       : m_value(svdup_u64(value_type(value))) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
@@ -2059,39 +2725,44 @@ class basic_simd<std::uint64_t,
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::int32_t, abi_type> const& other) noexcept;
   template <typename U>
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit
-#ifdef KOKKOS_ENABLE_CXX20
-      (Impl::needs_explicit_conversion_v<U, value_type>)
-#endif
-          basic_simd(basic_simd<U, abi_type> const& other) noexcept
-      : m_value(basic_simd(
-            [&](std::size_t i) { return static_cast<value_type>(other[i]); })) {
-  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit(
+      Impl::needs_explicit_conversion_v<U, value_type>)
+      basic_simd(basic_simd<U, abi_type> const& other) noexcept
+      : m_value(basic_simd([&](Impl::simd_size_t i) {
+          return static_cast<value_type>(other[i]);
+        })) {}
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<double, abi_type> const& other) noexcept;
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::int64_t, abi_type> const& other) noexcept;
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<Impl::simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       G&& gen) noexcept {
     // TODO: use set-lane instead of load
     value_type temp[] = {
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 0>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 1>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 0>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 1>()))
 #if SVE_DOUBLES_IN_VECTOR > 2
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 2>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 3>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 2>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 3>()))
 #if SVE_DOUBLES_IN_VECTOR > 4
           ,
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 4>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 5>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 6>())),
-      static_cast<value_type>(gen(std::integral_constant<std::size_t, 7>()))
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 4>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 5>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 6>())),
+      static_cast<value_type>(
+          gen(std::integral_constant<Impl::simd_size_t, 7>()))
 #endif
 #endif
     };
@@ -2099,118 +2770,158 @@ class basic_simd<std::uint64_t,
     m_value = svld1(svptrue_b64(), temp);
   }
 
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      value_type const* ptr, FlagType) noexcept {
+    m_value = svld1(svptrue_b64(), ptr);
+  }
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      const value_type* ptr, mask_type const& mask, FlagType) noexcept {
+    m_value = svld1(static_cast<vls_bool_t>(mask), ptr);
+  }
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type
-  operator[](std::size_t i) const {
+  operator[](Impl::simd_size_t i) const {
     return svlastb(Impl::get_pred<64>(i), m_value);
   }
 
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        element_aligned_tag) {
     m_value = svld1(svptrue_b64(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_load() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_from(value_type const* ptr,
                                                        vector_aligned_tag) {
     m_value = svld1(svptrue_b64(), ptr);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(
       value_type* ptr, element_aligned_tag) const {
     svst1(svptrue_b64(), ptr, m_value);
   }
+  KOKKOS_DEPRECATED_WITH_COMMENT("Use simd_unchecked_store() instead")
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void copy_to(value_type* ptr,
                                                      vector_aligned_tag) const {
     svst1(svptrue_b64(), ptr, m_value);
   }
+#endif
+
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit
   operator vls_uint64_t() const noexcept {
     return m_value;
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd
-  operator-() const noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator-() const noexcept {
     return basic_simd(static_cast<implementation_type>(svundef_u64()));
   }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd operator~() const noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svnot_m(m_value, svptrue_b64(), m_value)));
+  }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator*(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator*(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svmul_m(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator/(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator/(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svdiv_m(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator+(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator+(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svadd_m(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator-(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator-(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svsub_m(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator&(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svand_m(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
+                static_cast<vls_uint64_t>(rhs))));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator|(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        svorr_m(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
+                static_cast<vls_uint64_t>(rhs))));
+  }
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator^(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
+    return basic_simd(static_cast<implementation_type>(
+        sveor_m(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
+                static_cast<vls_uint64_t>(rhs))));
+  }
+
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmplt(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpgt(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator<=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator<=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmple(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator>=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator>=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpge(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator==(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator==(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return mask_type(static_cast<vls_bool_t>(
         svcmpeq(svptrue_b64(), static_cast<vls_uint64_t>(lhs),
                 static_cast<vls_uint64_t>(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type
-  operator!=(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend mask_type operator!=(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return !(operator==(lhs, rhs));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator>>(basic_simd const& lhs, int rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator>>(
+      basic_simd const& lhs, Impl::simd_size_t rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svlsr_m(svptrue_b64(), static_cast<implementation_type>(lhs),
                 std::uint64_t(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator>>(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator>>(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(svlsr_m(
         svptrue_b64(), static_cast<implementation_type>(lhs),
         svreinterpret_u64(
             (to_sve_vla<value_type>)static_cast<implementation_type>(rhs)))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator<<(basic_simd const& lhs, int rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator<<(
+      basic_simd const& lhs, Impl::simd_size_t rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(
         svlsl_m(svptrue_b64(), static_cast<implementation_type>(lhs),
                 std::uint64_t(rhs))));
   }
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd
-  operator<<(basic_simd const& lhs, basic_simd const& rhs) noexcept {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION friend basic_simd operator<<(
+      basic_simd const& lhs, basic_simd const& rhs) noexcept {
     return basic_simd(static_cast<implementation_type>(svlsl_m(
         svptrue_b64(), static_cast<implementation_type>(lhs),
         svreinterpret_u64(
@@ -2220,7 +2931,7 @@ class basic_simd<std::uint64_t,
 
 }  // namespace Experimental
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 abs(Experimental::basic_simd<
@@ -2229,7 +2940,7 @@ abs(Experimental::basic_simd<
   return a;
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 floor(Experimental::basic_simd<
@@ -2241,7 +2952,7 @@ floor(Experimental::basic_simd<
       static_cast<vls_uint64_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 ceil(Experimental::basic_simd<
@@ -2253,7 +2964,7 @@ ceil(Experimental::basic_simd<
       static_cast<vls_uint64_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 round(Experimental::basic_simd<
@@ -2265,7 +2976,7 @@ round(Experimental::basic_simd<
       static_cast<vls_uint64_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 trunc(Experimental::basic_simd<
@@ -2277,7 +2988,7 @@ trunc(Experimental::basic_simd<
       static_cast<vls_uint64_t>(a));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 copysign(
@@ -2292,7 +3003,7 @@ copysign(
   return a;
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 fma(Experimental::basic_simd<
@@ -2313,7 +3024,7 @@ fma(Experimental::basic_simd<
                   static_cast<vls_uint64_t>(b), static_cast<vls_uint64_t>(c))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 max(Experimental::basic_simd<
@@ -2331,7 +3042,7 @@ max(Experimental::basic_simd<
                                         static_cast<vls_uint64_t>(b))));
 }
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION Experimental::basic_simd<
     std::uint64_t,
     Experimental::simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
 min(Experimental::basic_simd<
@@ -2351,6 +3062,125 @@ min(Experimental::basic_simd<
 
 namespace Experimental {
 
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(const std::uint64_t* ptr,
+                        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(
+        const std::uint64_t* ptr,
+        basic_simd_mask<std::uint64_t,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, mask,
+                                                                     flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(
+        const std::uint64_t* ptr,
+        basic_simd_mask<std::uint64_t,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, mask,
+                                                                     flag);
+}
+
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_partial_load(
+        const std::uint64_t* ptr,
+        basic_simd_mask<std::uint64_t,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, mask,
+                                                                     flag);
+}
+
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_partial_load(
+        const std::uint64_t* ptr,
+        basic_simd_mask<std::uint64_t,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, mask,
+                                                                     flag);
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::uint64_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::uint64_t* ptr, [[maybe_unused]] FlagType flag = simd_flag_default) {
+  svst1(svptrue_b32(), ptr, static_cast<vls_uint64_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::uint64_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::uint64_t* ptr,
+    basic_simd_mask<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_uint64_t>(simd));
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_partial_store(
+    basic_simd<std::uint64_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::uint64_t* ptr,
+    basic_simd_mask<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        mask,
+    FlagType) {
+  svst1(static_cast<vls_bool_t>(mask), ptr, static_cast<vls_uint64_t>(simd));
+}
+
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+condition(
+    basic_simd_mask<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& a,
+    basic_simd<std::uint64_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& b,
+    basic_simd<std::uint64_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& c) {
+  return basic_simd<std::uint64_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      static_cast<vls_uint64_t>(svsel(static_cast<vls_bool_t>(a),
+                                      static_cast<vls_uint64_t>(b),
+                                      static_cast<vls_uint64_t>(c))));
+}
+
 #if SVE_DOUBLES_IN_VECTOR >= 8
 
 // TODO: We don't know, for the moment, how to implement a int32x8_t vector
@@ -2366,6 +3196,13 @@ namespace Experimental {
 // - SVE does not have half-size VL (unlike __m128i for __m256i). Hopefully,
 //   they can still be mapped on Neon. However, we have a drawback on SVE-512,
 //   where half-size vector = 256-bit, while Neon vector is only 128-bit.
+
+// template <>
+// class basic_simd_mask<std::int32_t,
+// simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+//     : public Experimental::basic_simd_mask<
+//           std::int32_t, simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>> {};
+
 template <>
 class basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
     : public Experimental::basic_simd<
@@ -2384,37 +3221,39 @@ class basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
  public:
   using abi_type = simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>;
 
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION static constexpr std::size_t size() {
-    return SVE_DOUBLES_IN_VECTOR;
-  }
+  static constexpr std::integral_constant<Impl::simd_size_t,
+                                          SVE_DOUBLES_IN_VECTOR>
+      size{};
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd() noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd const&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(basic_simd&&) noexcept =
-      default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd const&) noexcept = default;
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd& operator=(
-      basic_simd&&) noexcept = default;
 
-  template <class U, std::enable_if_t<std::is_convertible_v<U, value_type>,
-                                      bool> = false>
+  template <class U>
+    requires std::convertible_to<U, value_type>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd(U&& value) noexcept
       : base_type(value) {}
-
-  template <class G,
-            std::enable_if_t<
-                std::is_invocable_r_v<value_type, G,
-                                      std::integral_constant<std::size_t, 0>>,
-                bool> = false>
-  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
-      G&& gen) noexcept
-      : base_type(gen) {}
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
       implementation_type const& value_in) noexcept
       : base_type(value_in) {}
+
+  template <class G>
+    requires Impl::InvocableWithReturnType<
+        G, value_type, std::integral_constant<Impl::simd_size_t, 0>>
+  // NOLINTNEXTLINE(bugprone-forwarding-reference-overload)
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      G&& gen) noexcept
+      : base_type(gen) {}
+
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      value_type const* ptr, FlagType) noexcept
+      : base_type(ptr, FlagType{}) {}
+
+  template <typename FlagType>
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION constexpr explicit basic_simd(
+      const value_type* ptr, mask_type const& mask, FlagType) noexcept
+      : base_type(ptr, mask, FlagType{}) {}
 
   KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION explicit basic_simd(
       basic_simd<std::uint64_t, abi_type> const& other) noexcept
@@ -2474,20 +3313,15 @@ basic_simd<std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>::
 
 namespace Experimental {
 
-[[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
-    std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
-condition(
-    basic_simd_mask<std::uint64_t,
-                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& a,
-    basic_simd<std::uint64_t,
-               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& b,
-    basic_simd<std::uint64_t,
-               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& c) {
-  return basic_simd<std::uint64_t,
-                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
-      static_cast<vls_uint64_t>(svsel(static_cast<vls_bool_t>(a),
-                                      static_cast<vls_uint64_t>(b),
-                                      static_cast<vls_uint64_t>(c))));
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(const std::int32_t* ptr,
+                        simd_flags<Flags...> flag = simd_flag_default) {
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, flag);
 }
 
 KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
@@ -2576,8 +3410,147 @@ basic_simd<std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>::
             other) noexcept
     : m_value(svreinterpret_u64_s64(static_cast<vls_int64_t>(other))) {}
 
+// FIXME should be converted to use sve mask
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(
+        const double* ptr,
+        basic_simd_mask<std::int32_t,
+                        simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  basic_simd_mask<std::int32_t,
+                  simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+      nmask([=](Impl::simd_size_t i) { return mask[i]; });
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, nmask,
+                                                                     flag);
+}
+
+// FIXME should be converted to use sve mask
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_unchecked_load(
+        const std::int32_t* ptr,
+        basic_simd_mask<std::int32_t,
+                        simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  basic_simd_mask<std::int32_t,
+                  simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+      nmask([=](Impl::simd_size_t i) { return mask[i]; });
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, nmask,
+                                                                     flag);
+}
+
+// FIXME should be converted to use sve mask
+template <typename... Flags>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_partial_load(
+        const std::int32_t* ptr,
+        basic_simd_mask<std::int32_t,
+                        simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  basic_simd_mask<std::int32_t,
+                  simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+      nmask([=](Impl::simd_size_t i) { return mask[i]; });
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, nmask,
+                                                                     flag);
+}
+
+// FIXME should be converted to use sve mask
+template <typename SimdType, typename... Flags>
+  requires std::same_as<typename SimdType::abi_type,
+                        simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION
+    basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+    simd_partial_load(
+        const std::int32_t* ptr,
+        basic_simd_mask<std::int32_t,
+                        simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+            mask,
+        simd_flags<Flags...> flag = simd_flag_default) {
+  basic_simd_mask<std::int32_t,
+                  simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+      nmask([=](Impl::simd_size_t i) { return mask[i]; });
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(ptr, nmask,
+                                                                     flag);
+}
+
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::int32_t* ptr, [[maybe_unused]] FlagType flag = simd_flag_default) {
+  simd_unchecked_store<std::int32_t,
+                       simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      simd, ptr, flag);
+}
+
+// FIXME should be converted to use sve mask
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_unchecked_store(
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::int32_t* ptr,
+    basic_simd_mask<std::int32_t,
+                    simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        mask,
+    FlagType) {
+  basic_simd_mask<std::int32_t,
+                  simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+      nmask([=](Impl::simd_size_t i) { return mask[i]; });
+  simd_unchecked_store<std::int32_t,
+                       simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      simd, ptr, nmask, FlagType{});
+}
+
+// FIXME should be converted to use sve mask
+template <typename FlagType>
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION void simd_partial_store(
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& simd,
+    std::int32_t* ptr,
+    basic_simd_mask<std::int32_t,
+                    simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>> const&
+        mask,
+    FlagType) {
+  basic_simd_mask<std::int32_t,
+                  simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+      nmask([=](Impl::simd_size_t i) { return mask[i]; });
+  simd_partial_store<std::int32_t,
+                     simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      simd, ptr, nmask, FlagType{});
+}
+
+// FIXME should be converted to use sve mask
+KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION basic_simd<
+    std::int32_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>
+condition(
+    basic_simd_mask<std::int32_t,
+                    simd_abi::neon_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& a,
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& b,
+    basic_simd<std::int32_t,
+               simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>> const& c) {
+  return basic_simd<std::int32_t,
+                    simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>(
+      [=](Impl::simd_size_t i) { return a[i] ? b[i] : c[i]; });
+}
+
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
+KOKKOS_IMPL_DISABLE_DEPRECATED_WARNINGS_PUSH()
 template <>
-class const_where_expression<
+class KOKKOS_DEPRECATED const_where_expression<
     basic_simd_mask<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>,
     basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>> {
  public:
@@ -2613,19 +3586,18 @@ class const_where_expression<
                         static_cast<vls_float64_t>(m_value));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const&
-  impl_get_value() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const& impl_get_value()
+      const {
     return m_value;
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const&
-  impl_get_mask() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const& impl_get_mask() const {
     return m_mask;
   }
 };
 
 template <>
-class where_expression<
+class KOKKOS_DEPRECATED where_expression<
     basic_simd_mask<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>,
     basic_simd<double, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>>
     : public const_where_expression<
@@ -2684,7 +3656,7 @@ class where_expression<
 };
 
 template <>
-class const_where_expression<
+class KOKKOS_DEPRECATED const_where_expression<
     basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>,
     basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>> {
  public:
@@ -2721,19 +3693,18 @@ class const_where_expression<
                         static_cast<vls_float32_t>(m_value));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const&
-  impl_get_value() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const& impl_get_value()
+      const {
     return m_value;
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const&
-  impl_get_mask() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const& impl_get_mask() const {
     return m_mask;
   }
 };
 
 template <>
-class where_expression<
+class KOKKOS_DEPRECATED where_expression<
     basic_simd_mask<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>,
     basic_simd<float, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>>
     : public const_where_expression<
@@ -2790,7 +3761,7 @@ class where_expression<
 };
 
 template <>
-class const_where_expression<
+class KOKKOS_DEPRECATED const_where_expression<
     basic_simd_mask<std::int32_t,
                     simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>,
     basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>> {
@@ -2828,19 +3799,18 @@ class const_where_expression<
                         static_cast<vls_int32_t>(m_value));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const&
-  impl_get_value() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const& impl_get_value()
+      const {
     return m_value;
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const&
-  impl_get_mask() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const& impl_get_mask() const {
     return m_mask;
   }
 };
 
 template <>
-class where_expression<
+class KOKKOS_DEPRECATED where_expression<
     basic_simd_mask<std::int32_t,
                     simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>,
     basic_simd<std::int32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>>
@@ -2903,7 +3873,7 @@ class where_expression<
 };
 
 template <>
-class const_where_expression<
+class KOKKOS_DEPRECATED const_where_expression<
     basic_simd_mask<std::uint32_t,
                     simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>,
     basic_simd<std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>> {
@@ -2941,19 +3911,18 @@ class const_where_expression<
                         static_cast<vls_uint32_t>(m_value));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const&
-  impl_get_value() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const& impl_get_value()
+      const {
     return m_value;
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const&
-  impl_get_mask() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const& impl_get_mask() const {
     return m_mask;
   }
 };
 
 template <>
-class where_expression<
+class KOKKOS_DEPRECATED where_expression<
     basic_simd_mask<std::uint32_t,
                     simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>,
     basic_simd<std::uint32_t, simd_abi::sve_fixed_size<SVE_WORDS_IN_VECTOR>>>
@@ -3016,7 +3985,7 @@ class where_expression<
 };
 
 template <>
-class const_where_expression<
+class KOKKOS_DEPRECATED const_where_expression<
     basic_simd_mask<std::int64_t,
                     simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>,
     basic_simd<std::int64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>> {
@@ -3053,19 +4022,18 @@ class const_where_expression<
                         static_cast<vls_int64_t>(m_value));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const&
-  impl_get_value() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const& impl_get_value()
+      const {
     return m_value;
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const&
-  impl_get_mask() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const& impl_get_mask() const {
     return m_mask;
   }
 };
 
 template <>
-class where_expression<
+class KOKKOS_DEPRECATED where_expression<
     basic_simd_mask<std::int64_t,
                     simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>,
     basic_simd<std::int64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>>
@@ -3127,7 +4095,7 @@ class where_expression<
 };
 
 template <>
-class const_where_expression<
+class KOKKOS_DEPRECATED const_where_expression<
     basic_simd_mask<std::uint64_t,
                     simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>,
     basic_simd<std::uint64_t,
@@ -3165,19 +4133,18 @@ class const_where_expression<
                         static_cast<vls_uint64_t>(m_value));
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const&
-  impl_get_value() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION value_type const& impl_get_value()
+      const {
     return m_value;
   }
 
-  [[nodiscard]] KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const&
-  impl_get_mask() const {
+  KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION mask_type const& impl_get_mask() const {
     return m_mask;
   }
 };
 
 template <>
-class where_expression<
+class KOKKOS_DEPRECATED where_expression<
     basic_simd_mask<std::uint64_t,
                     simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>,
     basic_simd<std::uint64_t, simd_abi::sve_fixed_size<SVE_DOUBLES_IN_VECTOR>>>
@@ -3237,6 +4204,9 @@ class where_expression<
                   static_cast<vls_uint64_t>(m_value))));
   }
 };
+
+KOKKOS_IMPL_DISABLE_DEPRECATED_WARNINGS_POP()
+#endif
 
 }  // namespace Experimental
 }  // namespace Kokkos

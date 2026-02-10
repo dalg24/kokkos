@@ -1,25 +1,17 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #include <gtest/gtest.h>
 
 #include <sstream>
 #include <iostream>
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+#else
 #include <Kokkos_Core.hpp>
+#endif
 
 namespace Test {
 
@@ -52,24 +44,20 @@ struct TestViewMappingSubview {
   using DLT  = Kokkos::View<int*** [13][14], Kokkos::LayoutLeft, ExecSpace>;
   using DLS1 = Kokkos::Subview<DLT, range, int, int, int, int>;
 
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 1000
   static_assert(
       DLS1::rank == 1 &&
-          std::is_same<typename DLS1::array_layout, Kokkos::LayoutLeft>::value,
+          std::is_same_v<typename DLS1::array_layout, Kokkos::LayoutLeft>,
       "Subview layout error for rank 1 subview of left-most range of "
       "LayoutLeft");
-#endif
 
   using DRT  = Kokkos::View<int*** [13][14], Kokkos::LayoutRight, ExecSpace>;
   using DRS1 = Kokkos::Subview<DRT, int, int, int, int, range>;
 
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 1000
   static_assert(
       DRS1::rank == 1 &&
-          std::is_same<typename DRS1::array_layout, Kokkos::LayoutRight>::value,
+          std::is_same_v<typename DRS1::array_layout, Kokkos::LayoutRight>,
       "Subview layout error for rank 1 subview of right-most range of "
       "LayoutRight");
-#endif
 
   AT Aa;
   AS Ab;

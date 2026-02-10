@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #include <Kokkos_Core.hpp>
 #include <Kokkos_DualView.hpp>
@@ -99,11 +86,12 @@ int main(int narg, char* args[]) {
 
     Kokkos::Timer timer;
     // threads/team is automatically limited to maximum supported by the device.
-    int const concurrency = Device::execution_space().concurrency();
-    int team_size         = TEAM_SIZE;
-    if (team_size > concurrency) team_size = concurrency;
-    Kokkos::parallel_for(team_policy(nchunks, team_size),
-                         find_2_tuples(chunk_size, data, histogram));
+    int team_size = TEAM_SIZE;
+    find_2_tuples functor(chunk_size, data, histogram);
+    int const max_team_size =
+        team_policy(1, 1).team_size_max(functor, Kokkos::ParallelForTag{});
+    if (team_size > max_team_size) team_size = max_team_size;
+    Kokkos::parallel_for(team_policy(nchunks, team_size), functor);
     Kokkos::fence();
     double time = timer.seconds();
 

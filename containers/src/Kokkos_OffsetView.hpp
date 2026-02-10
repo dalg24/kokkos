@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_OFFSETVIEW_HPP_
 #define KOKKOS_OFFSETVIEW_HPP_
@@ -21,7 +8,13 @@
 #define KOKKOS_IMPL_PUBLIC_INCLUDE_NOTDEFINED_OFFSETVIEW
 #endif
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+import kokkos.core_impl;
+#else
 #include <Kokkos_Core.hpp>
+#endif
 
 #include <Kokkos_View.hpp>
 
@@ -218,11 +211,15 @@ class OffsetView : public View<DataType, Properties...> {
 
  public:
   //----------------------------------------
+  /** \brief  Compatible view of data type */
+  using type =
+      OffsetView<typename traits::data_type, typename traits::array_layout,
+                 typename traits::device_type, typename traits::memory_traits>;
+
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_5
   /** \brief  Compatible view of array of scalar types */
-  using array_type =
-      OffsetView<typename traits::scalar_array_type,
-                 typename traits::array_layout, typename traits::device_type,
-                 typename traits::memory_traits>;
+  using array_type KOKKOS_DEPRECATED_WITH_COMMENT("Use type instead.") = type;
+#endif
 
   /** \brief  Compatible view of const data type */
   using const_type =
@@ -254,36 +251,21 @@ class OffsetView : public View<DataType, Properties...> {
   }
 
   template <class OtherIndexType>
-#ifndef KOKKOS_ENABLE_CXX17
     requires(std::is_convertible_v<OtherIndexType, index_type> &&
              std::is_nothrow_constructible_v<index_type, OtherIndexType> &&
              (base_t::rank() == 1))
-#endif
   KOKKOS_FUNCTION constexpr typename base_t::reference_type operator[](
       const OtherIndexType& idx) const {
-#ifdef KOKKOS_ENABLE_CXX17
-    static_assert(std::is_convertible_v<OtherIndexType, index_type> &&
-                  std::is_nothrow_constructible_v<index_type, OtherIndexType> &&
-                  (base_t::rank() == 1));
-#endif
     return base_t::operator[](idx - m_begins[0]);
   }
 
   template <class... OtherIndexTypes>
-#ifndef KOKKOS_ENABLE_CXX17
     requires((std::is_convertible_v<OtherIndexTypes, index_type> && ...) &&
              (std::is_nothrow_constructible_v<index_type, OtherIndexTypes> &&
               ...) &&
              (sizeof...(OtherIndexTypes) == base_t::rank()))
-#endif
   KOKKOS_FUNCTION constexpr typename base_t::reference_type operator()(
       OtherIndexTypes... indices) const {
-#ifdef KOKKOS_ENABLE_CXX17
-    static_assert(
-        (std::is_convertible_v<OtherIndexTypes, index_type> && ...) &&
-        (std::is_nothrow_constructible_v<index_type, OtherIndexTypes> && ...) &&
-        (sizeof...(OtherIndexTypes) == base_t::rank()));
-#endif
     return offset_operator(std::make_index_sequence<base_t::rank()>(),
                            indices...);
   }
@@ -306,7 +288,7 @@ class OffsetView : public View<DataType, Properties...> {
   // interoperability with View
  private:
   using view_type =
-      View<typename traits::scalar_array_type, typename traits::array_layout,
+      View<typename traits::data_type, typename traits::array_layout,
            typename traits::device_type, typename traits::memory_traits>;
 
  public:
@@ -1336,10 +1318,6 @@ inline auto create_mirror(const Kokkos::Experimental::OffsetView<T, P...>& src,
     return typename Kokkos::Experimental::OffsetView<T, P...>::host_mirror_type(
         Kokkos::create_mirror(arg_prop, src.view()), src.begins());
   }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-  __builtin_unreachable();
-#endif
 }
 
 }  // namespace Impl
@@ -1433,10 +1411,6 @@ inline auto create_mirror_view(
       return Kokkos::Impl::choose_create_mirror(src, arg_prop);
     }
   }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-  __builtin_unreachable();
-#endif
 }
 
 }  // namespace Impl

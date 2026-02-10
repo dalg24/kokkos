@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_CORE_IMPL_UTILITIES_HPP
 #define KOKKOS_CORE_IMPL_UTILITIES_HPP
@@ -55,34 +42,6 @@ template <typename... Deps>
 struct always_false : std::false_type {};
 
 //==============================================================================
-
-#if defined(__cpp_lib_type_identity)
-// since C++20
-using std::type_identity;
-using std::type_identity_t;
-#else
-template <typename T>
-struct type_identity {
-  using type = T;
-};
-
-template <typename T>
-using type_identity_t = typename type_identity<T>::type;
-#endif
-
-#if defined(__cpp_lib_remove_cvref)
-// since C++20
-using std::remove_cvref;
-using std::remove_cvref_t;
-#else
-template <class T>
-struct remove_cvref {
-  using type = std::remove_cv_t<std::remove_reference_t<T>>;
-};
-
-template <class T>
-using remove_cvref_t = typename remove_cvref<T>::type;
-#endif
 
 // same as C++23 std::to_underlying but with __host__ __device__ annotations
 template <typename E>
@@ -156,7 +115,7 @@ struct _type_list_remove_first_impl<Entry, type_list<Entry, Ts...>,
 
 template <class Entry, class... OutTs>
 struct _type_list_remove_first_impl<Entry, type_list<>, type_list<OutTs...>>
-    : type_identity<type_list<OutTs...>> {};
+    : std::type_identity<type_list<OutTs...>> {};
 
 template <class Entry, class List>
 struct type_list_remove_first
@@ -201,8 +160,9 @@ struct concat_type_list<type_list<T...>> {
 
 // combine consecutive type_lists
 template <typename... T, typename... U, typename... Tail>
-struct concat_type_list<type_list<T...>, type_list<U...>, Tail...>
-    : concat_type_list<type_list<T..., U...>, Tail...> {};
+struct concat_type_list<type_list<T...>, type_list<U...>, Tail...> {
+  using type = concat_type_list_t<type_list<T..., U...>, Tail...>;
+};
 // </editor-fold> end concat_type_list }}}2
 //------------------------------------------------------------------------------
 
@@ -216,10 +176,16 @@ template <template <typename> class PredicateT, typename TypeListT,
 struct filter_type_list;
 
 template <template <typename> class PredicateT, typename... T, bool ValueT>
+  requires(sizeof...(T) > 0)
 struct filter_type_list<PredicateT, type_list<T...>, ValueT> {
   using type =
       concat_type_list_t<std::conditional_t<PredicateT<T>::value == ValueT,
                                             type_list<T>, type_list<>>...>;
+};
+
+template <template <typename> class PredicateT, bool ValueT>
+struct filter_type_list<PredicateT, type_list<>, ValueT> {
+  using type = type_list<>;
 };
 
 template <template <typename> class PredicateT, typename T, bool ValueT = true>

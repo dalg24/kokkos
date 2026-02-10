@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_IMPL_PUBLIC_INCLUDE
 #define KOKKOS_IMPL_PUBLIC_INCLUDE
@@ -26,7 +13,12 @@
 #include <sstream>
 #include <thread>
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+#else
 #include <Kokkos_Core.hpp>
+#endif
 
 #include <impl/Kokkos_Error.hpp>
 #include <impl/Kokkos_CPUDiscovery.hpp>
@@ -175,7 +167,8 @@ ThreadsInternal::~ThreadsInternal() {
   const unsigned entry = m_pool_size - (m_pool_rank + 1);
 
   if (m_scratch) {
-    Kokkos::kokkos_free<Kokkos::HostSpace>(m_scratch);
+    Kokkos::HostSpace{}.deallocate("Kokkos::thread_scratch", m_scratch,
+                                   m_scratch_thread_end);
     m_scratch = nullptr;
   }
 
@@ -314,7 +307,8 @@ void ThreadsInternal::execute_resize_scratch_in_serial() {
 
   auto deallocate_scratch_memory = [](ThreadsInternal &exec) {
     if (exec.m_scratch) {
-      Kokkos::kokkos_free<Kokkos::HostSpace>(exec.m_scratch);
+      Kokkos::HostSpace{}.deallocate("Kokkos::thread_scratch", exec.m_scratch,
+                                     exec.m_scratch_thread_end);
       exec.m_scratch = nullptr;
     }
   };
@@ -366,8 +360,8 @@ void ThreadsInternal::first_touch_allocate_thread_private_scratch(
   if (s_threads_process.m_scratch_thread_end) {
     // Allocate tracked memory:
     {
-      exec.m_scratch = Kokkos::kokkos_malloc<Kokkos::HostSpace>(
-          "Kokkos::thread_scratch", s_threads_process.m_scratch_thread_end);
+      exec.m_scratch = Kokkos::HostSpace{}.allocate("Kokkos::thread_scratch",
+                                                    exec.m_scratch_thread_end);
     }
 
     unsigned *ptr = reinterpret_cast<unsigned *>(exec.m_scratch);
@@ -682,11 +676,6 @@ int Threads::concurrency() const { return impl_thread_pool_size(0); }
 
 void Threads::fence(const std::string &name) const {
   Impl::ThreadsInternal::fence(name);
-}
-
-Threads &Threads::impl_instance(int) {
-  static Threads t;
-  return t;
 }
 
 int Threads::impl_thread_pool_rank_host() {

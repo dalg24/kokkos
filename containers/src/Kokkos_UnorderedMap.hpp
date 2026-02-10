@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 /// \file Kokkos_UnorderedMap.hpp
 /// \brief Declaration and definition of Kokkos::UnorderedMap.
@@ -27,11 +14,17 @@
 #define KOKKOS_IMPL_PUBLIC_INCLUDE_NOTDEFINED_UNORDEREDMAP
 #endif
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+import kokkos.bitset;
+import kokkos.functional;
+#else
 #include <Kokkos_Core.hpp>
-#include <Kokkos_Functional.hpp>
-
 #include <Kokkos_Bitset.hpp>
-
+#include <Kokkos_Functional.hpp>
+#endif
+#include <Kokkos_Assert.hpp>
 #include <impl/Kokkos_Traits.hpp>
 #include <impl/Kokkos_UnorderedMap_impl.hpp>
 #include <View/Kokkos_ViewCtor.hpp>
@@ -67,7 +60,7 @@ namespace Impl {
 template <typename ViewType, typename... P, typename... Args>
 auto allocate_without_initializing_if_possible(
     const Impl::ViewCtorProp<P...> &alloc_prop, Args &&...args) {
-  using alloc_prop_t = Impl::remove_cvref_t<decltype(alloc_prop)>;
+  using alloc_prop_t = std::remove_cvref_t<decltype(alloc_prop)>;
 
   // if incompatible we don't add the property
   if constexpr (alloc_prop_t::sequential_host_init)
@@ -373,7 +366,7 @@ class UnorderedMap {
         m_hasher(hasher),
         m_equal_to(equal_to),
         m_sequential_host_init(
-            Impl::remove_cvref_t<decltype(arg_prop)>::sequential_host_init) {
+            std::remove_cvref_t<decltype(arg_prop)>::sequential_host_init) {
     if (!is_insertable_map) {
       Kokkos::Impl::throw_runtime_exception(
           "Cannot construct a non-insertable (i.e. const key_type) "
@@ -381,7 +374,7 @@ class UnorderedMap {
     }
 
     //! Ensure that allocation properties are consistent.
-    using alloc_prop_t = Impl::remove_cvref_t<decltype(arg_prop)>;
+    using alloc_prop_t = std::remove_cvref_t<decltype(arg_prop)>;
     static_assert(alloc_prop_t::initialize,
                   "Allocation property 'initialize' should be true.");
     static_assert(

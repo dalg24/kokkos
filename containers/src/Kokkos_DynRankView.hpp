@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 /// \file Kokkos_DynRankView.hpp
 /// \brief Declaration and definition of Kokkos::DynRankView.
@@ -27,7 +14,13 @@
 #define KOKKOS_IMPL_PUBLIC_INCLUDE_NOTDEFINED_DYNRANKVIEW
 #endif
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+import kokkos.core_impl;
+#else
 #include <Kokkos_Core.hpp>
+#endif
 #include <KokkosExp_InterOp.hpp>
 #include <impl/Kokkos_Error.hpp>
 #include <type_traits>
@@ -98,7 +91,8 @@ struct DynRankDimTraits {
       (std::is_same_v<Layout, Kokkos::LayoutRight> ||
        std::is_same_v<Layout, Kokkos::LayoutLeft>),
       Layout>
-  createLayout(const Layout& layout) {
+  createLayout(const Layout& layout,
+               [[maybe_unused]] size_t new_rank = unspecified) {
     Layout new_layout(
         layout.dimension[0] != unspecified ? layout.dimension[0] : 1,
         layout.dimension[1] != unspecified ? layout.dimension[1] : 1,
@@ -110,13 +104,10 @@ struct DynRankDimTraits {
         layout.dimension[7] != unspecified ? layout.dimension[7] : unspecified);
 
 #ifndef KOKKOS_ENABLE_IMPL_VIEW_LEGACY
-    // In order to have a valid LayoutRight stride when Sacado passes through
-    // extra integer arguments, we need to set it to the dimension[6] for the
-    // rank-7 view coming out of here. Only if the original layout was already
-    // rank-7 we can preserve the stride.
-    // FIXME_SACADO
-    if constexpr (!std::is_same_v<Specialize, void> &&
-                  std::is_same_v<Layout, Kokkos::LayoutRight>) {
+    // In order to have a valid LayoutRight stride we need to set it to the
+    // dimension[6] for the rank-7 view coming out of here. Only if the original
+    // layout was already rank-7 we can preserve the stride.
+    if constexpr (std::is_same_v<Layout, Kokkos::LayoutRight>) {
       if (layout.dimension[6] == unspecified) {
         new_layout.stride = unspecified;
       } else {
@@ -125,6 +116,11 @@ struct DynRankDimTraits {
     } else
 #endif
       new_layout.stride = layout.stride;
+    if constexpr (std::is_same_v<Layout, Kokkos::LayoutRight>) {
+      if (new_rank != unspecified && new_rank > 0 &&
+          layout.dimension[new_rank - 1] == layout.stride)
+        new_layout.stride = unspecified;
+    }
     return new_layout;
   }
 
@@ -132,7 +128,8 @@ struct DynRankDimTraits {
   template <typename Layout>
   KOKKOS_INLINE_FUNCTION static std::enable_if_t<
       (std::is_same_v<Layout, Kokkos::LayoutStride>), Layout>
-  createLayout(const Layout& layout) {
+  createLayout(const Layout& layout,
+               [[maybe_unused]] size_t new_rank = unspecified) {
     return Layout(
         layout.dimension[0] != unspecified ? layout.dimension[0] : 1,
         layout.stride[0],
@@ -459,9 +456,14 @@ class DynRankView : private View<DataType*******, Properties...> {
   using reference_type = typename view_type::reference_type;
   using pointer_type   = typename view_type::pointer_type;
 
-  using scalar_array_type           = value_type;
-  using const_scalar_array_type     = const_value_type;
-  using non_const_scalar_array_type = non_const_value_type;
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_5
+  using scalar_array_type KOKKOS_DEPRECATED_WITH_COMMENT(
+      "Use data_type instead.") = data_type;
+  using const_scalar_array_type KOKKOS_DEPRECATED_WITH_COMMENT(
+      "Use const_data_type instead.") = const_data_type;
+  using non_const_scalar_array_type KOKKOS_DEPRECATED_WITH_COMMENT(
+      "Use non_const_data_type instead.") = non_const_data_type;
+#endif
 #ifndef KOKKOS_ENABLE_IMPL_VIEW_LEGACY
 #ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
   using specialize KOKKOS_DEPRECATED = void;
@@ -500,9 +502,14 @@ class DynRankView : private View<DataType*******, Properties...> {
   // rank 7 data_type of the traits
 
   /** \brief  Compatible view of array of scalar types */
-  using array_type = DynRankView<
-      typename drvtraits::scalar_array_type, typename drvtraits::array_layout,
+  using type = DynRankView<
+      typename drvtraits::data_type, typename drvtraits::array_layout,
       typename drvtraits::device_type, typename drvtraits::memory_traits>;
+
+#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_5
+  /** \brief  Compatible view of array of scalar types */
+  using array_type KOKKOS_DEPRECATED_WITH_COMMENT("Use type instead.") = type;
+#endif
 
   /** \brief  Compatible view of const data type */
   using const_type = DynRankView<
@@ -661,10 +668,6 @@ class DynRankView : private View<DataType*******, Properties...> {
     {
       return view_type::operator()(i0, 0, 0, 0, 0, 0, 0);
     }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-    __builtin_unreachable();
-#endif
   }
 
   KOKKOS_FUNCTION reference_type operator()(index_type i0,
@@ -692,10 +695,6 @@ class DynRankView : private View<DataType*******, Properties...> {
     {
       return view_type::operator()(i0, i1, 0, 0, 0, 0, 0);
     }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-    __builtin_unreachable();
-#endif
   }
 
   KOKKOS_FUNCTION reference_type operator()(index_type i0, index_type i1,
@@ -727,10 +726,6 @@ class DynRankView : private View<DataType*******, Properties...> {
     {
       return view_type::operator()(i0, i1, i2, 0, 0, 0, 0);
     }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-    __builtin_unreachable();
-#endif
   }
 
   KOKKOS_FUNCTION reference_type operator()(index_type i0, index_type i1,
@@ -747,7 +742,7 @@ class DynRankView : private View<DataType*******, Properties...> {
 #ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
   KOKKOS_FUNCTION reference_type operator[](index_type i0) const {
     if constexpr (std::is_same_v<typename drvtraits::value_type,
-                                 typename drvtraits::scalar_array_type>) {
+                                 typename drvtraits::data_type>) {
       return view_type::data()[i0];
     } else {
       const size_t dim_scalar = view_type::impl_map().dimension_scalar();
@@ -839,7 +834,7 @@ class DynRankView : private View<DataType*******, Properties...> {
       : view_type(rhs.data_handle(),
                   Impl::mapping_from_array_layout<
                       typename view_type::mdspan_type::mapping_type>(
-                      drdtraits::createLayout(rhs.layout())),
+                      drdtraits::createLayout(rhs.layout(), new_rank)),
                   rhs.accessor()),
         m_rank(new_rank) {
     if (new_rank > View<RT, RP...>::rank())
@@ -854,7 +849,7 @@ class DynRankView : private View<DataType*******, Properties...> {
         view_type(rhs.data_handle(),
                   Impl::mapping_from_array_layout<
                       typename view_type::mdspan_type::mapping_type>(
-                      drdtraits::createLayout(rhs.layout())),
+                      drdtraits::createLayout(rhs.layout(), rhs.rank())),
                   rhs.accessor()));
     m_rank = rhs.rank();
     return *this;
@@ -948,23 +943,6 @@ class DynRankView : private View<DataType*******, Properties...> {
  public:
 #endif
 
-  // With NVCC 11.0 and 11.2 (and others likely) using GCC 8.5 a DynRankView
-  // test fails at runtime where construction from layout drops some extents.
-  // The bug goes away with O1.
-  // FIXME: NVCC GCC8 optimization bug DynRankView
-#if defined(KOKKOS_ENABLE_CUDA) && defined(KOKKOS_COMPILER_GNU)
-#if KOKKOS_COMPILER_GNU < 900
-#define KOKKOS_IMPL_SKIP_OPTIMIZATION
-#endif
-#endif
-
-#ifdef KOKKOS_IMPL_SKIP_OPTIMIZATION
-// Also need to suppress warning about unrecognized GCC optimize pragma
-#pragma push
-#pragma diag_suppress = unrecognized_gcc_pragma
-#pragma GCC push_options
-#pragma GCC optimize("O1")
-#endif
   template <class... P>
   explicit KOKKOS_FUNCTION DynRankView(
       const Kokkos::Impl::ViewCtorProp<P...>& arg_prop,
@@ -1004,12 +982,6 @@ class DynRankView : private View<DataType*******, Properties...> {
                                 arg_prop, arg_layout)),
         m_rank(drdtraits::computeRank(arg_prop, arg_layout)) {
   }
-#endif
-
-#ifdef KOKKOS_IMPL_SKIP_OPTIMIZATION
-#pragma GCC pop_options
-#pragma pop
-#undef KOKKOS_IMPL_SKIP_OPTIMIZATION
 #endif
 
         //----------------------------------------
@@ -1622,10 +1594,6 @@ inline auto create_mirror(const DynRankView<T, P...>& src,
 
     return dst_type(create_mirror(arg_prop, src.DownCast()), src.rank());
   }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-  __builtin_unreachable();
-#endif
 }
 
 }  // namespace Impl
@@ -1711,10 +1679,6 @@ inline auto create_mirror_view(
       return Kokkos::Impl::choose_create_mirror(src, arg_prop);
     }
   }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-  __builtin_unreachable();
-#endif
 }
 
 }  // namespace Impl
@@ -1801,10 +1765,6 @@ auto create_mirror_view_and_copy(
       deep_copy(mirror, src);
     return mirror;
   }
-#if defined(KOKKOS_COMPILER_NVCC) && KOKKOS_COMPILER_NVCC >= 1130 && \
-    !defined(KOKKOS_COMPILER_MSVC)
-  __builtin_unreachable();
-#endif
 }
 
 template <class Space, class T, class... P>
@@ -1975,7 +1935,7 @@ namespace Experimental {
 template <class T, class... P>
 struct python_view_type<DynRankView<T, P...>> {
   using type = Kokkos::Impl::python_view_type_impl_t<
-      typename DynRankView<T, P...>::array_type>;
+      typename DynRankView<T, P...>::type>;
 };
 }  // namespace Experimental
 

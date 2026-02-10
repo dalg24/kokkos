@@ -1,24 +1,16 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_IMPL_PUBLIC_INCLUDE
 #define KOKKOS_IMPL_PUBLIC_INCLUDE
 #endif
 
-#include <Kokkos_Core.hpp>  //kokkos_malloc
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core; // kokkos_malloc
+#else
+#include <Kokkos_Core.hpp>  // kokkos_malloc
+#endif
 
 #include <impl/Kokkos_CheckedIntegerOps.hpp>
 #include <impl/Kokkos_Error.hpp>
@@ -166,7 +158,7 @@ int SYCLInternal::acquire_team_scratch_space() {
   return current_team_scratch;
 }
 
-Kokkos::Impl::sycl_device_ptr<void> SYCLInternal::resize_team_scratch_space(
+sycl::global_ptr<void> SYCLInternal::resize_team_scratch_space(
     int scratch_pool_id, std::int64_t bytes, bool force_shrink) {
   // Multiple ParallelFor/Reduce Teams can call this function at the same time
   // and invalidate the m_team_scratch_ptr. We use a pool to avoid any race
@@ -251,8 +243,7 @@ void SYCLInternal::finalize() {
   m_queue.reset();
 }
 
-Kokkos::Impl::sycl_device_ptr<void> SYCLInternal::scratch_space(
-    const std::size_t size) {
+sycl::global_ptr<void> SYCLInternal::scratch_space(const std::size_t size) {
   if (verify_is_initialized("scratch_space") &&
       m_scratchSpaceCount < scratch_count(size)) {
     auto mem_space = Kokkos::SYCLDeviceUSMSpace(*m_queue);
@@ -272,8 +263,7 @@ Kokkos::Impl::sycl_device_ptr<void> SYCLInternal::scratch_space(
   return m_scratchSpace;
 }
 
-Kokkos::Impl::sycl_host_ptr<void> SYCLInternal::scratch_host(
-    const std::size_t size) {
+sycl::global_ptr<void> SYCLInternal::scratch_host(const std::size_t size) {
   if (verify_is_initialized("scratch_unified") &&
       m_scratchHostCount < scratch_count(size)) {
     auto mem_space = Kokkos::SYCLHostUSMSpace(*m_queue);
@@ -293,8 +283,7 @@ Kokkos::Impl::sycl_host_ptr<void> SYCLInternal::scratch_host(
   return m_scratchHost;
 }
 
-Kokkos::Impl::sycl_device_ptr<void> SYCLInternal::scratch_flags(
-    const std::size_t size) {
+sycl::global_ptr<void> SYCLInternal::scratch_flags(const std::size_t size) {
   if (verify_is_initialized("scratch_flags") &&
       m_scratchFlagsCount < scratch_count(size)) {
     auto mem_space = Kokkos::SYCLDeviceUSMSpace(*m_queue);

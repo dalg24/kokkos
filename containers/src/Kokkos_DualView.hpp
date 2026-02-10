@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 /// \file Kokkos_DualView.hpp
 /// \brief Declaration and definition of Kokkos::DualView.
@@ -27,8 +14,16 @@
 #define KOKKOS_IMPL_PUBLIC_INCLUDE_NOTDEFINED_DUALVIEW
 #endif
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+import kokkos.core_impl;
+#else
 #include <Kokkos_Core.hpp>
+#endif
 #include <impl/Kokkos_Error.hpp>
+
+#include <cstdint>
 
 namespace Kokkos {
 
@@ -72,15 +67,17 @@ namespace Impl {
 
 #ifdef KOKKOS_ENABLE_CUDA
 
-inline const Kokkos::Cuda& get_cuda_space(const Kokkos::Cuda& in) { return in; }
+inline cudaStream_t get_cuda_stream(const Kokkos::Cuda& in) {
+  return in.cuda_stream();
+}
 
-inline const Kokkos::Cuda& get_cuda_space() {
-  return *Kokkos::Impl::cuda_get_deep_copy_space();
+inline cudaStream_t get_cuda_stream() {
+  return Kokkos::Impl::cuda_get_deep_copy_stream();
 }
 
 template <typename NonCudaExecSpace>
-inline const Kokkos::Cuda& get_cuda_space(const NonCudaExecSpace&) {
-  return get_cuda_space();
+inline cudaStream_t get_cuda_stream(const NonCudaExecSpace&) {
+  return get_cuda_stream();
 }
 
 #endif  // KOKKOS_ENABLE_CUDA
@@ -557,7 +554,7 @@ class DualView : public ViewTraits<DataType, Properties...> {
                          Kokkos::CudaUVMSpace>::value) {
           if (d_view.data() == h_view.data())
             Kokkos::Impl::cuda_prefetch_pointer(
-                Impl::get_cuda_space(args...), d_view.data(),
+                Impl::get_cuda_stream(args...), d_view.data(),
                 sizeof(typename t_dev::value_type) * d_view.span(), true);
         }
 #endif
@@ -574,7 +571,7 @@ class DualView : public ViewTraits<DataType, Properties...> {
                          Kokkos::CudaUVMSpace>::value) {
           if (d_view.data() == h_view.data())
             Kokkos::Impl::cuda_prefetch_pointer(
-                Impl::get_cuda_space(args...), d_view.data(),
+                Impl::get_cuda_stream(args...), d_view.data(),
                 sizeof(typename t_dev::value_type) * d_view.span(), false);
         }
 #endif
@@ -657,7 +654,7 @@ class DualView : public ViewTraits<DataType, Properties...> {
                        Kokkos::CudaUVMSpace>::value) {
         if (d_view.data() == h_view.data())
           Kokkos::Impl::cuda_prefetch_pointer(
-              Impl::get_cuda_space(args...), d_view.data(),
+              Impl::get_cuda_stream(args...), d_view.data(),
               sizeof(typename t_dev::value_type) * d_view.span(), false);
       }
 #endif
@@ -700,7 +697,7 @@ class DualView : public ViewTraits<DataType, Properties...> {
                        Kokkos::CudaUVMSpace>::value) {
         if (d_view.data() == h_view.data())
           Kokkos::Impl::cuda_prefetch_pointer(
-              Impl::get_cuda_space(args...), d_view.data(),
+              Impl::get_cuda_stream(args...), d_view.data(),
               sizeof(typename t_dev::value_type) * d_view.span(), true);
       }
 #endif

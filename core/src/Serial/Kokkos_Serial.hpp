@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 /// \file Kokkos_Serial.hpp
 /// \brief Declaration and definition of Kokkos::Serial device.
@@ -49,18 +36,15 @@ namespace Kokkos {
 namespace Impl {
 class SerialInternal {
  public:
-  SerialInternal() = default;
+  SerialInternal();
+  ~SerialInternal();
 
-  bool is_initialized();
-
-  void initialize();
-
-  void finalize();
-
-  static SerialInternal& singleton();
+  SerialInternal(SerialInternal const&)            = delete;
+  SerialInternal& operator=(SerialInternal const&) = delete;
 
   std::mutex m_instance_mutex;
 
+  static HostSharedPtr<SerialInternal> default_instance;
   static std::vector<SerialInternal*> all_instances;
   static std::mutex all_instances_mutex;
 
@@ -71,7 +55,6 @@ class SerialInternal {
                                size_t thread_local_bytes);
 
   HostThreadTeamData m_thread_team_data;
-  bool m_is_initialized = false;
 };
 }  // namespace Impl
 
@@ -113,6 +96,9 @@ class Serial {
 
   //@}
 
+  Serial(const Serial&)            = default;
+  Serial& operator=(const Serial&) = default;
+  ~Serial();
   Serial();
 
   explicit Serial(NewInstance);
@@ -203,8 +189,6 @@ class Serial {
 
   static void impl_initialize(InitializationSettings const&);
 
-  static bool impl_is_initialized();
-
   //! Free any resources being consumed by the device.
   static void impl_finalize();
 
@@ -288,9 +272,6 @@ std::vector<Serial> impl_partition_space(const Serial&,
 #include <Serial/Kokkos_Serial_Parallel_Range.hpp>
 #include <Serial/Kokkos_Serial_Parallel_MDRange.hpp>
 #include <Serial/Kokkos_Serial_Parallel_Team.hpp>
-#ifdef KOKKOS_ENABLE_DEPRECATED_CODE_4
-#include <Serial/Kokkos_Serial_Task.hpp>
-#endif
 #include <Serial/Kokkos_Serial_UniqueToken.hpp>
 
 #endif  // defined( KOKKOS_ENABLE_SERIAL )

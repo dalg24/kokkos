@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #ifndef KOKKOS_IMPL_PUBLIC_INCLUDE
 #include <Kokkos_Macros.hpp>
@@ -318,6 +305,12 @@ struct MDRangePolicy<P, Properties...>
                 upper),
             Impl::to_array_potentially_narrowing<index_type, decltype(m_tile)>(
                 tile)) {}
+
+  MDRangePolicy(const Impl::PolicyUpdate, const MDRangePolicy& other,
+                typename traits::execution_space space)
+      : MDRangePolicy(other) {
+    this->m_space = std::move(space);
+  }
 
   template <class... OtherProperties>
   MDRangePolicy(const MDRangePolicy<OtherProperties...> p)

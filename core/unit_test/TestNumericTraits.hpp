@@ -1,18 +1,5 @@
-//@HEADER
-// ************************************************************************
-//
-//                        Kokkos v. 4.0
-//       Copyright (2022) National Technology & Engineering
-//               Solutions of Sandia, LLC (NTESS).
-//
-// Under the terms of Contract DE-NA0003525 with NTESS,
-// the U.S. Government retains certain rights in this software.
-//
-// Part of Kokkos, under the Apache License v2.0 with LLVM Exceptions.
-// See https://kokkos.org/LICENSE for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//@HEADER
+// SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #include <Kokkos_Macros.hpp>
 
@@ -33,7 +20,12 @@
 
 #include <gtest/gtest.h>
 
+#include <Kokkos_Macros.hpp>
+#ifdef KOKKOS_ENABLE_EXPERIMENTAL_CXX20_MODULES
+import kokkos.core;
+#else
 #include <Kokkos_Core.hpp>
+#endif
 #include <type_traits>
 #include <limits>
 
@@ -53,7 +45,16 @@ struct extrema {
   DEFINE_EXTREMA(unsigned long, 0UL, ULONG_MAX)
   DEFINE_EXTREMA(long long, LLONG_MIN, LLONG_MAX)
   DEFINE_EXTREMA(unsigned long long, 0ULL, ULLONG_MAX)
-
+#if defined(KOKKOS_HALF_T_IS_FLOAT) && !KOKKOS_HALF_T_IS_FLOAT
+  DEFINE_EXTREMA(Kokkos::Experimental::half_t,
+                 Kokkos::Experimental::half_t(-65504.0f),
+                 Kokkos::Experimental::half_t(65504.0f))
+#endif
+#if defined(KOKKOS_BHALF_T_IS_FLOAT) && !KOKKOS_BHALF_T_IS_FLOAT
+  DEFINE_EXTREMA(Kokkos::Experimental::bhalf_t,
+                 Kokkos::Experimental::bhalf_t(-3.38953139e38f),
+                 Kokkos::Experimental::bhalf_t(3.38953139e38f))
+#endif
   DEFINE_EXTREMA(float, -FLT_MAX, FLT_MAX)
   DEFINE_EXTREMA(double, -DBL_MAX, DBL_MAX)
   DEFINE_EXTREMA(long double, -LDBL_MAX, LDBL_MAX)
@@ -171,8 +172,7 @@ struct TestNumericTraits {
   }
 
   KOKKOS_FUNCTION void use_on_device() const {
-#if defined(KOKKOS_COMPILER_NVCC) || defined(KOKKOS_ENABLE_OPENMPTARGET) || \
-    defined(KOKKOS_ENABLE_OPENACC)
+#if defined(KOKKOS_COMPILER_NVCC) || defined(KOKKOS_ENABLE_OPENACC)
     take_by_value(trait<T>::value);
 #else
     (void)take_address_of(trait<T>::value);
@@ -181,7 +181,7 @@ struct TestNumericTraits {
 };
 
 #if (defined(KOKKOS_COMPILER_NVCC) && defined(KOKKOS_ENABLE_CUDA)) || \
-    defined(KOKKOS_ENABLE_SYCL) || defined(KOKKOS_ENABLE_OPENMPTARGET)
+    defined(KOKKOS_ENABLE_SYCL)
 template <class Tag>
 struct TestNumericTraits<
 #if defined(KOKKOS_ENABLE_CUDA)
@@ -189,7 +189,7 @@ struct TestNumericTraits<
 #elif defined(KOKKOS_ENABLE_SYCL)
     Kokkos::SYCL,
 #else
-    Kokkos::Experimental::OpenMPTarget,
+#error "logic error"
 #endif
     long double, Tag> {
   template <class T>
@@ -242,6 +242,8 @@ TEST(TEST_CATEGORY, numeric_traits_norm_min) {
 }
 
 TEST(TEST_CATEGORY, numeric_traits_denorm_min) {
+  TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::half_t, DenormMin>();
+  TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::bhalf_t, DenormMin>();
   TestNumericTraits<TEST_EXECSPACE, float, DenormMin>();
   TestNumericTraits<TEST_EXECSPACE, double, DenormMin>();
   TestNumericTraits<TEST_EXECSPACE, long double, DenormMin>();
@@ -275,6 +277,10 @@ TEST(TEST_CATEGORY, numeric_traits_finite_min_max) {
   TestNumericTraits<TEST_EXECSPACE, unsigned long long, FiniteMin>();
   TestNumericTraits<TEST_EXECSPACE, unsigned long long, FiniteMax>();
 
+  TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::half_t, FiniteMin>();
+  TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::half_t, FiniteMax>();
+  TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::bhalf_t, FiniteMin>();
+  TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::bhalf_t, FiniteMax>();
   TestNumericTraits<TEST_EXECSPACE, float, FiniteMin>();
   TestNumericTraits<TEST_EXECSPACE, float, FiniteMax>();
   TestNumericTraits<TEST_EXECSPACE, double, FiniteMin>();
@@ -350,6 +356,10 @@ TEST(TEST_CATEGORY, numeric_traits_radix) {
 
 TEST(TEST_CATEGORY, numeric_traits_min_max_exponent) {
   TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::half_t,
+                    MinExponent>();
+  TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::half_t,
+                    MaxExponent>();
+  TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::bhalf_t,
                     MinExponent>();
   TestNumericTraits<TEST_EXECSPACE, Kokkos::Experimental::bhalf_t,
                     MaxExponent>();
@@ -586,9 +596,8 @@ CHECK_SAME_AS_NUMERIC_LIMITS_MEMBER_CONSTANT(long double, max_exponent10);
 
 // Workaround compiler issue error: expression must have a constant value
 // See kokkos/kokkos#4574
-// There is the same bug with CUDA 11.6
-// FIXME_NVHPC FIXME_CUDA FIXME_NVCC
-#if !defined(KOKKOS_COMPILER_NVHPC) && (CUDA_VERSION < 11060) && \
+// FIXME_NVHPC FIXME_NVCC
+#if !defined(KOKKOS_COMPILER_NVHPC) && \
     !(defined(KOKKOS_COMPILER_NVCC) && !defined(KOKKOS_ENABLE_CUDA))
 CHECK_NAN_SAME_AS_NUMERIC_LIMITS_MEMBER_FUNCTION(float, quiet_NaN);
 CHECK_NAN_SAME_AS_NUMERIC_LIMITS_MEMBER_FUNCTION(double, quiet_NaN);
