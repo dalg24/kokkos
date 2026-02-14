@@ -17,6 +17,7 @@ int Kokkos::Impl::mpi_ranks_per_node() {
            "MPI_LOCALNRANKS",             // MPICH
                                           // SLURM???
            "PMI_LOCAL_SIZE",              // PMI
+           "PALS_LOCAL_SIZE",             // PALS
        }) {
     char const* str = std::getenv(env_var);
     if (str) {
