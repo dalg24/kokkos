@@ -1,3 +1,7 @@
+boolean isFrontendChanged() {
+    return changesets(['core/**', 'simd/**'])
+}
+
 pipeline {
     agent none
 
@@ -286,6 +290,9 @@ pipeline {
             }
         }
         stage('Build-2') {
+            when {
+                script { return isFrontendChanged() } 
+            }
             parallel {
                 stage('OPENACC-NVHPC-CUDA-12.2') {
                     agent {
