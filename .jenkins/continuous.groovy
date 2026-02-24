@@ -34,6 +34,13 @@ pipeline {
             }
         }
         stage('Build-1') {
+           when {
+               anyOf {
+                   changeset "core/**"
+                   changeset "algorithms/**"
+                   changeset "containers/**"
+               }
+           }
             parallel {
                 stage('C++20-Modules-Clang-19') {
                     agent {
