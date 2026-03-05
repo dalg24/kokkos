@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.13)
 
-project(googletest-distribution)
+project(googletest-distribution CXX)
 set(GOOGLETEST_VERSION 1.14.0)
 
 if(NOT CYGWIN AND NOT MSYS AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL QNX)
