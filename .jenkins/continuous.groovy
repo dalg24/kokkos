@@ -241,7 +241,7 @@ pipeline {
                                 -DCMAKE_CXX_FLAGS="-Werror --Werror=all-warnings -Xcudafe --diag_suppress=940" \
                                 -DCMAKE_EXE_LINKER_FLAGS="-Xnvlink -suppress-stack-size-warning" \
                                 -DCMAKE_CXX_STANDARD=20 \
-                                -DCMAKE_DISABLE_FIND_PACKAGE_GTest=ON \
+                                -DCMAKE_REQUIRE_FIND_PACKAGE_GTest=ON \
                                 -DKokkos_INSTALL_TESTING=ON \
                               .. && \
                               set +x && \
