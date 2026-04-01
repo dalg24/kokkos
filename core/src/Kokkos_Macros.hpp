@@ -147,7 +147,8 @@
 // CRAY compiler for host code
 #define KOKKOS_COMPILER_CRAYC _CRAYC
 
-#elif defined(__APPLE_CC__)
+#elif defined(__APPLE_CC__) && defined(__clang__) && \
+    defined(__apple_build_version__)
 #define KOKKOS_COMPILER_APPLECC __APPLE_CC__
 
 #elif defined(__NVCOMPILER)
