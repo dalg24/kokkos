@@ -238,7 +238,7 @@ pipeline {
                                 -DCMAKE_BUILD_TYPE=Release \
                                 -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
                                 -DCMAKE_CXX_COMPILER=$WORKSPACE/bin/nvcc_wrapper \
-                                -DCMAKE_CXX_FLAGS="-Werror --Werror=all-warnings -Wno-error=undef -Xcudafe --diag_suppress=940" \
+                                -DCMAKE_CXX_FLAGS="-Werror --Werror=all-warnings -Wno-error=undef -Wno-error=parentheses -Xcudafe --diag_suppress=940" \
                                 -DCMAKE_EXE_LINKER_FLAGS="-Xnvlink -suppress-stack-size-warning" \
                                 -DCMAKE_CXX_STANDARD=20 \
                                 -DKokkos_INSTALL_TESTING=ON \
