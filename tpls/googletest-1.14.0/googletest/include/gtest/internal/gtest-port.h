@@ -827,10 +827,10 @@ typedef struct _RTL_CRITICAL_SECTION GTEST_CRITICAL_SECTION;
 #ifndef GTEST_API_
 
 #ifdef _MSC_VER
-#if GTEST_LINKED_AS_SHARED_LIBRARY
-#define GTEST_API_ __declspec(dllimport)
-#elif GTEST_CREATE_SHARED_LIBRARY
+#if GTEST_CREATE_SHARED_LIBRARY
 #define GTEST_API_ __declspec(dllexport)
+#elif GTEST_LINKED_AS_SHARED_LIBRARY
+#define GTEST_API_ __declspec(dllimport)
 #endif
 #elif GTEST_HAVE_ATTRIBUTE_(visibility)
 #define GTEST_API_ __attribute__((visibility("default")))
