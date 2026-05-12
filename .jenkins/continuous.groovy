@@ -346,7 +346,7 @@ pipeline {
                                 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
                                 -DCMAKE_CXX_COMPILER=nvc++ \
                                 -DCMAKE_CXX_STANDARD=20 \
-                                -DCMAKE_CXX_FLAGS="-Werror -Werror=all-warnings --diag_suppress=implicit_return_from_non_void_function --diag-suppress 177" \
+                                -DCMAKE_CXX_FLAGS="-Werror -Werror=all-warnings --diag_suppress=implicit_return_from_non_void_function -diag-suppress 177" \
                                 -DKokkos_ARCH_NATIVE=ON \
                                 -DKokkos_ENABLE_COMPILER_WARNINGS=ON \
                                 -DKokkos_ENABLE_DEPRECATED_CODE_5=OFF \
