@@ -15,79 +15,85 @@ SPDX-License-Identifier: (BSD-3-Clause)
 namespace desul {
 namespace Impl {
 
-template <class T, class MemoryOrder, class MemoryScope>
-std::enable_if_t<device_atomic_always_lock_free<T>, void> device_atomic_store(
-    T* ptr, T val, MemoryOrder, MemoryScope) {
-  sycl_atomic_ref<T, MemoryOrder, MemoryScope> ref(*ptr);
-  ref.store(val);
-}
+template <typename T> struct is_valid_atomic_ref_type {
+  static constexpr bool value =
+      (std::is_same_v<T, int> || std::is_same_v<T, unsigned int> ||
+       std::is_same_v<T, long> || std::is_same_v<T, unsigned long> ||
+       std::is_same_v<T, long long> || std::is_same_v<T, unsigned long long> ||
+       std::is_same_v<T, float> || std::is_same_v<T, double> ||
+       std::is_pointer_v<T> || std::is_same_v<T, sycl::half>);
+};
 
 template <class T, class MemoryOrder, class MemoryScope>
-std::enable_if_t<device_atomic_always_lock_free<T>, T> device_atomic_load(T* ptr,
-                                                                          MemoryOrder,
-                                                                          MemoryScope) {
-  sycl_atomic_ref<T, MemoryOrder, MemoryScope> ref(*ptr);
-  return ref.load();
-}
-
-template <class T, class MemoryOrder, class MemoryScope>
-std::enable_if_t<!device_atomic_always_lock_free<T>, void> device_atomic_store(
+void 
+device_atomic_store(
     T* ptr, T val, MemoryOrder, MemoryScope scope) {
-  // This is a way to avoid deadlock in a subgroup
-  int done = 0;
+  if constexpr(is_valid_atomic_ref_type<T>::value){
+    sycl_atomic_ref<T, MemoryOrder, MemoryScope> ref(*ptr);
+    ref.store(val);
+  } else {
+    // This is a way to avoid deadlock in a subgroup
+    int done = 0;
 #if defined(__INTEL_LLVM_COMPILER) && __INTEL_LLVM_COMPILER >= 20250000
-  auto sg = sycl::ext::oneapi::this_work_item::get_sub_group();
+    auto sg = sycl::ext::oneapi::this_work_item::get_sub_group();
 #else
-  auto sg = sycl::ext::oneapi::experimental::this_sub_group();
+    auto sg = sycl::ext::oneapi::experimental::this_sub_group();
 #endif
-  using sycl::ext::oneapi::group_ballot;
-  using sycl::ext::oneapi::sub_group_mask;
-  sub_group_mask active = group_ballot(sg, 1);
-  sub_group_mask done_active = group_ballot(sg, 0);
-  while (active != done_active) {
-    if (!done) {
-      if (lock_address_sycl((void*)dest, scope)) {
-        if (std::is_same<MemoryOrder, MemoryOrderSeqCst>::value)
-          atomic_thread_fence(MemoryOrderRelease(), scope);
-        atomic_thread_fence(MemoryOrderAcquire(), scope);
-        *ptr = val;
-        unlock_address_sycl((void*)dest, scope);
-        done = 1;
+    using sycl::ext::oneapi::group_ballot;
+    using sycl::ext::oneapi::sub_group_mask;
+    sub_group_mask active = group_ballot(sg, 1);
+    sub_group_mask done_active = group_ballot(sg, 0);
+    while (active != done_active) {
+      if (!done) {
+        if (lock_address_sycl((void*)ptr, scope)) {
+          if (std::is_same<MemoryOrder, MemoryOrderSeqCst>::value)
+            atomic_thread_fence(MemoryOrderRelease(), scope);
+          atomic_thread_fence(MemoryOrderAcquire(), scope);
+          *ptr = val;
+          unlock_address_sycl((void*)ptr, scope);
+          done = 1;
+        }
       }
+      done_active = group_ballot(sg, done);
     }
-    done_active = group_ballot(sg, done);
   }
 }
 
 template <class T, class MemoryOrder, class MemoryScope>
-std::enable_if_t<!device_atomic_always_lock_free<T>, T> device_atomic_load(
-    T* ptr, MemoryOrder, MemoryScope scope) {
-  // This is a way to avoid deadlock in a subgroup
-  T ret;
-  int done = 0;
+T device_atomic_load(T const* ptr,
+                                                                          MemoryOrder,
+                                                                          MemoryScope scope) {
+   if constexpr(is_valid_atomic_ref_type<T>::value){
+    sycl_atomic_ref<T, MemoryOrder, MemoryScope> ref(const_cast<T&>(*ptr));
+    return ref.load();
+  } else {
+    // This is a way to avoid deadlock in a subgroup
+    T ret;
+    int done = 0;
 #if defined(__INTEL_LLVM_COMPILER) && __INTEL_LLVM_COMPILER >= 20250000
-  auto sg = sycl::ext::oneapi::this_work_item::get_sub_group();
+    auto sg = sycl::ext::oneapi::this_work_item::get_sub_group();
 #else
-  auto sg = sycl::ext::oneapi::experimental::this_sub_group();
+    auto sg = sycl::ext::oneapi::experimental::this_sub_group();
 #endif
-  using sycl::ext::oneapi::group_ballot;
-  using sycl::ext::oneapi::sub_group_mask;
-  sub_group_mask active = group_ballot(sg, 1);
-  sub_group_mask done_active = group_ballot(sg, 0);
-  while (active != done_active) {
-    if (!done) {
-      if (lock_address_sycl((void*)dest, scope)) {
-        if (std::is_same<MemoryOrder, MemoryOrderSeqCst>::value)
-          atomic_thread_fence(MemoryOrderRelease(), scope);
-        atomic_thread_fence(MemoryOrderAcquire(), scope);
-        ret = *ptr;
-        unlock_address_sycl((void*)dest, scope);
-        done = 1;
+    using sycl::ext::oneapi::group_ballot;
+    using sycl::ext::oneapi::sub_group_mask;
+    sub_group_mask active = group_ballot(sg, 1);
+    sub_group_mask done_active = group_ballot(sg, 0);
+    while (active != done_active) {
+      if (!done) {
+        if (lock_address_sycl((void*)ptr, scope)) {
+          if (std::is_same<MemoryOrder, MemoryOrderSeqCst>::value)
+            atomic_thread_fence(MemoryOrderRelease(), scope);
+          atomic_thread_fence(MemoryOrderAcquire(), scope);
+          ret = *ptr;
+          unlock_address_sycl((void*)ptr, scope);
+          done = 1;
+        }
       }
+      done_active = group_ballot(sg, done);
     }
-    done_active = group_ballot(sg, done);
+    return ret;
   }
-  return ret;
 }
 
 }  // namespace Impl
