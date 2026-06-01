@@ -15,22 +15,19 @@ SPDX-License-Identifier: (BSD-3-Clause)
 namespace desul {
 namespace Impl {
 
-template <typename T> struct is_valid_atomic_ref_type {
-  static constexpr bool value =
-      (std::is_same_v<T, int> || std::is_same_v<T, unsigned int> ||
-       std::is_same_v<T, long> || std::is_same_v<T, unsigned long> ||
-       std::is_same_v<T, long long> || std::is_same_v<T, unsigned long long> ||
-       std::is_same_v<T, float> || std::is_same_v<T, double> ||
-       std::is_pointer_v<T> || std::is_same_v<T, sycl::half>);
-};
-
 template <class T, class MemoryOrder, class MemoryScope>
 void 
 device_atomic_store(
     T* ptr, T val, MemoryOrder, MemoryScope scope) {
-  if constexpr(is_valid_atomic_ref_type<T>::value){
-    sycl_atomic_ref<T, MemoryOrder, MemoryScope> ref(*ptr);
-    ref.store(val);
+      	if constexpr(sizeof(T) ==4 ) {
+  static_assert(sizeof(unsigned int) == 4,
+                "this function assumes an unsigned int is 32-bit");
+	    	sycl_atomic_ref<unsigned int, MemoryOrder, MemoryScope> ref(reinterpret_cast<unsigned int&>(*ptr));
+    ref.store(reinterpret_cast<unsigned int&>(val)); } else if constexpr(sizeof(T)==8) {
+	      static_assert(sizeof(unsigned long long int) == 8,
+                "this function assumes an unsigned long long is 64-bit");
+  sycl_atomic_ref<unsigned long long, MemoryOrder, MemoryScope> ref(reinterpret_cast<unsigned long long&>(*ptr));
+    ref.store(reinterpret_cast<unsigned long long&>(val));
   } else {
     // This is a way to avoid deadlock in a subgroup
     int done = 0;
@@ -60,12 +57,20 @@ device_atomic_store(
 }
 
 template <class T, class MemoryOrder, class MemoryScope>
-T device_atomic_load(T const* ptr,
+T device_atomic_load(const T* ptr,
                                                                           MemoryOrder,
                                                                           MemoryScope scope) {
-   if constexpr(is_valid_atomic_ref_type<T>::value){
-    sycl_atomic_ref<T, MemoryOrder, MemoryScope> ref(const_cast<T&>(*ptr));
-    return ref.load();
+        if constexpr(sizeof(T) ==4 ) {
+  static_assert(sizeof(unsigned int) == 4,
+                "this function assumes an unsigned int is 32-bit");
+                sycl_atomic_ref<unsigned int, MemoryOrder, MemoryScope> ref(reinterpret_cast<unsigned int&>(const_cast<T&>(*ptr)));
+ T sycl_return = ref.load();
+	     	return reinterpret_cast<T&>(sycl_return); } else if constexpr(sizeof(T)==8) {
+              static_assert(sizeof(unsigned long long int) == 8,
+                "this function assumes an unsigned long long is 64-bit");
+  sycl_atomic_ref<unsigned long long, MemoryOrder, MemoryScope> ref(reinterpret_cast<unsigned long long&>(const_cast<T&>(*ptr)));
+ T sycl_return = ref.load();
+  return reinterpret_cast<T&>(sycl_return); 
   } else {
     // This is a way to avoid deadlock in a subgroup
     T ret;
