@@ -14,16 +14,16 @@ SPDX-License-Identifier: (BSD-3-Clause)
 
 namespace desul {
 
-#define DESUL_IMPL_LOAD_AND_STORE_SCOPECALLER(MEMORY_ORDER)                      \
-  template <class T>                                                             \
-  DESUL_INLINE_FUNCTION T atomic_load(T* ptr, MEMORY_ORDER, MemoryScopeCaller) { \
-    return *ptr;                                                                 \
-  }                                                                              \
-                                                                                 \
-  template <class T>                                                             \
-  DESUL_INLINE_FUNCTION void atomic_store(                                       \
-      T* ptr, T val, MEMORY_ORDER, MemoryScopeCaller) {                          \
-    *ptr = val;                                                                  \
+#define DESUL_IMPL_LOAD_AND_STORE_SCOPECALLER(MEMORY_ORDER)                            \
+  template <class T>                                                                   \
+  DESUL_INLINE_FUNCTION T atomic_load(T const* ptr, MEMORY_ORDER, MemoryScopeCaller) { \
+    return *ptr;                                                                       \
+  }                                                                                    \
+                                                                                       \
+  template <class T>                                                                   \
+  DESUL_INLINE_FUNCTION void atomic_store(                                             \
+      T* ptr, T val, MEMORY_ORDER, MemoryScopeCaller) {                                \
+    *ptr = val;                                                                        \
   }
 
 DESUL_IMPL_LOAD_AND_STORE_SCOPECALLER(MemoryOrderSeqCst)
