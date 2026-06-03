@@ -39,6 +39,14 @@ static_assert(false, "KOKKOS_LAMBDA macro is not defined!");
 static_assert(false, "KOKKOS_CLASS_LAMBDA macro is not defined!");
 #endif
 
+#ifndef KOKKOS_FORCEINLINE_LAMBDA
+static_assert(false, "KOKKOS_FORCEINLINE_LAMBDA macro is not defined!");
+#endif
+
+#ifndef KOKKOS_CLASS_FORCEINLINE_LAMBDA
+static_assert(false, "KOKKOS_CLASS_FORCEINLINE_LAMBDA macro is not defined!");
+#endif
+
 namespace {
 
 #define KOKKOS_TEST_FUNCTION_ANNOTATION(ANNOTATION)                         \
