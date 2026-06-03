@@ -331,12 +331,30 @@
 #define KOKKOS_CLASS_LAMBDA [ =, *this ]
 #endif
 
+#ifndef KOKKOS_ENABLE_CXX20  // since C++23
+
+#if !defined(KOKKOS_FORCEINLINE_LAMBDA)
+#define KOKKOS_FORCEINLINE_LAMBDA \
+  KOKKOS_LAMBDA KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE
+#endif
+
+#if !defined(KOKKOS_CLASS_FORCEINLINE_LAMBDA)
+#define KOKKOS_CLASS_FORCEINLINE_LAMBDA \
+  KOKKOS_CLASS_LAMBDA KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE
+#endif
+
+#else  // C++20
+       // Attributes on lambda expressions would need to go after the parameter
+       // list which is not an option for us so we don't do anything.
+
 #if !defined(KOKKOS_FORCEINLINE_LAMBDA)
 #define KOKKOS_FORCEINLINE_LAMBDA KOKKOS_LAMBDA
 #endif
 
 #if !defined(KOKKOS_CLASS_FORCEINLINE_LAMBDA)
 #define KOKKOS_CLASS_FORCEINLINE_LAMBDA KOKKOS_CLASS_LAMBDA
+#endif
+
 #endif
 
 // FIXME_OPENACC
