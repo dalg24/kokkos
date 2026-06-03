@@ -102,14 +102,6 @@
   __CUDACC_VER_MAJOR__ * 100 + __CUDACC_VER_MINOR__ * 10
 #endif  // #if defined( __NVCC__ )
 
-#if !defined(KOKKOS_LAMBDA)
-#define KOKKOS_LAMBDA [=]
-#endif
-
-#if !defined(KOKKOS_CLASS_LAMBDA)
-#define KOKKOS_CLASS_LAMBDA [ =, *this ]
-#endif
-
 // #if !defined( __CUDA_ARCH__ ) // Not compiling Cuda code to 'ptx'.
 
 // Intel compiler for host code.
@@ -329,6 +321,22 @@
 
 #if !defined(KOKKOS_IMPL_DEVICE_FUNCTION)
 #define KOKKOS_IMPL_DEVICE_FUNCTION
+#endif
+
+#if !defined(KOKKOS_LAMBDA)
+#define KOKKOS_LAMBDA [=]
+#endif
+
+#if !defined(KOKKOS_CLASS_LAMBDA)
+#define KOKKOS_CLASS_LAMBDA [ =, *this ]
+#endif
+
+#if !defined(KOKKOS_FORCEINLINE_LAMBDA)
+#define KOKKOS_FORCEINLINE_LAMBDA KOKKOS_LAMBDA
+#endif
+
+#if !defined(KOKKOS_CLASS_FORCEINLINE_LAMBDA)
+#define KOKKOS_CLASS_FORCEINLINE_LAMBDA KOKKOS_CLASS_LAMBDA
 #endif
 
 // FIXME_OPENACC
