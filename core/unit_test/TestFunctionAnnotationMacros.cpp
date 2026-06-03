@@ -90,4 +90,82 @@ struct Bar {
 };
 [[maybe_unused]] auto Fun = Bar{}.fun();
 
+struct AnnotationExamples {
+  int m_value = 0;
+
+  KOKKOS_DEFAULTED_FUNCTION AnnotationExamples()            = default;
+  KOKKOS_INLINE_FUNCTION_DELETED AnnotationExamples(double) = delete;
+
+  KOKKOS_FUNCTION constexpr int kokkos_function(int x) const {
+    return m_value + x;
+  }
+
+  KOKKOS_INLINE_FUNCTION constexpr int kokkos_inline_function(int x) const {
+    return m_value - x;
+  }
+
+  KOKKOS_FORCEINLINE_FUNCTION constexpr int kokkos_forceinline_function(
+      int x) const {
+    return m_value * x;
+  }
+
+  KOKKOS_INLINE_FUNCTION constexpr int use_class_lambda(int x) const {
+    auto lambda = KOKKOS_CLASS_LAMBDA(int y) { return m_value + y; };
+    return lambda(x);
+  }
+
+  KOKKOS_FORCEINLINE_FUNCTION constexpr int use_class_forceinline_lambda(
+      int x) const {
+    auto lambda = KOKKOS_CLASS_FORCEINLINE_LAMBDA(int y) {
+      return m_value - y;
+    };
+    return lambda(x);
+  }
+};
+
+template <class Value>
+struct DeductionGuideExample {
+  Value m_value;
+};
+
+template <class Value>
+KOKKOS_DEDUCTION_GUIDE DeductionGuideExample(Value)
+    -> DeductionGuideExample<Value>;
+
+KOKKOS_RELOCATABLE_FUNCTION constexpr int relocatable_plus_one(int value) {
+  return value + 1;
+}
+
+KOKKOS_INLINE_FUNCTION constexpr int use_lambda_annotation(int x) {
+  auto lambda = KOKKOS_LAMBDA(int y) { return y + 2; };
+  return lambda(x);
+}
+
+KOKKOS_FORCEINLINE_FUNCTION constexpr int use_forceinline_lambda_annotation(
+    int x) {
+  auto lambda = KOKKOS_FORCEINLINE_LAMBDA(int y) { return y * 2; };
+  return lambda(x);
+}
+
+KOKKOS_FUNCTION constexpr int use_all_function_annotations() {
+  AnnotationExamples example{};
+  example.m_value = 4;
+
+  int result = 0;
+  result += example.kokkos_function(3);
+  result += example.kokkos_inline_function(1);
+  result += example.kokkos_forceinline_function(2);
+  result += example.use_class_lambda(5);
+  result += example.use_class_forceinline_lambda(2);
+  result += relocatable_plus_one(7);
+  result += use_lambda_annotation(8);
+  result += use_forceinline_lambda_annotation(6);
+
+  auto deduced = DeductionGuideExample{9};
+  result += deduced.m_value;
+  return result;
+}
+
+static_assert(use_all_function_annotations() == 68);
+
 }  // namespace
