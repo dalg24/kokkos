@@ -10,7 +10,7 @@ SPDX-License-Identifier: (BSD-3-Clause)
 #define DESUL_ATOMICS_LOAD_AND_STORE_HIP_HPP_
 
 #include <desul/atomics/Adapt_HIP.hpp>
-#include <desul/atomics/Compare_Exchange_HIP.hpp>
+#include <desul/atomics/Lock_Free_Types_HIP.hpp>
 
 namespace desul {
 namespace Impl {

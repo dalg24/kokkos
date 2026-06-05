@@ -10,7 +10,7 @@ SPDX-License-Identifier: (BSD-3-Clause)
 #define DESUL_ATOMICS_LOAD_AND_STORE_SYCL_HPP_
 
 #include <desul/atomics/Adapt_SYCL.hpp>
-#include <desul/atomics/Compare_Exchange_SYCL.hpp>
+#include <desul/atomics/Lock_Free_Types_SYCL.hpp>
 
 namespace desul {
 namespace Impl {
