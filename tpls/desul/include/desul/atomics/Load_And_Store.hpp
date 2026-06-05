@@ -14,11 +14,20 @@ SPDX-License-Identifier: (BSD-3-Clause)
 #ifdef DESUL_HAVE_GCC_ATOMICS
 #include <desul/atomics/Load_And_Store_GCC.hpp>
 #endif
+#ifdef DESUL_HAVE_MSVC_ATOMICS
+#include <desul/atomics/Load_And_Store_MSVC.hpp>
+#endif
 #ifdef DESUL_HAVE_CUDA_ATOMICS
 #include <desul/atomics/Load_And_Store_CUDA.hpp>
 #endif
 #ifdef DESUL_HAVE_HIP_ATOMICS
 #include <desul/atomics/Load_And_Store_HIP.hpp>
+#endif
+#ifdef DESUL_HAVE_OPENMP_ATOMICS
+#include <desul/atomics/Load_And_Store_OpenMP.hpp>
+#endif
+#ifdef DESUL_HAVE_OPENACC_ATOMICS
+#include <desul/atomics/Load_And_Store_OpenACC.hpp>
 #endif
 #ifdef DESUL_HAVE_SYCL_ATOMICS
 #include <desul/atomics/Load_And_Store_SYCL.hpp>
