@@ -280,13 +280,17 @@
 // Define function marking macros if compiler specific macros are undefined:
 
 #if !defined(KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE)
-#if defined(_MSC_VER)
-#define KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE [[msvc::forceinline]]
-#elif defined(__GNUC__) || defined(__clang__)
-#define KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE [[gnu::always_inline]]
-#else
+
+#if defined(__has_attribute)
+#if __has_attribute(always_inline)
+#define KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE __attribute__((always_inline))
+#endif
+#endif
+
+#if !defined(KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE)
 #define KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE
 #endif
+
 #endif
 
 #if !defined(KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION)
