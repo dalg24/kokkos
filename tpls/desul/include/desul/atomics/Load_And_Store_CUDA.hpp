@@ -9,7 +9,9 @@ SPDX-License-Identifier: (BSD-3-Clause)
 #ifndef DESUL_ATOMICS_LOAD_AND_STORE_CUDA_HPP_
 #define DESUL_ATOMICS_LOAD_AND_STORE_CUDA_HPP_
 
+#include <desul/atomics/Macros.hpp>
 #include <desul/atomics/Lock_Free_Types_CUDA.hpp>
+#include <desul/atomics/Compare_Exchange_CUDA.hpp>
 
 // Including CUDA ptx based exchange atomics
 // When building with clang we need to include the device functions always
@@ -91,7 +93,7 @@ __device__ void device_atomic_store(T* ptr,
 namespace desul {
 namespace Impl {
 
-DESUL_IMPL_ATOMIC_LOAD_AND_STORE(DESUL_IMPL_DEVICE_FUNCTION, device)
+DESUL_IMPL_ATOMIC_LOAD_AND_STORE_WITH_CAS(DESUL_IMPL_DEVICE_FUNCTION, device)
 
 }
 }

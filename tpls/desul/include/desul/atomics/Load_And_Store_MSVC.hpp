@@ -9,9 +9,9 @@ SPDX-License-Identifier: (BSD-3-Clause)
 #ifndef DESUL_ATOMICS_LOAD_AND_STORE_MSVC_HPP_
 #define DESUL_ATOMICS_LOAD_AND_STORE_MSVC_HPP_
 
+#include <desul/atomics/Macros.hpp>
 #include <desul/atomics/Lock_Free_Types_MSVC.hpp>
 #include <desul/atomics/Compare_Exchange_MSVC.hpp>
-#include <type_traits>
 
 namespace desul {
 namespace Impl {
@@ -19,7 +19,7 @@ namespace Impl {
 // MSVC does only provide _InterlockedCompareExchange but no load and store intrinsics.
 // If we can require c++20 we can switch to std::atomic
 
-DESUL_IMPL_ATOMIC_LOAD_AND_STORE(DESUL_IMPL_HOST_FUNCTION, host)
+DESUL_IMPL_ATOMIC_LOAD_AND_STORE_WITH_CAS(DESUL_IMPL_HOST_FUNCTION, host)
 
 }  // namespace Impl
 }  // namespace desul

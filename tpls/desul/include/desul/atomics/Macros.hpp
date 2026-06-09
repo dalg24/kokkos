@@ -183,7 +183,7 @@ static constexpr bool desul_impl_omp_on_host() { return false; }
 // undefined behavior. As atomic_oper_fetch is not implemented, we have specializations
 // of the lock based fetch_oper for _store_fetch_operator that uses a default
 // constructed value instead of reading from a potentially uninitialized address.
-#define DESUL_IMPL_ATOMIC_LOAD_AND_STORE(ANNOTATION, HOST_OR_DEVICE)                  \
+#define DESUL_IMPL_ATOMIC_LOAD_AND_STORE_WITH_CAS(ANNOTATION, HOST_OR_DEVICE)         \
   template <class T, class MemoryOrder, class MemoryScope>                            \
   ANNOTATION T HOST_OR_DEVICE##_atomic_load(                                          \
       const T* const dest, MemoryOrder order, MemoryScope scope) {                    \
