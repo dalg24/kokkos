@@ -2,7 +2,7 @@
 #define __DESUL_IMPL_CUDA_ASM_MEMORY_ORDER MemoryOrderRelaxed
 #define __DESUL_IMPL_CUDA_ASM_MEMORY_ORDER_ASM ".relaxed"
 #include "desul/atomics/cuda/cuda_cc7_asm_load_op.inc"
-//#include "desul/atomics/cuda/cuda_cc7_asm_store_op.inc"
+#include "desul/atomics/cuda/cuda_cc7_asm_store_op.inc"
 #undef __DESUL_IMPL_CUDA_ASM_MEMORY_ORDER
 #undef __DESUL_IMPL_CUDA_ASM_MEMORY_ORDER_ASM
 
