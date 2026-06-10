@@ -70,7 +70,7 @@ T device_atomic_load(const T* ptr,
                 "this function assumes an unsigned long long is 64-bit");
   sycl_atomic_ref<unsigned long long, MemoryOrder, MemoryScope> ref(reinterpret_cast<unsigned long long&>(const_cast<T&>(*ptr)));
  T sycl_return = ref.load();
-  return reinterpret_cast<T&>(sycl_return); 
+  return sycl_return;
   } else {
     // This is a way to avoid deadlock in a subgroup
     T ret;
