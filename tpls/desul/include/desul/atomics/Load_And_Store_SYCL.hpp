@@ -64,13 +64,13 @@ T device_atomic_load(const T* ptr,
   static_assert(sizeof(unsigned int) == 4,
                 "this function assumes an unsigned int is 32-bit");
                 sycl_atomic_ref<unsigned int, MemoryOrder, MemoryScope> ref(reinterpret_cast<unsigned int&>(const_cast<T&>(*ptr)));
- T sycl_return = ref.load();
+ auto sycl_return = ref.load();
 	     	return reinterpret_cast<T&>(sycl_return); } else if constexpr(sizeof(T)==8) {
               static_assert(sizeof(unsigned long long int) == 8,
                 "this function assumes an unsigned long long is 64-bit");
   sycl_atomic_ref<unsigned long long, MemoryOrder, MemoryScope> ref(reinterpret_cast<unsigned long long&>(const_cast<T&>(*ptr)));
- T sycl_return = ref.load();
-  return sycl_return;
+ auto sycl_return = ref.load();
+  return reinterpret_cast<T&>(sycl_return);
   } else {
     // This is a way to avoid deadlock in a subgroup
     T ret;
