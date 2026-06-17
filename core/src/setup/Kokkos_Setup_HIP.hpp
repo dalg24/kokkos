@@ -24,6 +24,7 @@ static_assert(false,
 
 #define KOKKOS_IMPL_FORCEINLINE_FUNCTION __device__ __host__ __forceinline__
 #define KOKKOS_IMPL_FORCEINLINE_ATTRIBUTE __forceinline__
+#define KOKKOS_IMPL_HOST_FORCEINLINE_FUNCTION __forceinline__
 #define KOKKOS_IMPL_INLINE_FUNCTION __device__ __host__ inline
 #define KOKKOS_IMPL_FUNCTION __device__ __host__
 #define KOKKOS_IMPL_HOST_FUNCTION __host__
