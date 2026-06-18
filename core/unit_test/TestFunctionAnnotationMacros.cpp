@@ -43,8 +43,8 @@ static_assert(false, "KOKKOS_CLASS_LAMBDA macro is not defined!");
 static_assert(false, "KOKKOS_FORCEINLINE_LAMBDA macro is not defined!");
 #endif
 
-#ifndef KOKKOS_CLASS_FORCEINLINE_LAMBDA
-static_assert(false, "KOKKOS_CLASS_FORCEINLINE_LAMBDA macro is not defined!");
+#ifndef KOKKOS_FORCEINLINE_CLASS_LAMBDA
+static_assert(false, "KOKKOS_FORCEINLINE_CLASS_LAMBDA macro is not defined!");
 #endif
 
 namespace {
@@ -116,7 +116,7 @@ struct AnnotationExamples {
 
   KOKKOS_FORCEINLINE_FUNCTION constexpr int use_class_forceinline_lambda(
       int x) const {
-    auto lambda = KOKKOS_CLASS_FORCEINLINE_LAMBDA(int y) {
+    auto lambda = KOKKOS_FORCEINLINE_CLASS_LAMBDA(int y) {
       return m_value * (y << 4);
     };
     return lambda(x);
