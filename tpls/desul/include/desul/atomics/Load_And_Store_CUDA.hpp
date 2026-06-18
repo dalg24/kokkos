@@ -25,7 +25,7 @@ SPDX-License-Identifier: (BSD-3-Clause)
 
 #include <desul/atomics/cuda/CUDA_asm_loadstore.hpp>
 
-// use lock-tables for the sizes that do not have an intrisinc.
+// use lock-tables for the sizes that do not have an intrinsic.
 namespace desul {
 namespace Impl {
 template <class T,
