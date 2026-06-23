@@ -21,6 +21,21 @@ namespace Kokkos {
 
 //----------------------------------------------------------------------------
 
+// FIXME_SYCL
+#if defined KOKKOS_ENABLE_SYCL && defined(KOKKOS_COMPILER_INTEL_LLVM) && \
+    KOKKOS_COMPILER_INTEL_LLVM < 20250300
+template <typename T>
+KOKKOS_FORCEINLINE_FUNCTION T volatile_load(T const volatile* const src_ptr) {
+  T old = *ref;
+  T assumed;
+  do {
+    assumed = old;
+    old     = Kokkos::atomic_compare_exchange(ref, assumed, assumed);
+
+  } while (assumed != old);
+  return old;
+}
+#else
 template <typename T>
 KOKKOS_FORCEINLINE_FUNCTION T volatile_load(T const volatile* const src_ptr) {
   typedef uint64_t KOKKOS_IMPL_MAY_ALIAS T64;  // NOLINT(modernize-use-using)
@@ -71,6 +86,7 @@ KOKKOS_FORCEINLINE_FUNCTION T volatile_load(T const volatile* const src_ptr) {
 
   return result;
 }
+#endif
 
 template <typename T>
 KOKKOS_FORCEINLINE_FUNCTION void volatile_store(

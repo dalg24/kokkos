@@ -79,6 +79,17 @@ auto allocate_with_sequential_host_init_if_possible(
         Impl::with_properties_if_unset(alloc_prop, SequentialHostInit),
         std::forward<Args>(args)...);
 }
+
+template <typename T>
+KOKKOS_FORCEINLINE_FUNCTION void store_workaround(T *const ref, T value) {
+  T old = *ref;
+  T assumed;
+  do {
+    assumed = old;
+    old     = Kokkos::atomic_compare_exchange(ref, assumed, value);
+
+  } while (assumed != old);
+}
 }  // namespace Impl
 
 enum : unsigned { UnorderedMapInvalidIndex = ~0u };
@@ -630,34 +641,19 @@ class UnorderedMap {
       // list will only be appended during insert phase.
       // Need volatile_load as other threads may be appending.
 
-      // FIXME_SYCL replacement for memory_fence
-#ifdef KOKKOS_ENABLE_SYCL
-      size_type curr = Kokkos::atomic_load(curr_ptr);
-#else
       size_type curr = volatile_load(curr_ptr);
-#endif
 
       KOKKOS_IMPL_NONTEMPORAL_PREFETCH_LOAD(
           &m_keys[curr != invalid_index ? curr : 0]);
 #if defined(__MIC__)
 #pragma noprefetch
 #endif
-      while (curr != invalid_index && !m_equal_to(
-#ifdef KOKKOS_ENABLE_SYCL
-                                          Kokkos::atomic_load(&m_keys[curr])
-#else
-                                          volatile_load(&m_keys[curr])
-#endif
-                                              ,
-                                          k)) {
+      while (curr != invalid_index &&
+             !m_equal_to(volatile_load(&m_keys[curr]), k)) {
         result.increment_list_position();
         index_hint = curr;
         curr_ptr   = &m_next_index[curr];
-#ifdef KOKKOS_ENABLE_SYCL
-        curr = Kokkos::atomic_load(curr_ptr);
-#else
-        curr = volatile_load(curr_ptr);
-#endif
+        curr       = volatile_load(curr_ptr);
         KOKKOS_IMPL_NONTEMPORAL_PREFETCH_LOAD(
             &m_keys[curr != invalid_index ? curr : 0]);
       }
@@ -702,7 +698,7 @@ class UnorderedMap {
             KOKKOS_IMPL_NONTEMPORAL_PREFETCH_STORE(&m_keys[new_index]);
 // FIXME_SYCL replacement for memory_fence
 #ifdef KOKKOS_ENABLE_SYCL
-            Kokkos::atomic_store(&m_keys[new_index], k);
+            Impl::store_workaround(&m_keys[new_index], k);
 #else
             m_keys[new_index] = k;
 #endif
@@ -710,7 +706,7 @@ class UnorderedMap {
             if constexpr (!is_set) {
               KOKKOS_IMPL_NONTEMPORAL_PREFETCH_STORE(&m_values[new_index]);
 #ifdef KOKKOS_ENABLE_SYCL
-              Kokkos::atomic_store(&m_values[new_index], v);
+              Impl::store_workaround(&m_values[new_index], v);
 #else
               m_values[new_index] = v;
 #endif
