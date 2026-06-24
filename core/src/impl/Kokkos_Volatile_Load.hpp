@@ -4,6 +4,8 @@
 #include <Kokkos_Macros.hpp>
 #include <desul/atomics.hpp>
 
+#include <type_traits>
+
 #if defined(KOKKOS_ATOMIC_HPP) && !defined(KOKKOS_VOLATILE_LOAD_HPP)
 #define KOKKOS_VOLATILE_LOAD_HPP
 
@@ -31,9 +33,9 @@ KOKKOS_FORCEINLINE_FUNCTION T volatile_load(T const volatile* const src_ptr) {
   T assumed;
   do {
     assumed = old;
-    old     = desul::atomic_compare_exchange(src_ptr, assumed, assumed,
-                                             desul::MemoryOrderRelaxed(),
-                                             desul::MemoryScopeDevice());
+    old     = desul::atomic_compare_exchange(
+        const_cast<std::remove_volatile_t<T>*>(src_ptr), assumed, assumed,
+        desul::MemoryOrderRelaxed(), desul::MemoryScopeDevice());
 
   } while (assumed != old);
   return old;
