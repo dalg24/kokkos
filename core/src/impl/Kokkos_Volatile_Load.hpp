@@ -26,11 +26,11 @@ namespace Kokkos {
     KOKKOS_COMPILER_INTEL_LLVM < 20250300
 template <typename T>
 KOKKOS_FORCEINLINE_FUNCTION T volatile_load(T const volatile* const src_ptr) {
-  T old = *ref;
+  T old = *src_ptr;
   T assumed;
   do {
     assumed = old;
-    old     = Kokkos::atomic_compare_exchange(ref, assumed, assumed);
+    old     = Kokkos::atomic_compare_exchange(src_ptr, assumed, assumed);
 
   } while (assumed != old);
   return old;
