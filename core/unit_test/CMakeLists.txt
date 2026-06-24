@@ -43,7 +43,6 @@ set(COMPILE_ONLY_SOURCES
     TestCreateMirror.cpp
     TestDetectionIdiom.cpp
     TestBitManipulation.cpp
-    TestFunctionAnnotationMacros.cpp
     TestInterOp.cpp
     TestRangePolicyCTAD.cpp
     TestStringManipulation.cpp
@@ -158,6 +157,7 @@ foreach(Tag Threads;Serial;OpenMP;Cuda;HPX;OpenACC;HIP;SYCL;NextSilicon)
       DeepCopyAlignment
       ExecSpacePartitioning
       ExecSpaceThreadSafety
+      FunctionAnnotationMacros
       FunctorAnalysis
       GraphNodeCtorProps
       HostSharedPtr

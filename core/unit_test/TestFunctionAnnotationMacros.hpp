@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Copyright Contributors to the Kokkos project
 
 #include <Kokkos_Macros.hpp>
+#include <Kokkos_Core.hpp>
 
 #ifndef KOKKOS_FUNCTION
 static_assert(false, "KOKKOS_FUNCTION macro is not defined!");
@@ -109,13 +110,12 @@ struct AnnotationExamples {
     return m_value * (x << 2);
   }
 
-  KOKKOS_INLINE_FUNCTION constexpr int use_class_lambda(int x) const {
+  KOKKOS_INLINE_FUNCTION int use_class_lambda(int x) const {
     auto lambda = KOKKOS_CLASS_LAMBDA(int y) { return m_value * (y << 3); };
     return lambda(x);
   }
 
-  KOKKOS_FORCEINLINE_FUNCTION constexpr int use_class_forceinline_lambda(
-      int x) const {
+  KOKKOS_FORCEINLINE_FUNCTION int use_class_forceinline_lambda(int x) const {
     auto lambda = KOKKOS_FORCEINLINE_CLASS_LAMBDA(int y) {
       return m_value * (y << 4);
     };
@@ -132,22 +132,34 @@ template <class Value>
 KOKKOS_DEDUCTION_GUIDE DeductionGuideExample(Value)
     -> DeductionGuideExample<Value>;
 
-KOKKOS_RELOCATABLE_FUNCTION constexpr int relocatable_plus_one(int value) {
-  return value << 5;
-}
+#if defined(KOKKOS_ENABLE_OPENACC) ||                         \
+    (defined(KOKKOS_ENABLE_CUDA) &&                           \
+     !defined(KOKKOS_ENABLE_CUDA_RELOCATABLE_DEVICE_CODE)) || \
+    (defined(KOKKOS_ENABLE_HIP) &&                            \
+     !defined(KOKKOS_ENABLE_HIP_RELOCATABLE_DEVICE_CODE)) ||  \
+    (defined(KOKKOS_ENABLE_SYCL) &&                           \
+     !defined(KOKKOS_ENABLE_SYCL_RELOCATABLE_DEVICE_CODE))
+#define RELOCATABLE_FUNCTION_UNAVAILABLE
+#endif
 
-KOKKOS_INLINE_FUNCTION constexpr int use_lambda_annotation(int x) {
+#ifdef RELOCATABLE_FUNCTION_UNAVAILABLE
+KOKKOS_FUNCTION
+#else
+KOKKOS_RELOCATABLE_FUNCTION
+#endif
+constexpr int relocatable_plus_one(int value) { return value << 5; }
+
+KOKKOS_INLINE_FUNCTION int use_lambda_annotation(int x) {
   auto lambda = KOKKOS_LAMBDA(int y) { return y << 6; };
   return lambda(x);
 }
 
-KOKKOS_FORCEINLINE_FUNCTION constexpr int use_forceinline_lambda_annotation(
-    int x) {
+KOKKOS_FORCEINLINE_FUNCTION int use_forceinline_lambda_annotation(int x) {
   auto lambda = KOKKOS_FORCEINLINE_LAMBDA(int y) { return y << 7; };
   return lambda(x);
 }
 
-KOKKOS_FUNCTION constexpr int use_all_function_annotations() {
+KOKKOS_FUNCTION int use_all_function_annotations() {
   AnnotationExamples example{};
   example.m_value = 1;
 
@@ -166,6 +178,18 @@ KOKKOS_FUNCTION constexpr int use_all_function_annotations() {
   return result;
 }
 
-static_assert(use_all_function_annotations() == (1 << 9) - 1);
+void test_function_annotations() {
+  Kokkos::View<int, TEST_EXECSPACE> result("result");
+
+  Kokkos::parallel_for(
+      Kokkos::RangePolicy<TEST_EXECSPACE>(0, 1),
+      KOKKOS_LAMBDA(const int) { result() = use_all_function_annotations(); });
+  Kokkos::fence();
+
+  auto v = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace{}, result);
+  EXPECT_EQ(v(), (1 << 9) - 1);
+}
+
+TEST(TEST_CATEGORY, function_annotation) { test_function_annotations(); }
 
 }  // namespace
