@@ -26,7 +26,7 @@ namespace Kokkos {
 
 // FIXME_SYCL
 #if defined KOKKOS_ENABLE_SYCL && defined(KOKKOS_COMPILER_INTEL_LLVM) && \
-    KOKKOS_COMPILER_INTEL_LLVM < 20250300
+    KOKKOS_COMPILER_INTEL_LLVM < 20260000
 template <typename T>
 KOKKOS_FORCEINLINE_FUNCTION T volatile_load(T const volatile* const src_ptr) {
   T old = *src_ptr;
