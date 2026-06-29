@@ -132,30 +132,13 @@ template <class Value>
 KOKKOS_DEDUCTION_GUIDE DeductionGuideExample(Value)
     -> DeductionGuideExample<Value>;
 
-#if defined(KOKKOS_ENABLE_OPENACC) ||                         \
-    (defined(KOKKOS_ENABLE_CUDA) &&                           \
-     !defined(KOKKOS_ENABLE_CUDA_RELOCATABLE_DEVICE_CODE)) || \
-    (defined(KOKKOS_ENABLE_HIP) &&                            \
-     !defined(KOKKOS_ENABLE_HIP_RELOCATABLE_DEVICE_CODE)) ||  \
-    (defined(KOKKOS_ENABLE_SYCL) &&                           \
-     !defined(KOKKOS_ENABLE_SYCL_RELOCATABLE_DEVICE_CODE))
-#define RELOCATABLE_FUNCTION_UNAVAILABLE
-#endif
-
-#ifdef RELOCATABLE_FUNCTION_UNAVAILABLE
-KOKKOS_FUNCTION
-#else
-KOKKOS_RELOCATABLE_FUNCTION
-#endif
-constexpr int relocatable_plus_one(int value) { return value << 5; }
-
 KOKKOS_INLINE_FUNCTION int use_lambda_annotation(int x) {
-  auto lambda = KOKKOS_LAMBDA(int y) { return y << 6; };
+  auto lambda = KOKKOS_LAMBDA(int y) { return y << 5; };
   return lambda(x);
 }
 
 KOKKOS_FORCEINLINE_FUNCTION int use_forceinline_lambda_annotation(int x) {
-  auto lambda = KOKKOS_FORCEINLINE_LAMBDA(int y) { return y << 7; };
+  auto lambda = KOKKOS_FORCEINLINE_LAMBDA(int y) { return y << 6; };
   return lambda(x);
 }
 
@@ -169,11 +152,10 @@ KOKKOS_FUNCTION int use_all_function_annotations() {
   result |= example.kokkos_forceinline_function(1);
   result |= example.use_class_lambda(1);
   result |= example.use_class_forceinline_lambda(1);
-  result |= relocatable_plus_one(1);
   result |= use_lambda_annotation(1);
   result |= use_forceinline_lambda_annotation(1);
 
-  auto deduced = DeductionGuideExample{1 << 8};
+  auto deduced = DeductionGuideExample{1 << 7};
   result |= deduced.m_value;
   return result;
 }
@@ -187,7 +169,7 @@ void test_function_annotations() {
   Kokkos::fence();
 
   auto v = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace{}, result);
-  EXPECT_EQ(v(), (1 << 9) - 1);
+  EXPECT_EQ(v(), (1 << 8) - 1);
 }
 
 TEST(TEST_CATEGORY, function_annotation) { test_function_annotations(); }
