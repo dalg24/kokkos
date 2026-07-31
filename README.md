@@ -1,3 +1,22 @@
+# Archive Content
+
+## Source Code
+
+- README.md: this document
+- kokkos-ecosystem-SHA-256.txt: allows for integrity check of source tar files
+- CMakeLists.txt: Enables meta build of the ecosystem for this submission
+- kokkos-core-5.2.0.tar.gz: Kokkos Core release archive for 5.2.0
+- kokkos-kernels-5.2.0.tar.gz: Kokkos Kernels release archive for 5.2.0
+- kokkos-tools-afced73.tar.gz: Kokkos Tools source archive
+- kokkos-fft-2.0.0.tar.gz: Kokkos FFT release archive for 2.0.0
+- kokkos-mdspan-5d4eb20.tar.gz: mdspan source archive
+- kokkos-tutorials-6dd51fb.tar.gz: tutorials source archive for tutorial examples and tutorials presentation
+
+## Documentation
+
+Kokkos documentation is served via various webpages. Please visit https://kokkos.org to access it.
+We felt that packaging the website source for this submission was of no value to reviewers.
+
 # Kokkos Ecosystem Build Instructions
 
 This repository contains a meta-build system for the Kokkos ecosystem, designed to simplify the build and installation process for reviewers.
@@ -19,9 +38,6 @@ This build includes the following Kokkos components:
 - (Optional) CUDA 12.x (Kokkos itself supports 13.x too, but some of the benchmarks don't)
 - (Optional) ROCM 6.4 or newer
 
-## Documentation
-
-Kokkos documentation is served via various webpages. Please visit https://kokkos.org to access it.
 
 ## Build Instructions
 
