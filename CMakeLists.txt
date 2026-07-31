@@ -22,6 +22,7 @@ FetchContent_Declare(
   URL "${CMAKE_CURRENT_SOURCE_DIR}/kokkos-kernels-5.2.0.tar.gz"
   URL_HASH SHA256=57f278e7a25940f9a1237d8b370a1de7f09ea282626b4594e4880042181acdcd
 )
+set(KokkosKernels_ENABLE_BENCHMARKS ON)
 FetchContent_MakeAvailable(KokkosKernels)
 
 # requires FFTW

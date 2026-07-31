@@ -30,6 +30,18 @@ To enable FFT support:
 cmake -B builddir -DENABLE_FFT=ON
 ```
 
+The above only enables the Serial backend in Kokkos. To build with CUDA or HIP use:
+```bash
+cmake -B builddir -DENABLE_FFT=ON -DKokkos_ENABLE_CUDA=ON
+```
+or
+```bash
+cmake -B builddir -DENABLE_FFT=ON -DKokkos_ENABLE_HIP=ON
+```
+
+Note: this requires to build on a machine with a respective GPU, and the CUDA or ROCM toolchain available in the environment.
+
+
 ### 2. Build the Ecosystem
 
 ```bash
@@ -46,6 +58,20 @@ cmake --install builddir --prefix installdir
 
 ```bash
 export KOKKOS_ECOSYSTEM_ROOT=$PWD/installdir
+```
+
+## Run a KokkosKernels Benchmark with a Kokkos Tool
+
+Linux:
+```bash
+export KOKKOS_TOOLS_LIBS=${KOKKOS_ECOSYSTEM_ROOT}/lib/libkp_space_time_stack.so
+builddir/_deps/kokkoskernels-build/benchmarks/sparse/KokkosKernels_sparse_spmv_benchmark
+```
+
+MacOS:
+```bash
+export KOKKOS_TOOLS_LIBS=${KOKKOS_ECOSYSTEM_ROOT}/lib/libkp_space_time_stack.dylib
+builddir/_deps/kokkoskernels-build/benchmarks/sparse/KokkosKernels_sparse_spmv_benchmark
 ```
 
 ## Testing with Kokkos Tutorials
