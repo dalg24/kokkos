@@ -19,6 +19,10 @@ This build includes the following Kokkos components:
 - (Optional) CUDA 12.x (Kokkos itself supports 13.x too, but some of the benchmarks don't)
 - (Optional) ROCM 6.4 or newer
 
+## Documentation
+
+Kokkos documentation is served via various webpages. Please visit https://kokkos.org to access it.
+
 ## Build Instructions
 
 ### 1. Configure the Build
