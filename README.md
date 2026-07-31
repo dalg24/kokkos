@@ -38,7 +38,7 @@ cmake -B builddir -DENABLE_FFT=ON -DKokkos_ENABLE_CUDA=ON
 ```
 or
 ```bash
-cmake -B builddir -DENABLE_FFT=ON -DKokkos_ENABLE_HIP=ON
+cmake -B builddir -DENABLE_FFT=ON -DKokkos_ENABLE_HIP=ON -DCMAKE_CXX_COMPILER=hipcc -DCMAKE_C_COMPILER=amdclang
 ```
 
 Note: this requires to build on a machine with a respective GPU, and the CUDA or ROCM toolchain available in the environment.
