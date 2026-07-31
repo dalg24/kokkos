@@ -16,6 +16,8 @@ This build includes the following Kokkos components:
 - CMake 3.28 or later
 - C++ compiler with C++20 support
 - (Optional) FFTW library for FFT support
+- (Optional) CUDA 12.x (Kokkos itself supports 13.x too, but some of the benchmarks don't)
+- (Optional) ROCM 6.4 or newer
 
 ## Build Instructions
 
@@ -41,6 +43,10 @@ cmake -B builddir -DENABLE_FFT=ON -DKokkos_ENABLE_HIP=ON
 
 Note: this requires to build on a machine with a respective GPU, and the CUDA or ROCM toolchain available in the environment.
 
+Note: while KokkosKernels itself works with CUDA 13, the KokkosKernels benchmarks are not yet compatible with it. CUDA 13
+had some breaking changes which are not accounted for in the bundled Kokkos 5.2 version. These changes affect device
+properties such as clock rates, which are reported in the benchmarks.
+
 
 ### 2. Build the Ecosystem
 
@@ -64,7 +70,7 @@ export KOKKOS_ECOSYSTEM_ROOT=$PWD/installdir
 
 Linux:
 ```bash
-export KOKKOS_TOOLS_LIBS=${KOKKOS_ECOSYSTEM_ROOT}/lib/libkp_space_time_stack.so
+export KOKKOS_TOOLS_LIBS=${KOKKOS_ECOSYSTEM_ROOT}/lib64/libkp_space_time_stack.so
 builddir/_deps/kokkoskernels-build/benchmarks/sparse/KokkosKernels_sparse_spmv_benchmark
 ```
 
