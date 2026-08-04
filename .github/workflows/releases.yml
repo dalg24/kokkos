@@ -95,6 +95,6 @@ jobs:
             Digitally signed with \[INSERT SHORT KEY ID\] | [${{ env.RELEASE_NAME }}-SHA-256.txt.asc](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}-SHA-256.txt.asc)
             SLSA provenance | [${{ env.RELEASE_NAME }}.intoto.jsonl](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}.intoto.jsonl)
           files: |
-            $RELEASE_NAME.zip
-            $RELEASE_NAME.tar.gz
-            $RELEASE_NAME-SHA-256.txt
+            ${{ env.RELEASE_NAME }}.zip
+            ${{ env.RELEASE_NAME }}.tar.gz
+            ${{ env.RELEASE_NAME }}-SHA-256.txt
