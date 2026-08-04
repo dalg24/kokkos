@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-artifacts
-          path: $RELEASE_NAME*
+          path: ${{ env.RELEASE_NAME }}*
           if-no-files-found: error
           retention-days: 5
 
@@ -51,7 +51,7 @@ jobs:
       base64-subjects: "${{ needs.build.outputs.hashes }}"
       # Upload provenance to a new release
       upload-assets: true
-      provenance-name: "$RELEASE_NAME.intoto.jsonl"
+      provenance-name: "${{ env.RELEASE_NAME }}.intoto.jsonl"
 
   # This step uploads our artifacts to the tagged GitHub release.
   release:
