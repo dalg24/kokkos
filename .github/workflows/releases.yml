@@ -85,15 +85,15 @@ jobs:
             ## Source distributions:
             Platform | Files
             --- | ---
-            Unix/Linux | [$RELEASE_NAME.tar.gz]($DOWNLOAD_URL/$RELEASE_NAME.tar.gz)
-            Windows | [$RELEASE_NAME.zip]($DOWNLOAD_URL/$RELEASE_NAME.zip)
+            Unix/Linux | [${{ env.RELEASE_NAME }}.tar.gz](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}.tar.gz)
+            Windows | [${{ env.RELEASE_NAME }}.zip](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}.zip)
             
             ## Summary files:
             Role | Files
             --- | ---
-            Cryptographic hashes | [$RELEASE_NAME-SHA-256.txt]($DOWNLOAD_URL/$RELEASE_NAME-SHA-256.txt)
-            Digitally signed with \[INSERT SHORT KEY ID\] | [$RELEASE_NAME-SHA-256.txt.asc]($DOWNLOAD_URL/$RELEASE_NAME-SHA-256.txt.asc)
-            SLSA provenance | [$RELEASE_NAME.intoto.jsonl]($DOWNLOAD_URL/$RELEASE_NAME.intoto.jsonl)
+            Cryptographic hashes | [${{ env.RELEASE_NAME }}-SHA-256.txt](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}-SHA-256.txt)
+            Digitally signed with \[INSERT SHORT KEY ID\] | [${{ env.RELEASE_NAME }}-SHA-256.txt.asc](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}-SHA-256.txt.asc)
+            SLSA provenance | [${{ env.RELEASE_NAME }}.intoto.jsonl](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}.intoto.jsonl)
           files: |
             $RELEASE_NAME.zip
             $RELEASE_NAME.tar.gz
