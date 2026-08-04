@@ -87,7 +87,7 @@ jobs:
             --- | ---
             Unix/Linux | [${{ env.RELEASE_NAME }}.tar.gz](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}.tar.gz)
             Windows | [${{ env.RELEASE_NAME }}.zip](${{ env.DOWNLOAD_URL }}/${{ env.RELEASE_NAME }}.zip)
-            
+
             ## Summary files:
             Role | Files
             --- | ---
