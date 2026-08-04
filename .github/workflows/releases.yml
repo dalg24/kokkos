@@ -14,6 +14,7 @@ jobs:
   build:
     outputs:
       hashes: ${{ steps.hash.outputs.hashes }}
+      release-name: ${{ steps.export-name.outputs.release-name }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -30,6 +31,12 @@ jobs:
           # base64 -w0 encodes to base64 and outputs on a single line.
           sha256sum $RELEASE_NAME.zip $RELEASE_NAME.tar.gz > $RELEASE_NAME-SHA-256.txt
           echo "hashes=$(base64 -w0 $RELEASE_NAME-SHA-256.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Export release name
+        shell: bash
+        id: export-name
+        run: |
+          echo "release-name=$RELEASE_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -51,7 +58,7 @@ jobs:
       base64-subjects: "${{ needs.build.outputs.hashes }}"
       # Upload provenance to a new release
       upload-assets: true
-      provenance-name: "${{ env.RELEASE_NAME }}.intoto.jsonl"
+      provenance-name: "${{ needs.build.outputs.release-name }}.intoto.jsonl"
 
   # This step uploads our artifacts to the tagged GitHub release.
   release:
@@ -69,6 +76,6 @@ jobs:
         uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           files: |
-            $RELEASE_NAME.zip
-            $RELEASE_NAME.tar.gz
-            $RELEASE_NAME-SHA-256.txt
+            ${{ needs.build.outputs.release-name }}.zip
+            ${{ needs.build.outputs.release-name }}.tar.gz
+            ${{ needs.build.outputs.release-name }}-SHA-256.txt
