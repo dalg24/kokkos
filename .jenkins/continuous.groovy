@@ -398,7 +398,7 @@ pipeline {
                                 -DCMAKE_BUILD_TYPE=RelWithDebInfo \
                                 -DCMAKE_CXX_COMPILER=nvc++ \
                                 -DCMAKE_CXX_STANDARD=20 \
-                                -DCMAKE_CXX_FLAGS="-Werror -Werror=all-warnings --diag_suppress=implicit_return_from_non_void_function -Wno-error=undef -Wno-error=parentheses" \
+                                -DCMAKE_CXX_FLAGS="-Werror -Werror=all-warnings --diag_suppress=implicit_return_from_non_void_function" \
                                 -DKokkos_ARCH_NATIVE=ON \
                                 -DKokkos_ENABLE_COMPILER_WARNINGS=ON \
                                 -DKokkos_ENABLE_DEPRECATED_CODE_5=OFF \
@@ -436,7 +436,7 @@ pipeline {
                                 -DCMAKE_BUILD_TYPE=Release \
                                 -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
                                 -DCMAKE_CXX_COMPILER=icpx \
-                                -DCMAKE_CXX_FLAGS="-fsycl-device-code-split=per_kernel -fp-model=precise -Wno-deprecated-declarations -Werror -Wno-gnu-zero-variadic-macro-arguments -Wno-unknown-cuda-version -Wno-sycl-target" \
+                                -DCMAKE_CXX_FLAGS="-fsycl-device-code-split=per_kernel -fp-model=precise -Wno-deprecated-declarations -Werror -Wno-gnu-zero-variadic-macro-arguments -Wno-unknown-cuda-version -Wno-sycl-target -Wno-unknown-warning-option" \
                                 -DKokkos_ARCH_NATIVE=ON \
                                 -DKokkos_ARCH_AMPERE80=ON \
                                 -DKokkos_ENABLE_COMPILER_WARNINGS=ON \
