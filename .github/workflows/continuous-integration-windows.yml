@@ -37,10 +37,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - name: install gtest
+      shell: bash
+      run: |
+        vcpkg install gtest:x64-windows
     - name: configure
       shell: bash
       run: |
-        cmake -B build -DBUILD_SHARED_LIBS=ON -DKokkos_ENABLE_SERIAL=ON -DKokkos_ENABLE_TESTS=ON
+        cmake -B build -DBUILD_SHARED_LIBS=ON -DKokkos_ENABLE_SERIAL=ON -DKokkos_ENABLE_TESTS=ON -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
     - name: build library
       shell: bash
       run: |
