@@ -1154,8 +1154,7 @@ if(Python3_Interpreter_FOUND AND Python3_VERSION VERSION_GREATER_EQUAL 3.7)
     USE_SOURCE_PERMISSIONS
   )
   add_test(NAME Kokkos_CoreUnitTest_DeathTestStyle
-           COMMAND ${Python3_EXECUTABLE}
-                   $<TARGET_FILE_DIR:Kokkos_CoreUnitTest_DeathTestStyle>/TestDeathTestStyle.py -v
+           COMMAND ${Python3_EXECUTABLE} $<TARGET_FILE_DIR:Kokkos_CoreUnitTest_DeathTestStyle>/TestDeathTestStyle.py -v
   )
 endif()
 
