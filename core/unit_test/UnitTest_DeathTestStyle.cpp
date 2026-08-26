@@ -11,6 +11,6 @@ int main(int argc, char* argv[]) {  // NOLINT(bugprone-exception-escape)
     ::testing::FLAGS_gtest_death_test_style = "threadsafe";
 
   ::testing::InitGoogleTest(&argc, argv);
-  std::cout << GTEST_FLAG_GET(death_test_style) << "\n";
+  std::cout << GTEST_FLAG_GET(death_test_style) << '\n';
   return 0;
 }

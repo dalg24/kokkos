@@ -10,7 +10,7 @@ def GetFlag(*extra_args, env={}):
     p = subprocess.run([COMMAND, *extra_args], env=env, capture_output=True)
     if p.returncode != 0:
         raise Exception(p.stderr.decode("utf-8"))
-    return str(p.stdout.decode("utf-8")).rstrip('\n')
+    return str(p.stdout.decode("utf-8")).rstrip()
 
 class GoogleTestInitializationTestCase(unittest.TestCase):
     def test_death_style(self):
