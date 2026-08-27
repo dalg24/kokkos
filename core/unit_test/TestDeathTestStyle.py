@@ -14,6 +14,8 @@ def GetFlag(*extra_args, env={}):
 
 class GoogleTestInitializationTestCase(unittest.TestCase):
     def test_death_style(self):
+        self.assertEqual(GetFlag(), "threadsafe")
+
         self.assertEqual(GetFlag("--gtest_death_test_style=fast"), "fast")
         self.assertEqual(GetFlag("--gtest_death_test_style=threadsafe"), "threadsafe")
 
